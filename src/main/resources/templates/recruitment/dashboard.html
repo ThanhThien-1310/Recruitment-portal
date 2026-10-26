@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{recruitment/fragments :: header-assets('Bảng Điều Khiển')}"></head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div th:replace="~{recruitment/fragments :: sidebar('dashboard')}"></div>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Topbar -->
+            <div th:replace="~{recruitment/fragments :: topbar}"></div>
+
+            <!-- Page Content -->
+            <main class="page-content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Tổng quan Tuyển dụng</h1>
+                        <p class="page-subtitle">Chào buổi sáng, Hưng! Dưới đây là tình hình tuyển dụng nhân sự tháng 10/2026.</p>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <a th:href="@{/recruitment/export-excel}" class="btn btn-outline">
+                            <i class="fas fa-file-excel" style="color: #10b981; margin-right: 6px;"></i> Xuất Báo Cáo Excel
+                        </a>
+                        <a th:href="@{/recruitment/pipeline}" class="btn btn-primary">
+                            <i class="fas fa-columns"></i> Mở Bảng Pipeline ATS
+                        </a>
+                    </div>
+                </div>
+
+                <!-- KPI STATS -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon icon-blue">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <div>
+                            <div class="stat-value" th:text="${jobs.size()}">5</div>
+                            <div class="stat-label">Vị trí đang mở tuyển</div>
+                            <div class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> +2 tin mới tuần này</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon icon-orange">
+                            <i class="fas fa-file-invoice"></i>
+                        </div>
+                        <div>
+                            <div class="stat-value">148</div>
+                            <div class="stat-label">Hồ sơ ứng tuyển mới</div>
+                            <div class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> +24% so với tháng trước</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon icon-purple">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div>
+                            <div class="stat-value" th:text="${interviews.size()}">4</div>
+                            <div class="stat-label">Lịch phỏng vấn hôm nay</div>
+                            <div class="stat-trend" style="color: var(--text-secondary);"><i class="fas fa-clock"></i> 3 Online, 1 Trực tiếp</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon icon-green">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <div>
+                            <div class="stat-value">12</div>
+                            <div class="stat-label">Đã nhận việc thành công</div>
+                            <div class="stat-trend trend-up"><i class="fas fa-check-circle"></i> Đạt 85% chỉ tiêu Quý 4</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DASHBOARD MAIN GRID -->
+                <div class="dashboard-grid">
+                    <!-- Funnel Chart Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title"><i class="fas fa-filter" style="color: var(--primary); margin-right: 8px;"></i> Phễu Tuyển Dụng Tổng Thể (Recruitment Funnel)</h2>
+                            <span class="badge badge-info">Tất cả chiến dịch</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="funnel-step">
+                                <div class="funnel-info">
+                                    <span class="funnel-name">1. Tiếp nhận hồ sơ (Applied)</span>
+                                    <span class="funnel-count">148 ứng viên (100%)</span>
+                                </div>
+                                <div class="funnel-bar-bg">
+                                    <div class="funnel-bar-fill" style="width: 100%; background-color: #3b82f6;"></div>
+                                </div>
+                            </div>
+
+                            <div class="funnel-step">
+                                <div class="funnel-info">
+                                    <span class="funnel-name">2. Sơ loại hồ sơ hợp lệ (Screening Passed)</span>
+                                    <span class="funnel-count">82 ứng viên (55.4%)</span>
+                                </div>
+                                <div class="funnel-bar-bg">
+                                    <div class="funnel-bar-fill" style="width: 55.4%; background-color: #06b6d4;"></div>
+                                </div>
+                            </div>
+
+                            <div class="funnel-step">
+                                <div class="funnel-info">
+                                    <span class="funnel-name">3. Phỏng vấn Kỹ thuật / Test (Technical Interview)</span>
+                                    <span class="funnel-count">38 ứng viên (25.6%)</span>
+                                </div>
+                                <div class="funnel-bar-bg">
+                                    <div class="funnel-bar-fill" style="width: 25.6%; background-color: #8b5cf6;"></div>
+                                </div>
+                            </div>
+
+                            <div class="funnel-step">
+                                <div class="funnel-info">
+                                    <span class="funnel-name">4. Phỏng vấn HR & Đánh giá Văn hóa (HR Round)</span>
+                                    <span class="funnel-count">20 ứng viên (13.5%)</span>
+                                </div>
+                                <div class="funnel-bar-bg">
+                                    <div class="funnel-bar-fill" style="width: 13.5%; background-color: #f59e0b;"></div>
+                                </div>
+                            </div>
+
+                            <div class="funnel-step">
+                                <div class="funnel-info">
+                                    <span class="funnel-name">5. Gửi thư đề nghị nhận việc (Offer Sent)</span>
+                                    <span class="funnel-count">14 ứng viên (9.4%)</span>
+                                </div>
+                                <div class="funnel-bar-bg">
+                                    <div class="funnel-bar-fill" style="width: 9.4%; background-color: #10b981;"></div>
+                                </div>
+                            </div>
+
+                            <div class="funnel-step" style="margin-bottom: 0;">
+                                <div class="funnel-info">
+                                    <span class="funnel-name">6. Đã tiếp nhận chính thức (Hired)</span>
+                                    <span class="funnel-count" style="color: #059669;">12 nhân sự (8.1%)</span>
+                                </div>
+                                <div class="funnel-bar-bg">
+                                    <div class="funnel-bar-fill" style="width: 8.1%; background-color: #059669;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Today's Interviews Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title"><i class="fas fa-clock" style="color: var(--purple); margin-right: 8px;"></i> Lịch Phỏng Vấn Hôm Nay</h2>
+                            <a th:href="@{/recruitment/interviews}" class="btn btn-outline btn-sm">Xem tất cả</a>
+                        </div>
+                        <div class="card-body" style="padding-top: 10px;">
+                            <div th:each="item : ${interviews}" class="interview-item">
+                                <div class="interview-time-badge" th:text="${#strings.substring(item.time(), 0, 5)}">09:30</div>
+                                <div class="interview-info">
+                                    <h4 th:text="${item.candidateName()}">Nguyễn Văn An</h4>
+                                    <div class="interview-meta" th:text="${item.jobTitle()}">Senior Java Backend</div>
+                                    <div style="font-size: 11px; color: var(--primary); margin-top: 3px;">
+                                        <i class="fas fa-video"></i> <span th:text="${item.format()}">Online (Google Meet)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RECENT CANDIDATES & JOBS LIST -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title"><i class="fas fa-users" style="color: var(--primary); margin-right: 8px;"></i> Ứng Viên Mới Ứng Tuyển Gần Đây</h2>
+                        <a th:href="@{/recruitment/candidates}" class="btn btn-outline btn-sm">Xem toàn bộ kho hồ sơ</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Ứng viên</th>
+                                    <th>Vị trí ứng tuyển</th>
+                                    <th>Kinh nghiệm</th>
+                                    <th>Kỹ năng chính</th>
+                                    <th>Nguồn</th>
+                                    <th>Trạng thái vòng</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="cand : ${candidates}">
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <img th:src="${cand.avatarUrl()}" class="card-avatar" alt="Avatar">
+                                            <div>
+                                                <a th:href="@{'/recruitment/candidate/' + ${cand.id()}}" style="font-weight: 600; color: var(--text-primary); text-decoration: none;" th:text="${cand.fullName()}">Họ và tên</a>
+                                                <div style="font-size: 11px; color: var(--text-muted);" th:text="${cand.email()}">email@example.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td th:text="${cand.appliedJobTitle()}">Vị trí</td>
+                                    <td th:text="${cand.experience()}">Kinh nghiệm</td>
+                                    <td>
+                                        <div class="cand-tags">
+                                            <span th:each="sk : ${cand.skills()}" class="tag-badge" th:text="${sk}">Java</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="source-badge source-topcv" th:text="${cand.source()}">TopCV</span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${cand.stage() == 'NEW'}" class="badge badge-info">1. Mới ứng tuyển</span>
+                                        <span th:if="${cand.stage() == 'SCREENING'}" class="badge badge-primary">2. Sơ loại CV</span>
+                                        <span th:if="${cand.stage() == 'TECH_INTERVIEW'}" class="badge badge-warning">3. Phỏng vấn Kỹ thuật</span>
+                                        <span th:if="${cand.stage() == 'HR_INTERVIEW'}" class="badge badge-warning">4. Phỏng vấn HR</span>
+                                        <span th:if="${cand.stage() == 'OFFER'}" class="badge badge-success">5. Đề nghị việc (Offer)</span>
+                                        <span th:if="${cand.stage() == 'HIRED'}" class="badge badge-success">6. Đã nhận việc</span>
+                                        <span th:if="${cand.stage() == 'REJECTED'}" class="badge badge-danger">Đã loại</span>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{'/recruitment/candidate/' + ${cand.id()}}" class="btn btn-outline btn-sm">
+                                            <i class="fas fa-eye"></i> Xem CV
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL CREATE JOB -->
+    <div id="createJobModal" class="modal-overlay">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-plus-circle" style="color: var(--primary); margin-right: 8px;"></i> Đăng Tin Tuyển Dụng Mới</h3>
+                <button class="close-btn" onclick="closeCreateJobModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="jobForm" onsubmit="handleSaveJob(event)">
+                    <div class="form-group">
+                        <label class="form-label">Tiêu đề vị trí tuyển dụng *</label>
+                        <input type="text" class="form-control" placeholder="VD: Senior Backend Java Developer..." required>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                        <div class="form-group">
+                            <label class="form-label">Phòng ban *</label>
+                            <select class="form-control">
+                                <option>Phòng Kỹ thuật & Công nghệ</option>
+                                <option>Phòng Sản phẩm & Thiết kế</option>
+                                <option>Phòng Nhân sự</option>
+                                <option>Phòng Kinh doanh & Marketing</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Số lượng cần tuyển *</label>
+                            <input type="number" class="form-control" value="2" min="1" required>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                        <div class="form-group">
+                            <label class="form-label">Mức lương dự kiến</label>
+                            <input type="text" class="form-control" placeholder="VD: 20 - 30 Triệu VNĐ">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hạn nộp hồ sơ</label>
+                            <input type="date" class="form-control" value="2026-11-30">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mô tả công việc (JD)</label>
+                        <textarea class="form-control" rows="3" placeholder="Mô tả nhiệm vụ chính..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Yêu cầu ứng viên</label>
+                        <textarea class="form-control" rows="3" placeholder="Kỹ năng, số năm kinh nghiệm..."></textarea>
+                    </div>
+                    <div class="modal-footer" style="padding: 12px 0 0 0; margin-top: 10px;">
+                        <button type="button" class="btn btn-outline" onclick="closeCreateJobModal()">Hủy bỏ</button>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Lưu và Đăng tin</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openCreateJobModal() {
+            document.getElementById('createJobModal').style.display = 'flex';
+        }
+        function closeCreateJobModal() {
+            document.getElementById('createJobModal').style.display = 'none';
+        }
+        function handleSaveJob(e) {
+            e.preventDefault();
+            alert('Đã lưu và đăng tin tuyển dụng thành công! Dữ liệu đã đồng bộ vào hệ thống.');
+            closeCreateJobModal();
+        }
+        function showNotificationDemo() {
+            alert('Thông báo: Có 3 ứng viên mới vừa nộp hồ sơ cho vị trí Flutter Developer!');
+        }
+    </script>
+</body>
+</html>
+

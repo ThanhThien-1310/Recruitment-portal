@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{recruitment/fragments :: header-assets('Hồ Sơ Ứng Viên - ' + ${candidate.fullName()})}"></head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div th:replace="~{recruitment/fragments :: sidebar('candidates')}"></div>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Topbar -->
+            <div th:replace="~{recruitment/fragments :: topbar}"></div>
+
+            <!-- Page Content -->
+            <main class="page-content">
+                <!-- TOP BREADCRUMB & ACTIONS -->
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                    <div>
+                        <a th:href="@{/recruitment/candidates}" style="color: var(--text-muted); text-decoration: none; font-size: 13px;">
+                            <i class="fas fa-arrow-left"></i> Quay lại danh sách hồ sơ
+                        </a>
+                        <div style="display: flex; align-items: center; gap: 12px; margin-top: 6px;">
+                            <h1 class="page-title" th:text="${candidate.fullName()}">Nguyễn Văn An</h1>
+                            <span class="badge badge-primary" th:text="${candidate.stage()}">TECH_INTERVIEW</span>
+                            <span class="source-badge source-topcv" th:text="'Nguồn: ' + ${candidate.source()}">TopCV</span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-outline" onclick="openScheduleModal()"><i class="fas fa-calendar-plus"></i> Đặt lịch phỏng vấn</button>
+                        <button class="btn btn-primary" onclick="alert('Đã chuyển ứng viên sang vòng tiếp theo thành công!')"><i class="fas fa-arrow-right"></i> Duyệt qua vòng tiếp</button>
+                        <button class="btn btn-outline" style="color: var(--danger); border-color: #fca5a5;" onclick="alert('Đã chuyển sang trạng thái Từ chối & gửi email phản hồi.')"><i class="fas fa-times"></i> Loại</button>
+                    </div>
+                </div>
+
+                <!-- 3-COLUMN DETAIL LAYOUT -->
+                <div style="display: grid; grid-template-columns: 300px 1fr 340px; gap: 20px;">
+                    <!-- LEFT COLUMN: PROFILE CARD -->
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <div class="card">
+                            <div class="card-body" style="text-align: center;">
+                                <img th:src="${candidate.avatarUrl()}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 3px solid #bfdbfe;">
+                                <h3 style="font-size: 16px; font-weight: 700;" th:text="${candidate.fullName()}">Họ tên</h3>
+                                <p style="font-size: 12px; color: var(--primary); font-weight: 600;" th:text="${candidate.appliedJobTitle()}">Vị trí</p>
+                                <div style="margin-top: 10px; font-size: 14px; color: #f59e0b; font-weight: 600;">
+                                    ⭐ <span th:text="${candidate.rating()}">4.8</span> / 5.0
+                                </div>
+                            </div>
+                            <div style="padding: 16px; border-top: 1px solid var(--border-color); font-size: 13px;">
+                                <div style="margin-bottom: 10px;">
+                                    <strong style="color: var(--text-muted); font-size: 11px; text-transform: uppercase;">Liên hệ</strong>
+                                    <div style="margin-top: 4px;"><i class="fas fa-envelope" style="color: var(--text-muted); width: 18px;"></i> <span th:text="${candidate.email()}">email</span></div>
+                                    <div style="margin-top: 4px;"><i class="fas fa-phone" style="color: var(--text-muted); width: 18px;"></i> <span th:text="${candidate.phone()}">phone</span></div>
+                                </div>
+
+                                <div style="margin-bottom: 10px;">
+                                    <strong style="color: var(--text-muted); font-size: 11px; text-transform: uppercase;">Kinh nghiệm & Học vấn</strong>
+                                    <div style="margin-top: 4px;"><i class="fas fa-briefcase" style="color: var(--text-muted); width: 18px;"></i> <span th:text="${candidate.experience()}">Kinh nghiệm</span></div>
+                                    <div style="margin-top: 4px;"><i class="fas fa-graduation-cap" style="color: var(--text-muted); width: 18px;"></i> <span th:text="${candidate.education()}">Học vấn</span></div>
+                                </div>
+
+                                <div>
+                                    <strong style="color: var(--text-muted); font-size: 11px; text-transform: uppercase;">Kỹ năng chuyên môn</strong>
+                                    <div class="cand-tags" style="margin-top: 6px;">
+                                        <span th:each="sk : ${candidate.skills()}" class="tag-badge" style="background: #eff6ff; border-color: #bfdbfe; color: #1e40af;" th:text="${sk}">Java</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recruitment Timeline Card -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title"><i class="fas fa-history" style="color: var(--primary);"></i> Lịch sử quy trình</h4>
+                            </div>
+                            <div class="card-body" style="font-size: 12px; padding: 14px 18px;">
+                                <div style="border-left: 2px solid #3b82f6; padding-left: 12px; margin-bottom: 12px;">
+                                    <strong style="color: var(--primary);">24/10/2026</strong> - Nộp hồ sơ qua TopCV
+                                </div>
+                                <div style="border-left: 2px solid #06b6d4; padding-left: 12px; margin-bottom: 12px;">
+                                    <strong style="color: #06b6d4;">25/10/2026</strong> - HR Thảo sơ loại: Đạt tiêu chuẩn
+                                </div>
+                                <div style="border-left: 2px solid #8b5cf6; padding-left: 12px;">
+                                    <strong style="color: #8b5cf6;">26/10/2026</strong> - Phỏng vấn kỹ thuật với Tech Lead Tuấn
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CENTER COLUMN: INTERACTIVE CV VIEWER -->
+                    <div class="card" style="display: flex; flex-direction: column;">
+                        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                            <h3 class="card-title"><i class="fas fa-file-pdf" style="color: #ef4444; margin-right: 8px;"></i> Bản Xem Trước CV Đính Kèm (Resume Viewer)</h3>
+                            <div>
+                                <a href="javascript:void(0)" onclick="alert('Đang tải xuống file CV gốc...')" class="btn btn-outline btn-sm"><i class="fas fa-download"></i> Tải CV PDF</a>
+                            </div>
+                        </div>
+                        <div class="card-body" style="background: #f8fafc; overflow-y: auto; max-height: 700px; padding: 24px;">
+                            <!-- Simulated CV Document Layout -->
+                            <div style="background: white; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); padding: 32px; border: 1px solid #e2e8f0;">
+                                <div style="border-bottom: 2px solid #2563eb; padding-bottom: 16px; margin-bottom: 20px;">
+                                    <h2 style="font-size: 22px; color: #0f172a; margin-bottom: 4px;" th:text="${candidate.fullName()}">Nguyễn Văn An</h2>
+                                    <p style="font-size: 14px; color: #2563eb; font-weight: 600;" th:text="${candidate.appliedJobTitle()}">Senior Java Backend Engineer</p>
+                                    <div style="font-size: 12px; color: #64748b; margin-top: 6px; display: flex; gap: 16px;">
+                                        <span><i class="fas fa-envelope"></i> <span th:text="${candidate.email()}">an.nguyen@gmail.com</span></span>
+                                        <span><i class="fas fa-phone"></i> <span th:text="${candidate.phone()}">0912 345 678</span></span>
+                                        <span><i class="fas fa-map-marker-alt"></i> Cầu Giấy, Hà Nội</span>
+                                    </div>
+                                </div>
+
+                                <div style="margin-bottom: 20px;">
+                                    <h4 style="font-size: 14px; text-transform: uppercase; color: #1e293b; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 8px;">
+                                        Tóm tắt mục tiêu nghề nghiệp
+                                    </h4>
+                                    <p style="font-size: 13px; color: #334155; line-height: 1.6;">
+                                        Kỹ sư phần mềm với hơn 4 năm kinh nghiệm chuyên sâu về kiến trúc Microservices trên nền tảng Java & Spring Boot. Đã từng trực tiếp thiết kế và vận hành hệ thống xử lý giao dịch thời gian thực chịu tải 50,000 req/s. Mong muốn đồng hành cùng công ty phát triển các sản phẩm công nghệ đột phá.
+                                    </p>
+                                </div>
+
+                                <div style="margin-bottom: 20px;">
+                                    <h4 style="font-size: 14px; text-transform: uppercase; color: #1e293b; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 8px;">
+                                        Kinh nghiệm làm việc
+                                    </h4>
+                                    <div style="margin-bottom: 14px;">
+                                        <div style="display: flex; justify-content: space-between; font-weight: 600; font-size: 13px;">
+                                            <span>Senior Software Engineer - VNPAY Tech</span>
+                                            <span style="color: #64748b;">2024 - Hiện tại</span>
+                                        </div>
+                                        <p style="font-size: 12px; color: #475569; margin-top: 4px;">
+                                            - Thiết kế kiến trúc core payment gateway sử dụng Spring Cloud, Apache Kafka, Redis Cluster.<br>
+                                            - Tối ưu hóa câu lệnh SQL và index MySQL/PostgreSQL, giảm thời gian phản hồi API trung bình từ 180ms xuống 45ms.<br>
+                                            - Triển khai CI/CD pipeline với Docker, Kubernetes và GitLab CI.
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; font-weight: 600; font-size: 13px;">
+                                            <span>Java Backend Developer - FPT Software</span>
+                                            <span style="color: #64748b;">2022 - 2024</span>
+                                        </div>
+                                        <p style="font-size: 12px; color: #475569; margin-top: 4px;">
+                                            - Phát triển hệ thống quản lý dữ liệu cho khách hàng quốc tế theo mô hình Agile/Scrum.<br>
+                                            - Viết unit test & integration test với JUnit 5, Mockito đạt code coverage trên 85%.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h4 style="font-size: 14px; text-transform: uppercase; color: #1e293b; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 8px;">
+                                        Học vấn & Chứng chỉ
+                                    </h4>
+                                    <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                                        <strong th:text="${candidate.education()}">ĐH Bách Khoa Hà Nội</strong>
+                                        <span style="color: #64748b;">Tốt nghiệp loại Giỏi (GPA 3.6/4.0)</span>
+                                    </div>
+                                    <p style="font-size: 12px; color: #475569; margin-top: 4px;">
+                                        Chứng chỉ: Oracle Certified Professional: Java SE 17 Developer, AWS Certified Solutions Architect Associate.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT COLUMN: SCORECARD & INTERVIEW FEEDBACK -->
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <!-- Scorecard Card -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title"><i class="fas fa-clipboard-check" style="color: #10b981;"></i> Đánh giá tiêu chí (Scorecard)</h4>
+                            </div>
+                            <div class="card-body" style="padding: 16px;">
+                                <div style="margin-bottom: 12px;">
+                                    <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                                        <span>Kiến thức Chuyên môn</span>
+                                        <strong>5.0 / 5</strong>
+                                    </div>
+                                    <div class="funnel-bar-bg"><div class="funnel-bar-fill" style="width: 100%; background: #10b981;"></div></div>
+                                </div>
+
+                                <div style="margin-bottom: 12px;">
+                                    <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                                        <span>Tư duy giải quyết vấn đề</span>
+                                        <strong>4.8 / 5</strong>
+                                    </div>
+                                    <div class="funnel-bar-bg"><div class="funnel-bar-fill" style="width: 96%; background: #3b82f6;"></div></div>
+                                </div>
+
+                                <div style="margin-bottom: 12px;">
+                                    <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                                        <span>Kỹ năng giao tiếp & Làm việc nhóm</span>
+                                        <strong>4.5 / 5</strong>
+                                    </div>
+                                    <div class="funnel-bar-bg"><div class="funnel-bar-fill" style="width: 90%; background: #f59e0b;"></div></div>
+                                </div>
+
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                                        <span>Độ phù hợp văn hóa công ty</span>
+                                        <strong>4.8 / 5</strong>
+                                    </div>
+                                    <div class="funnel-bar-bg"><div class="funnel-bar-fill" style="width: 96%; background: #8b5cf6;"></div></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Feedback Log Card -->
+                        <div class="card" style="flex: 1;">
+                            <div class="card-header">
+                                <h4 class="card-title"><i class="fas fa-comment-dots" style="color: var(--primary);"></i> Ghi chú phỏng vấn</h4>
+                            </div>
+                            <div class="card-body" style="padding: 16px;">
+                                <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 12px; margin-bottom: 12px; font-size: 12px;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-weight: 600;">
+                                        <span style="color: var(--primary);">Anh Tuấn (Tech Lead)</span>
+                                        <span style="color: var(--text-muted);">26/10 10:45</span>
+                                    </div>
+                                    <p style="color: var(--text-secondary);" th:text="${candidate.notes()}">Ghi chú của phỏng vấn viên...</p>
+                                </div>
+
+                                <form onsubmit="handleAddNote(event)">
+                                    <div class="form-group" style="margin-bottom: 8px;">
+                                        <label class="form-label">Thêm nhận xét mới:</label>
+                                        <textarea id="noteInput" class="form-control" rows="3" placeholder="Nhập đánh giá của bạn..."></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-sm" style="width: 100%;">
+                                        <i class="fas fa-paper-plane"></i> Gửi đánh giá
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL SCHEDULE INTERVIEW -->
+    <div id="scheduleModal" class="modal-overlay">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-calendar-alt" style="color: var(--primary); margin-right: 8px;"></i> Lên Lịch Phỏng Vấn Ứng Viên</h3>
+                <button class="close-btn" onclick="closeScheduleModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="handleSaveSchedule(event)">
+                    <div class="form-group">
+                        <label class="form-label">Ứng viên</label>
+                        <input type="text" class="form-control" th:value="${candidate.fullName()} + ' - ' + ${candidate.appliedJobTitle()}" readonly>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                        <div class="form-group">
+                            <label class="form-label">Vòng phỏng vấn</label>
+                            <select class="form-control">
+                                <option>Phỏng vấn Kỹ thuật (Vòng 2)</option>
+                                <option>Phỏng vấn HR & Văn hóa (Vòng 3)</option>
+                                <option>Đàm phán Lương & Offer</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hình thức</label>
+                            <select class="form-control">
+                                <option>Online qua Google Meet</option>
+                                <option>Trực tiếp tại văn phòng P.302</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                        <div class="form-group">
+                            <label class="form-label">Ngày phỏng vấn</label>
+                            <input type="date" class="form-control" value="2026-10-28">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Giờ bắt đầu</label>
+                            <input type="time" class="form-control" value="14:30">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phỏng vấn viên (Interviewer)</label>
+                        <input type="text" class="form-control" value="Anh Thái Thanh Tuấn (Tech Lead), Chị Mai Linh (HR)">
+                    </div>
+                    <div class="modal-footer" style="padding: 12px 0 0 0; margin-top: 10px;">
+                        <button type="button" class="btn btn-outline" onclick="closeScheduleModal()">Hủy bỏ</button>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Xác nhận và Gửi thư mời</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openScheduleModal() {
+            document.getElementById('scheduleModal').style.display = 'flex';
+        }
+        function closeScheduleModal() {
+            document.getElementById('scheduleModal').style.display = 'none';
+        }
+        function handleSaveSchedule(e) {
+            e.preventDefault();
+            alert('Đã lên lịch phỏng vấn và gửi email thư mời tự động kèm link họp tới ứng viên!');
+            closeScheduleModal();
+        }
+        function handleAddNote(e) {
+            e.preventDefault();
+            const val = document.getElementById('noteInput').value;
+            if (val.trim()) {
+                alert('Đã lưu nhận xét: "' + val + '"');
+                document.getElementById('noteInput').value = '';
+            }
+        }
+    </script>
+</body>
+</html>
+

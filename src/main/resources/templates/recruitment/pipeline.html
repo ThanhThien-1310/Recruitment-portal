@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{recruitment/fragments :: header-assets('Quy Trình Tuyển Dụng ATS')}"></head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div th:replace="~{recruitment/fragments :: sidebar('pipeline')}"></div>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Topbar -->
+            <div th:replace="~{recruitment/fragments :: topbar}"></div>
+
+            <!-- Page Content -->
+            <main class="page-content" style="padding-bottom: 10px;">
+                <div class="pipeline-header">
+                    <div>
+                        <h1 class="page-title"><i class="fas fa-columns" style="color: var(--primary); margin-right: 8px;"></i> Bảng Pipeline Tuyển Dụng (Kanban ATS)</h1>
+                        <p class="page-subtitle">Theo dõi hành trình của ứng viên qua từng vòng tuyển dụng từ nộp hồ sơ đến nhận việc.</p>
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-outline" onclick="exportDataPrompt()"><i class="fas fa-download"></i> Xuất Excel</button>
+                        <button class="btn btn-primary" onclick="openCreateCandidateModal()"><i class="fas fa-user-plus"></i> Thêm ứng viên thủ công</button>
+                    </div>
+                </div>
+
+                <!-- JOB FILTER PILLS -->
+                <div class="job-selector-tabs" style="margin-bottom: 20px;">
+                    <a th:href="@{/recruitment/pipeline}"
+                       th:classappend="${selectedJobId == 0 ? 'active' : ''}"
+                       class="job-tab-pill">
+                        Tất cả vị trí (<span th:text="${candidates.size()}">8</span>)
+                    </a>
+                    <a th:each="job : ${jobs}"
+                       th:href="@{'/recruitment/pipeline?jobId=' + ${job.id()}}"
+                       th:classappend="${selectedJobId == job.id() ? 'active' : ''}"
+                       class="job-tab-pill">
+                        <span th:text="${job.title()}">Vị trí</span>
+                    </a>
+                </div>
+
+                <!-- KANBAN BOARD -->
+                <div class="kanban-board">
+                    <!-- COLUMN 1: NEW -->
+                    <div class="kanban-column">
+                        <div class="kanban-column-header column-new">
+                            <span><i class="fas fa-inbox"></i> 1. Mới ứng tuyển</span>
+                            <span class="stage-badge" th:text="${newCandidates.size()}">1</span>
+                        </div>
+                        <div class="kanban-cards-container" id="col-new">
+                            <div th:each="cand : ${newCandidates}" class="candidate-card" th:attr="data-id=${cand.id()}">
+                                <div class="candidate-card-header">
+                                    <img th:src="${cand.avatarUrl()}" class="card-avatar" alt="Avatar">
+                                    <div>
+                                        <a th:href="@{'/recruitment/candidate/' + ${cand.id()}}" class="card-cand-name" th:text="${cand.fullName()}">Họ tên</a>
+                                        <div class="card-job-title" th:text="${cand.appliedJobTitle()}">Vị trí</div>
+                                    </div>
+                                </div>
+                                <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 4px;">
+                                    <i class="fas fa-briefcase"></i> <span th:text="${cand.experience()}">Kinh nghiệm</span>
+                                </div>
+                                <div class="cand-tags">
+                                    <span th:each="sk : ${cand.skills()}" class="tag-badge" th:text="${sk}">Skill</span>
+                                </div>
+                                <div class="card-footer">
+                                    <span class="source-badge source-topcv" th:text="${cand.source()}">TopCV</span>
+                                    <button class="btn btn-outline btn-sm" onclick="moveStageDemo(this, 'col-screen', 'Sơ loại CV')">Chuyển sơ loại &rarr;</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COLUMN 2: SCREENING -->
+                    <div class="kanban-column">
+                        <div class="kanban-column-header column-screen">
+                            <span><i class="fas fa-filter"></i> 2. Sơ loại CV</span>
+                            <span class="stage-badge" th:text="${screeningCandidates.size()}">1</span>
+                        </div>
+                        <div class="kanban-cards-container" id="col-screen">
+                            <div th:each="cand : ${screeningCandidates}" class="candidate-card" th:attr="data-id=${cand.id()}">
+                                <div class="candidate-card-header">
+                                    <img th:src="${cand.avatarUrl()}" class="card-avatar" alt="Avatar">
+                                    <div>
+                                        <a th:href="@{'/recruitment/candidate/' + ${cand.id()}}" class="card-cand-name" th:text="${cand.fullName()}">Họ tên</a>
+                                        <div class="card-job-title" th:text="${cand.appliedJobTitle()}">Vị trí</div>
+                                    </div>
+                                </div>
+                                <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 4px;">
+                                    <i class="fas fa-graduation-cap"></i> <span th:text="${cand.education()}">Học vấn</span>
+                                </div>
+                                <div class="cand-tags">
+                                    <span th:each="sk : ${cand.skills()}" class="tag-badge" th:text="${sk}">Skill</span>
+                                </div>
+                                <div class="card-footer">
+                                    <span class="source-badge source-linkedin" th:text="${cand.source()}">LinkedIn</span>
+                                    <button class="btn btn-outline btn-sm" onclick="moveStageDemo(this, 'col-tech', 'PV Kỹ thuật')">PV Kỹ thuật &rarr;</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COLUMN 3: TECH INTERVIEW -->
+                    <div class="kanban-column">
+                        <div class="kanban-column-header column-tech">
+                            <span><i class="fas fa-laptop-code"></i> 3. PV Kỹ thuật</span>
+                            <span class="stage-badge" th:text="${techCandidates.size()}">2</span>
+                        </div>
+                        <div class="kanban-cards-container" id="col-tech">
+                            <div th:each="cand : ${techCandidates}" class="candidate-card" th:attr="data-id=${cand.id()}">
+                                <div class="candidate-card-header">
+                                    <img th:src="${cand.avatarUrl()}" class="card-avatar" alt="Avatar">
+                                    <div>
+                                        <a th:href="@{'/recruitment/candidate/' + ${cand.id()}}" class="card-cand-name" th:text="${cand.fullName()}">Họ tên</a>
+                                        <div class="card-job-title" th:text="${cand.appliedJobTitle()}">Vị trí</div>
+                                    </div>
+                                </div>
+                                <div style="font-size: 11px; color: #b45309; background: #fef3c7; padding: 4px 6px; border-radius: 4px; margin-bottom: 6px;">
+                                    <i class="fas fa-clock"></i> <span th:text="${cand.interviewTime()}">Lịch phỏng vấn</span>
+                                </div>
+                                <div class="cand-tags">
+                                    <span th:each="sk : ${cand.skills()}" class="tag-badge" th:text="${sk}">Skill</span>
+                                </div>
+                                <div class="card-footer">
+                                    <span style="color: #f59e0b; font-weight: 600;">⭐ <span th:text="${cand.rating()}">4.8</span></span>
+                                    <button class="btn btn-outline btn-sm" onclick="moveStageDemo(this, 'col-hr', 'PV HR')">PV HR &rarr;</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COLUMN 4: HR INTERVIEW -->
+                    <div class="kanban-column">
+                        <div class="kanban-column-header column-hr">
+                            <span><i class="fas fa-comments"></i> 4. PV HR / Văn hóa</span>
+                            <span class="stage-badge" th:text="${hrCandidates.size()}">1</span>
+                        </div>
+                        <div class="kanban-cards-container" id="col-hr">
+                            <div th:each="cand : ${hrCandidates}" class="candidate-card" th:attr="data-id=${cand.id()}">
+                                <div class="candidate-card-header">
+                                    <img th:src="${cand.avatarUrl()}" class="card-avatar" alt="Avatar">
+                                    <div>
+                                        <a th:href="@{'/recruitment/candidate/' + ${cand.id()}}" class="card-cand-name" th:text="${cand.fullName()}">Họ tên</a>
+                                        <div class="card-job-title" th:text="${cand.appliedJobTitle()}">Vị trí</div>
+                                    </div>
+                                </div>
+                                <div class="cand-tags">
+                                    <span th:each="sk : ${cand.skills()}" class="tag-badge" th:text="${sk}">Skill</span>
+                                </div>
+                                <div class="card-footer">
+                                    <span style="color: #f59e0b; font-weight: 600;">⭐ <span th:text="${cand.rating()}">4.7</span></span>
+                                    <button class="btn btn-outline btn-sm" onclick="moveStageDemo(this, 'col-offer', 'Đề nghị việc')">Gửi Offer &rarr;</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COLUMN 5: OFFER -->
+                    <div class="kanban-column">
+                        <div class="kanban-column-header column-offer">
+                            <span><i class="fas fa-gift"></i> 5. Đề nghị việc (Offer)</span>
+                            <span class="stage-badge" th:text="${offerCandidates.size()}">1</span>
+                        </div>
+                        <div class="kanban-cards-container" id="col-offer">
+                            <div th:each="cand : ${offerCandidates}" class="candidate-card" th:attr="data-id=${cand.id()}">
+                                <div class="candidate-card-header">
+                                    <img th:src="${cand.avatarUrl()}" class="card-avatar" alt="Avatar">
+                                    <div>
+                                        <a th:href="@{'/recruitment/candidate/' + ${cand.id()}}" class="card-cand-name" th:text="${cand.fullName()}">Họ tên</a>
+                                        <div class="card-job-title" th:text="${cand.appliedJobTitle()}">Vị trí</div>
+                                    </div>
+                                </div>
+                                <div style="font-size: 11px; color: #047857; background: #d1fae5; padding: 4px 6px; border-radius: 4px; margin-bottom: 6px;">
+                                    <i class="fas fa-file-signature"></i> Đang chờ phản hồi Offer
+                                </div>
+                                <div class="card-footer">
+                                    <span class="source-badge source-referral" th:text="${cand.source()}">Nội bộ</span>
+                                    <button class="btn btn-outline btn-sm" onclick="moveStageDemo(this, 'col-hired', 'Đã nhận việc')">Nhận việc &rarr;</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COLUMN 6: HIRED -->
+                    <div class="kanban-column">
+                        <div class="kanban-column-header column-hired">
+                            <span><i class="fas fa-check-double"></i> 6. Đã tuyển (Hired)</span>
+                            <span class="stage-badge" th:text="${hiredCandidates.size()}">1</span>
+                        </div>
+                        <div class="kanban-cards-container" id="col-hired">
+                            <div th:each="cand : ${hiredCandidates}" class="candidate-card" th:attr="data-id=${cand.id()}">
+                                <div class="candidate-card-header">
+                                    <img th:src="${cand.avatarUrl()}" class="card-avatar" alt="Avatar">
+                                    <div>
+                                        <a th:href="@{'/recruitment/candidate/' + ${cand.id()}}" class="card-cand-name" th:text="${cand.fullName()}">Họ tên</a>
+                                        <div class="card-job-title" th:text="${cand.appliedJobTitle()}">Vị trí</div>
+                                    </div>
+                                </div>
+                                <div style="font-size: 11px; color: #047857;">
+                                    <i class="fas fa-check-circle"></i> Onboarding 01/11/2026
+                                </div>
+                                <div class="card-footer">
+                                    <span class="badge badge-success">Thành công</span>
+                                    <a th:href="@{'/recruitment/candidate/' + ${cand.id()}}" class="btn btn-outline btn-sm">Xem hồ sơ</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COLUMN 7: REJECTED -->
+                    <div class="kanban-column">
+                        <div class="kanban-column-header column-rejected">
+                            <span><i class="fas fa-times-circle"></i> Loại / Từ chối</span>
+                            <span class="stage-badge" th:text="${rejectedCandidates.size()}">1</span>
+                        </div>
+                        <div class="kanban-cards-container" id="col-rejected">
+                            <div th:each="cand : ${rejectedCandidates}" class="candidate-card" th:attr="data-id=${cand.id()}">
+                                <div class="candidate-card-header">
+                                    <img th:src="${cand.avatarUrl()}" class="card-avatar" alt="Avatar">
+                                    <div>
+                                        <a th:href="@{'/recruitment/candidate/' + ${cand.id()}}" class="card-cand-name" th:text="${cand.fullName()}">Họ tên</a>
+                                        <div class="card-job-title" th:text="${cand.appliedJobTitle()}">Vị trí</div>
+                                    </div>
+                                </div>
+                                <div style="font-size: 11px; color: var(--danger);">
+                                    <i class="fas fa-info-circle"></i> Chưa đạt tiêu chí kỹ thuật
+                                </div>
+                                <div class="card-footer">
+                                    <span class="badge badge-danger">Không phù hợp</span>
+                                    <a th:href="@{'/recruitment/candidate/' + ${cand.id()}}" class="btn btn-outline btn-sm">Lưu Talent Pool</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL THÊM ỨNG VIÊN -->
+    <div id="createCandModal" class="modal-overlay">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-user-plus" style="color: var(--primary); margin-right: 8px;"></i> Thêm Ứng Viên Mới</h3>
+                <button class="close-btn" onclick="closeCreateCandidateModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="candForm" onsubmit="handleSaveCandidate(event)">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                        <div class="form-group">
+                            <label class="form-label">Họ và tên *</label>
+                            <input type="text" class="form-control" placeholder="Nguyễn Văn A" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email *</label>
+                            <input type="email" class="form-control" placeholder="a.nguyen@example.com" required>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                        <div class="form-group">
+                            <label class="form-label">Số điện thoại *</label>
+                            <input type="text" class="form-control" placeholder="0912 345 678" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Vị trí ứng tuyển *</label>
+                            <select class="form-control">
+                                <option th:each="j : ${jobs}" th:text="${j.title()}">Vị trí</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                        <div class="form-group">
+                            <label class="form-label">Nguồn ứng viên</label>
+                            <select class="form-control">
+                                <option>TopCV</option>
+                                <option>LinkedIn</option>
+                                <option>ITviec</option>
+                                <option>Nội bộ giới thiệu</option>
+                                <option>Website Careers</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">File CV (PDF / Word)</label>
+                            <input type="file" class="form-control" accept=".pdf,.doc,.docx">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ghi chú ban đầu của HR</label>
+                        <textarea class="form-control" rows="2" placeholder="Ấn tượng hồ sơ, mức lương mong muốn..."></textarea>
+                    </div>
+                    <div class="modal-footer" style="padding: 12px 0 0 0; margin-top: 10px;">
+                        <button type="button" class="btn btn-outline" onclick="closeCreateCandidateModal()">Hủy bỏ</button>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Thêm vào Pipeline</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openCreateCandidateModal() {
+            document.getElementById('createCandModal').style.display = 'flex';
+        }
+        function closeCreateCandidateModal() {
+            document.getElementById('createCandModal').style.display = 'none';
+        }
+        function handleSaveCandidate(e) {
+            e.preventDefault();
+            alert('Đã thêm ứng viên vào giai đoạn "1. Mới ứng tuyển" thành công!');
+            closeCreateCandidateModal();
+        }
+        function moveStageDemo(button, targetColId, stageName) {
+            const card = button.closest('.candidate-card');
+            const targetCol = document.getElementById(targetColId);
+            if (card && targetCol) {
+                targetCol.appendChild(card);
+                alert('Đã chuyển ứng viên sang vòng: ' + stageName + '!');
+            }
+        }
+        function exportDataPrompt() {
+            alert('Hệ thống đang chuẩn bị tệp Excel báo cáo Pipeline tuyển dụng...');
+        }
+    </script>
+</body>
+</html>
+

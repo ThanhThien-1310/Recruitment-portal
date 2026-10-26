@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{recruitment/fragments :: header-assets('Lịch Phỏng Vấn')}"></head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div th:replace="~{recruitment/fragments :: sidebar('interviews')}"></div>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Topbar -->
+            <div th:replace="~{recruitment/fragments :: topbar}"></div>
+
+            <!-- Page Content -->
+            <main class="page-content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title"><i class="fas fa-calendar-check" style="color: var(--primary); margin-right: 8px;"></i> Lịch Phỏng Vấn & Đánh Giá</h1>
+                        <p class="page-subtitle">Quản lý các buổi phỏng vấn theo lịch trình, phân công người phỏng vấn và gửi link họp.</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" onclick="alert('Tính năng đồng bộ Google Calendar / Microsoft Teams đang hoạt động!')">
+                            <i class="fas fa-sync-alt"></i> Đồng bộ Google Calendar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- WEEKLY / LIST TABS -->
+                <div class="card" style="margin-bottom: 24px;">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 class="card-title"><i class="fas fa-list-ul"></i> Danh Sách Buổi Phỏng Vấn Sắp Diễn Ra</h3>
+                        <span class="badge badge-primary">Tuần 43 (26/10 - 01/11/2026)</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Thời gian</th>
+                                    <th>Ứng viên</th>
+                                    <th>Vị trí tuyển dụng</th>
+                                    <th>Vòng phỏng vấn</th>
+                                    <th>Hình thức / Địa điểm</th>
+                                    <th>Phỏng vấn viên (Interviewer)</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="inv : ${interviews}">
+                                    <td>
+                                        <div style="font-weight: 700; color: var(--primary);" th:text="${inv.date()}">26/10/2026</div>
+                                        <div style="font-size: 12px; color: var(--text-muted);"><i class="fas fa-clock"></i> <span th:text="${inv.time()}">09:30</span></div>
+                                    </td>
+                                    <td>
+                                        <strong th:text="${inv.candidateName()}">Tên ứng viên</strong>
+                                    </td>
+                                    <td th:text="${inv.jobTitle()}">Vị trí</td>
+                                    <td>
+                                        <span class="badge badge-info" th:text="${inv.round()}">Phỏng vấn Kỹ thuật</span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${#strings.contains(inv.format(), 'Online')}" style="color: #2563eb; font-weight: 500;">
+                                            <i class="fas fa-video"></i> <span th:text="${inv.format()}">Online</span>
+                                        </span>
+                                        <span th:unless="${#strings.contains(inv.format(), 'Online')}" style="color: #059669; font-weight: 500;">
+                                            <i class="fas fa-building"></i> <span th:text="${inv.format()}">Trực tiếp</span>
+                                        </span>
+                                    </td>
+                                    <td style="font-size: 12px; color: var(--text-secondary);" th:text="${inv.interviewer()}">Người PV</td>
+                                    <td>
+                                        <span class="badge badge-warning" th:text="${inv.status()}">Sắp diễn ra</span>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                            <button th:if="${#strings.contains(inv.format(), 'Online')}" class="btn btn-primary btn-sm" onclick="alert('Đang mở phòng họp Google Meet: ' + this.getAttribute('data-meet'))" th:attr="data-meet=${inv.meetingLink()}">
+                                                <i class="fas fa-video"></i> Vào họp
+                                            </button>
+                                            <button class="btn btn-outline btn-sm" onclick="alert('Mở phiếu chấm điểm phỏng vấn (Scorecard 4 tiêu chí: Kỹ thuật, Tư duy, Giao tiếp, Văn hóa)...')">
+                                                <i class="fas fa-pen-alt"></i> Scorecard
+                                            </button>
+                                            <!-- 1-CLICK TRẢ KẾT QUẢ PHỎNG VẤN (RULE BR-18 & FR-IV-11) -->
+                                            <button class="btn btn-sm btn-outline" style="color: #059669; border-color: #a7f3d0; background: #ecfdf5; font-weight: 700;" th:attr="onclick='handlePassInterview(this, \'' + ${inv.candidateName()} + '\')'" title="Trả kết quả Đạt 1-click">
+                                                <i class="fas fa-check"></i> Pass
+                                            </button>
+                                            <button class="btn btn-sm btn-outline" style="color: #dc2626; border-color: #fecaca; background: #fef2f2; font-weight: 700;" th:attr="onclick='handleDenyInterview(this, \'' + ${inv.candidateName()} + '\')'" title="Trả kết quả Từ chối 1-click">
+                                                <i class="fas fa-times"></i> Deny
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- QUICK INTERVIEW TIPS / WORKFLOW GUIDE -->
+                <div class="card" style="background: linear-gradient(to right, #eff6ff, #f8fafc); border-color: #bfdbfe;">
+                    <div class="card-body" style="display: flex; align-items: center; justify-content: space-between; gap: 20px;">
+                        <div>
+                            <h4 style="color: #1e40af; font-size: 15px; font-weight: 700; margin-bottom: 4px;">
+                                <i class="fas fa-mobile-alt"></i> Kết nối Đồ án Flutter Mobile App
+                            </h4>
+                            <p style="font-size: 13px; color: #3b82f6;">
+                                Các buổi phỏng vấn này được đồng bộ tức thời qua REST API <code>/recruitment/api/interviews</code> cho ứng dụng Flutter trên điện thoại của Phỏng vấn viên để nhận thông báo và chấm điểm online ngay tại phòng họp.
+                            </p>
+                        </div>
+                        <a th:href="@{/recruitment/requirements}" class="btn btn-primary btn-sm" style="white-space: nowrap;">
+                            Xem tài liệu API
+                        </a>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        function handlePassInterview(btn, name) {
+            if (confirm('Xác nhận ĐẠT (Pass) cho ứng viên ' + name + '?\n\nHệ thống sẽ tự động:\n1. Gửi email chúc mừng (INTERVIEW_PASSED).\n2. Chuyển hồ sơ sang vòng tiếp theo trong Pipeline Kanban.\n3. Đồng bộ trạng thái "Đạt vòng phỏng vấn" trên Cổng tra cứu ứng viên (/careers/track).')) {
+                btn.parentElement.innerHTML = '<span class="badge badge-success"><i class="fas fa-check"></i> Đã Pass (Email sent)</span>';
+            }
+        }
+
+        function handleDenyInterview(btn, name) {
+            const reason = prompt('Chọn/Nhập lý do từ chối ứng viên ' + name + ':\n1. Chưa đủ kinh nghiệm thực tế\n2. Kiến thức kỹ thuật chuyên môn chưa đạt\n3. Mức lương kỳ vọng vượt khung', 'Kiến thức kỹ thuật chuyên môn chưa đạt');
+            if (reason) {
+                alert('Đã từ chối ứng viên ' + name + ' với lý do: ' + reason + '.\nHệ thống đã tự động gửi email cảm ơn & từ chối (INTERVIEW_DENIED) và chuyển hồ sơ sang cột Từ chối.');
+                btn.parentElement.innerHTML = '<span class="badge badge-danger"><i class="fas fa-times"></i> Đã từ chối</span>';
+            }
+        }
+    </script>
+</body>
+</html>
+

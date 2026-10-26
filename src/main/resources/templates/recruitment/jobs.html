@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{recruitment/fragments :: header-assets('Quản Lý Tin Tuyển Dụng')}"></head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div th:replace="~{recruitment/fragments :: sidebar('jobs')}"></div>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Topbar -->
+            <div th:replace="~{recruitment/fragments :: topbar}"></div>
+
+            <!-- Page Content -->
+            <main class="page-content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title"><i class="fas fa-briefcase" style="color: var(--primary); margin-right: 8px;"></i> Quản Lý Tin Tuyển Dụng</h1>
+                        <p class="page-subtitle">Danh sách các vị trí việc làm đang mở tuyển, tạm dừng hoặc đã tuyển xong.</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" onclick="openCreateJobModal()">
+                            <i class="fas fa-plus"></i> Tạo tin tuyển dụng mới
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SEARCH & FILTER BAR -->
+                <div style="background: white; padding: 14px 20px; border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; gap: 16px; margin-bottom: 20px; align-items: center; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 250px;">
+                        <input type="text" class="form-control" placeholder="Tìm theo tên vị trí, phòng ban...">
+                    </div>
+                    <div style="width: 200px;">
+                        <select class="form-control">
+                            <option value="">-- Tất cả phòng ban --</option>
+                            <option>Phòng Kỹ thuật & Công nghệ</option>
+                            <option>Phòng Sản phẩm & Thiết kế</option>
+                            <option>Phòng Nhân sự</option>
+                        </select>
+                    </div>
+                    <div style="width: 160px;">
+                        <select class="form-control">
+                            <option value="">-- Trạng thái --</option>
+                            <option>Đang tuyển</option>
+                            <option>Tạm dừng</option>
+                            <option>Đã đóng</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-outline"><i class="fas fa-filter"></i> Lọc dữ liệu</button>
+                </div>
+
+                <!-- JOBS LIST CARDS -->
+                <div style="display: flex; flex-direction: column; gap: 16px;">
+                    <div th:each="job : ${jobs}" class="card" style="transition: box-shadow 0.2s;">
+                        <div class="card-body" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                            <div style="flex: 1; min-width: 280px;">
+                                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+                                    <h3 style="font-size: 16px; font-weight: 700; color: var(--primary);" th:text="${job.title()}">Tên vị trí</h3>
+                                    <span class="badge badge-success" th:text="${job.status()}">Đang tuyển</span>
+                                    <span class="badge badge-info" th:text="${job.type()}">Toàn thời gian</span>
+                                </div>
+                                <div style="font-size: 13px; color: var(--text-secondary); display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 10px;">
+                                    <span><i class="fas fa-building" style="color: var(--text-muted);"></i> <span th:text="${job.department()}">Phòng ban</span></span>
+                                    <span><i class="fas fa-map-marker-alt" style="color: var(--text-muted);"></i> <span th:text="${job.location()}">Địa điểm</span></span>
+                                    <span><i class="fas fa-money-bill-wave" style="color: #10b981;"></i> <strong th:text="${job.salary()}">25 - 35M</strong></span>
+                                    <span><i class="fas fa-user-friends" style="color: var(--text-muted);"></i> Cần tuyển: <strong th:text="${job.quantity()}">2</strong></span>
+                                    <span><i class="fas fa-calendar-times" style="color: #ef4444;"></i> Hạn nộp: <span th:text="${job.deadline()}">15/11/2026</span></span>
+                                </div>
+                                <p style="font-size: 13px; color: var(--text-muted); line-height: 1.4;" th:text="${job.description()}">Mô tả công việc...</p>
+                            </div>
+
+                            <div style="display: flex; align-items: center; gap: 20px; border-left: 1px solid var(--border-color); padding-left: 20px;">
+                                <div style="text-align: center;">
+                                    <div style="font-size: 24px; font-weight: 700; color: var(--primary);" th:text="${job.applicantCount()}">28</div>
+                                    <div style="font-size: 11px; color: var(--text-muted);">Hồ sơ ứng tuyển</div>
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 8px;">
+                                    <a th:href="@{'/recruitment/pipeline?jobId=' + ${job.id()}}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-columns"></i> Xem Pipeline ATS
+                                    </a>
+                                    <a th:href="@{'/careers/job/' + ${job.id()}}" target="_blank" class="btn btn-outline btn-sm">
+                                        <i class="fas fa-external-link-alt"></i> Xem Trang Career
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL CREATE JOB -->
+    <div id="createJobModal" class="modal-overlay">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-plus-circle" style="color: var(--primary); margin-right: 8px;"></i> Tạo Vị Trí Tuyển Dụng Mới</h3>
+                <button class="close-btn" onclick="closeCreateJobModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="jobForm" onsubmit="handleSaveJob(event)">
+                    <div class="form-group">
+                        <label class="form-label">Tên vị trí công việc *</label>
+                        <input type="text" class="form-control" placeholder="VD: Senior Golang Developer" required>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                        <div class="form-group">
+                            <label class="form-label">Phòng ban</label>
+                            <select class="form-control">
+                                <option>Phòng Kỹ thuật & Công nghệ</option>
+                                <option>Phòng Sản phẩm & Thiết kế</option>
+                                <option>Phòng Nhân sự</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hình thức</label>
+                            <select class="form-control">
+                                <option>Toàn thời gian</option>
+                                <option>Bán thời gian</option>
+                                <option>Thực tập sinh</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                        <div class="form-group">
+                            <label class="form-label">Mức lương (VNĐ)</label>
+                            <input type="text" class="form-control" placeholder="VD: 20 - 30 Triệu">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Số lượng tuyển</label>
+                            <input type="number" class="form-control" value="1" min="1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mô tả tóm tắt</label>
+                        <textarea class="form-control" rows="3" placeholder="Các nhiệm vụ trọng tâm..."></textarea>
+                    </div>
+                    <div class="modal-footer" style="padding: 12px 0 0 0; margin-top: 10px;">
+                        <button type="button" class="btn btn-outline" onclick="closeCreateJobModal()">Đóng</button>
+                        <button type="submit" class="btn btn-primary">Xác nhận tạo tin</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openCreateJobModal() {
+            document.getElementById('createJobModal').style.display = 'flex';
+        }
+        function closeCreateJobModal() {
+            document.getElementById('createJobModal').style.display = 'none';
+        }
+        function handleSaveJob(e) {
+            e.preventDefault();
+            alert('Đã tạo tin tuyển dụng mới thành công!');
+            closeCreateJobModal();
+        }
+    </script>
+</body>
+</html>
+

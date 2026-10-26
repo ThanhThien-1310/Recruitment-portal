@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{recruitment/fragments :: header-assets('Yêu Cầu Tuyển Dụng (Requisitions)')}"></head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div th:replace="~{recruitment/fragments :: sidebar('requisitions')}"></div>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Topbar -->
+            <div th:replace="~{recruitment/fragments :: topbar}"></div>
+
+            <!-- Page Content -->
+            <main class="page-content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title"><i class="fas fa-file-invoice" style="color: var(--primary); margin-right: 8px;"></i> Yêu Cầu Tuyển Dụng (Requisitions)</h1>
+                        <p class="page-subtitle">Quản lý nhu cầu nhân sự nội bộ các phòng ban, theo dõi chỉ tiêu headcount và quy trình phê duyệt phân cấp.</p>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary" onclick="openCreateRequisitionModal()">
+                            <i class="fas fa-plus"></i> Tạo yêu cầu mới (Wizard 3 bước)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TABS TRẠNG THÁI (STATUS TABS) -->
+                <div class="job-selector-tabs" style="margin-bottom: 20px;">
+                    <a href="javascript:void(0)" class="job-tab-pill active">Tất cả (<span th:text="${requisitions.size()}">5</span>)</a>
+                    <a href="javascript:void(0)" class="job-tab-pill">Đang tuyển (4)</a>
+                    <a href="javascript:void(0)" class="job-tab-pill">Chờ sếp duyệt (0)</a>
+                    <a href="javascript:void(0)" class="job-tab-pill">Đã tuyển đủ (1)</a>
+                    <a href="javascript:void(0)" class="job-tab-pill">Bản nháp (0)</a>
+                </div>
+
+                <!-- FILTER TOOLBAR -->
+                <div style="background: white; padding: 14px 20px; border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; gap: 14px; margin-bottom: 20px; align-items: center; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 220px;">
+                        <input type="text" class="form-control" placeholder="Tìm theo mã RQ, tên vị trí, người phụ trách...">
+                    </div>
+                    <div style="width: 200px;">
+                        <select class="form-control">
+                            <option value="">-- Tất cả phòng ban --</option>
+                            <option>Phòng Kỹ thuật & Công nghệ</option>
+                            <option>Phòng Sản phẩm & Thiết kế</option>
+                            <option>Phòng Nhân sự</option>
+                        </select>
+                    </div>
+                    <div style="width: 160px;">
+                        <select class="form-control">
+                            <option value="">-- Mức ưu tiên --</option>
+                            <option>Cao</option>
+                            <option>Trung bình</option>
+                            <option>Thấp</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-outline"><i class="fas fa-search"></i> Lọc dữ liệu</button>
+                </div>
+
+                <!-- REQUISITIONS TABLE -->
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Mã Yêu Cầu</th>
+                                    <th>Vị Trí & Phòng Ban</th>
+                                    <th>Tiến Độ Headcount</th>
+                                    <th>Ưu Tiên</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Người Phụ Trách</th>
+                                    <th>Hạn Chót</th>
+                                    <th>Khung Lương</th>
+                                    <th>Hành Động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="rq : ${requisitions}">
+                                    <td>
+                                        <code style="font-weight: 800; color: var(--primary);" th:text="${rq.code()}">RQ-2026-001</code>
+                                    </td>
+                                    <td>
+                                        <strong th:text="${rq.title()}">Senior Java Backend Engineer</strong>
+                                        <div style="font-size: 12px; color: var(--text-muted);"><i class="fas fa-building"></i> <span th:text="${rq.department()}">IT & CN</span></div>
+                                    </td>
+                                    <td style="min-width: 140px;">
+                                        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                                            <span>Đã tuyển:</span>
+                                            <strong th:text="${rq.progressText()}">0 / 2</strong>
+                                        </div>
+                                        <div style="background: #e2e8f0; height: 6px; border-radius: 4px; overflow: hidden;">
+                                            <div style="background: var(--primary); height: 100%; border-radius: 4px;" th:style="'width: ' + ${rq.progressPercent()} + '%;'"></div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge" th:classappend="${rq.priorityBadgeClass()}" th:text="${rq.priority()}">Cao</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge" th:classappend="${rq.statusBadgeClass()}" th:text="${rq.status()}">Đang tuyển</span>
+                                    </td>
+                                    <td style="font-size: 13px;">
+                                        <i class="fas fa-user-circle" style="color: var(--primary);"></i>
+                                        <span th:text="${rq.recruiter()}">Lan (Recruiter)</span>
+                                    </td>
+                                    <td style="font-size: 12px; color: var(--text-secondary);" th:text="${rq.deadline()}">15/11/2026</td>
+                                    <td style="font-weight: 600; color: #10b981;" th:text="${rq.salaryRange()}">25 - 35 Triệu</td>
+                                    <td>
+                                        <div style="display: flex; gap: 6px;">
+                                            <a th:href="@{/recruitment/jobs}" class="btn btn-outline btn-sm" title="Xem tin đăng liên kết">
+                                                <i class="fas fa-bullhorn"></i> Tin tuyển
+                                            </a>
+                                            <button class="btn btn-outline btn-sm" onclick="alert('Nhân bản yêu cầu tuyển dụng (Clone Requisition) thành công!')" title="Nhân bản">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- MODAL TẠO YÊU CẦU TUYỂN DỤNG WIZARD 3 BƯỚC -->
+                <div id="createRequisitionModal" class="modal-overlay" style="display: none;">
+                    <div class="modal" style="max-width: 720px; padding: 28px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 14px; margin-bottom: 20px;">
+                            <h3 style="font-size: 18px; font-weight: 800; margin: 0; color: var(--primary);">
+                                <i class="fas fa-magic"></i> Tạo Yêu Cầu Tuyển Dụng (Requisition Wizard 3 Bước)
+                            </h3>
+                            <button onclick="closeCreateRequisitionModal()" style="border: none; background: none; font-size: 20px; cursor: pointer;">&times;</button>
+                        </div>
+
+                        <!-- STEPPER HEADER -->
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 24px; text-align: center;">
+                            <div style="flex: 1; border-bottom: 3px solid var(--primary); padding-bottom: 8px; font-weight: 700; color: var(--primary); font-size: 13px;">
+                                Bước 1: Thông tin vị trí & Chỉ tiêu
+                            </div>
+                            <div style="flex: 1; border-bottom: 3px solid #e2e8f0; padding-bottom: 8px; font-weight: 600; color: var(--text-muted); font-size: 13px;">
+                                Bước 2: Mô tả & Tiêu chuẩn
+                            </div>
+                            <div style="flex: 1; border-bottom: 3px solid #e2e8f0; padding-bottom: 8px; font-weight: 600; color: var(--text-muted); font-size: 13px;">
+                                Bước 3: Luồng phê duyệt
+                            </div>
+                        </div>
+
+                        <!-- FORM FIELDS BƯỚC 1 -->
+                        <form onsubmit="handleSaveRequisition(event)">
+                            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 14px;">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="form-label">Tên vị trí tuyển dụng *</label>
+                                    <input type="text" class="form-control" placeholder="VD: Senior Golang Developer" required>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="form-label">Phòng ban *</label>
+                                    <select class="form-control">
+                                        <option>Phòng Kỹ thuật & Công nghệ</option>
+                                        <option>Phòng Sản phẩm & Thiết kế</option>
+                                        <option>Phòng Nhân sự</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="form-label">Chỉ tiêu (Headcount) *</label>
+                                    <input type="number" class="form-control" value="2" min="1" required>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="form-label">Mức độ ưu tiên *</label>
+                                    <select class="form-control">
+                                        <option>Cao</option>
+                                        <option>Trung bình</option>
+                                        <option>Thấp</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="form-label">Hình thức làm việc</label>
+                                    <select class="form-control">
+                                        <option>Hybrid</option>
+                                        <option>Onsite văn phòng</option>
+                                        <option>Remote 100%</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="form-label">Lương từ (Gross)</label>
+                                    <input type="text" class="form-control" placeholder="20.000.000 VNĐ">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="form-label">Lương đến (Gross)</label>
+                                    <input type="text" class="form-control" placeholder="32.000.000 VNĐ">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="form-label">Hạn chót tuyển dụng *</label>
+                                    <input type="date" class="form-control" value="2026-11-30" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label class="form-label">Lý do tuyển dụng & Căn cứ phê duyệt *</label>
+                                <textarea class="form-control" rows="2" placeholder="Mở rộng team triển khai dự án mới hoặc thay thế nhân sự..." required></textarea>
+                            </div>
+
+                            <!-- LUỒNG PHÊ DUYỆT (STEP 3 PREVIEW) -->
+                            <div style="background: #f1f5f9; padding: 12px; border-radius: 8px; font-size: 12px; margin-bottom: 20px;">
+                                <i class="fas fa-route" style="color: var(--primary);"></i> <strong>Luồng phê duyệt tự động:</strong> Trưởng bộ phận (Hiring Manager) &rarr; Trưởng phòng Nhân sự (HR Manager) &rarr; Ban Giám đốc (BOD).
+                            </div>
+
+                            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                                <button type="button" class="btn btn-outline" onclick="closeCreateRequisitionModal()">Hủy</button>
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Gửi Phê Duyệt Yêu Cầu</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script>
+        function openCreateRequisitionModal() {
+            document.getElementById('createRequisitionModal').style.display = 'flex';
+        }
+        function closeCreateRequisitionModal() {
+            document.getElementById('createRequisitionModal').style.display = 'none';
+        }
+        function handleSaveRequisition(e) {
+            e.preventDefault();
+            alert('ĐÃ TẠO VÀ GỬI YÊU CẦU TUYỂN DỤNG THÀNH CÔNG!\n\nMã yêu cầu mới: RQ-2026-006\nTrạng thái: Chờ duyệt (Hiring Manager -> HR Manager -> BOD)\nSau khi được duyệt, bạn có thể 1-click xuất bản thành Tin tuyển dụng (Job Posting) lên Career Site!');
+            closeCreateRequisitionModal();
+        }
+    </script>
+</body>
+</html>
+

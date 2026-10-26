@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{recruitment/fragments :: header-assets('Kho Hồ Sơ Ứng Viên')}"></head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div th:replace="~{recruitment/fragments :: sidebar('candidates')}"></div>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Topbar -->
+            <div th:replace="~{recruitment/fragments :: topbar}"></div>
+
+            <!-- Page Content -->
+            <main class="page-content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title"><i class="fas fa-user-tie" style="color: var(--primary); margin-right: 8px;"></i> Kho Hồ Sơ Ứng Viên (Talent Pool)</h1>
+                        <p class="page-subtitle">Quản lý tập trung toàn bộ dữ liệu ứng viên từ các nguồn tuyển dụng khác nhau.</p>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <a th:href="@{/recruitment/pipeline}" class="btn btn-outline"><i class="fas fa-columns"></i> Chuyển sang xem Pipeline Kanban</a>
+                        <button class="btn btn-primary" onclick="alert('Tính năng import CV hàng loạt qua file ZIP hoặc Excel đang sẵn sàng!')">
+                            <i class="fas fa-file-import"></i> Nhập CV hàng loạt
+                        </button>
+                    </div>
+                </div>
+
+                <!-- FILTER TOOLS -->
+                <div style="background: white; padding: 16px 20px; border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; gap: 14px; margin-bottom: 20px; align-items: center; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 220px;">
+                        <input type="text" class="form-control" placeholder="Tìm kiếm ứng viên theo tên, email, sđt, skill...">
+                    </div>
+                    <div style="width: 200px;">
+                        <select class="form-control">
+                            <option value="">-- Tất cả vị trí --</option>
+                            <option th:each="j : ${jobs}" th:text="${j.title()}">Vị trí</option>
+                        </select>
+                    </div>
+                    <div style="width: 170px;">
+                        <select class="form-control">
+                            <option value="">-- Vòng tuyển dụng --</option>
+                            <option>1. Mới ứng tuyển</option>
+                            <option>2. Sơ loại CV</option>
+                            <option>3. Phỏng vấn Kỹ thuật</option>
+                            <option>4. Phỏng vấn HR</option>
+                            <option>5. Gửi Offer</option>
+                            <option>6. Đã nhận việc</option>
+                            <option>Đã loại</option>
+                        </select>
+                    </div>
+                    <div style="width: 150px;">
+                        <select class="form-control">
+                            <option value="">-- Nguồn ứng viên --</option>
+                            <option>TopCV</option>
+                            <option>LinkedIn</option>
+                            <option>ITviec</option>
+                            <option>Nội bộ giới thiệu</option>
+                            <option>Website Careers</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-outline"><i class="fas fa-search"></i> Tìm kiếm</button>
+                </div>
+
+                <!-- CANDIDATES TABLE -->
+                <div class="card">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-weight: 600;">Tổng cộng: <span th:text="${candidates.size()}">8</span> ứng viên</span>
+                        <div style="font-size: 12px; color: var(--text-muted);">Hiển thị trang 1 / 1</div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Ứng viên</th>
+                                    <th>Vị trí ứng tuyển</th>
+                                    <th>Kinh nghiệm & Học vấn</th>
+                                    <th>Kỹ năng nổi bật</th>
+                                    <th>Đánh giá</th>
+                                    <th>Nguồn</th>
+                                    <th>Vòng hiện tại</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="c : ${candidates}">
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 12px;">
+                                            <img th:src="${c.avatarUrl()}" class="card-avatar" alt="Avatar">
+                                            <div>
+                                                <a th:href="@{'/recruitment/candidate/' + ${c.id()}}" style="font-weight: 600; color: var(--primary); text-decoration: none;" th:text="${c.fullName()}">Họ tên</a>
+                                                <div style="font-size: 11px; color: var(--text-secondary);"><i class="fas fa-phone-alt"></i> <span th:text="${c.phone()}">SĐT</span></div>
+                                                <div style="font-size: 11px; color: var(--text-muted);"><i class="fas fa-envelope"></i> <span th:text="${c.email()}">Email</span></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <strong th:text="${c.appliedJobTitle()}">Vị trí</strong>
+                                        <div style="font-size: 11px; color: var(--text-muted);">Nộp ngày: <span th:text="${c.applyDate()}">24/10/2026</span></div>
+                                    </td>
+                                    <td>
+                                        <div style="font-weight: 500;" th:text="${c.experience()}">Kinh nghiệm</div>
+                                        <div style="font-size: 11px; color: var(--text-muted);" th:text="${c.education()}">Trường ĐH</div>
+                                    </td>
+                                    <td>
+                                        <div class="cand-tags">
+                                            <span th:each="sk : ${c.skills()}" class="tag-badge" th:text="${sk}">Java</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span style="color: #f59e0b; font-weight: 600;">⭐ <span th:text="${c.rating()}">4.8</span> / 5</span>
+                                    </td>
+                                    <td>
+                                        <span class="source-badge source-topcv" th:text="${c.source()}">TopCV</span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${c.stage() == 'NEW'}" class="badge badge-info">1. Mới ứng tuyển</span>
+                                        <span th:if="${c.stage() == 'SCREENING'}" class="badge badge-primary">2. Sơ loại CV</span>
+                                        <span th:if="${c.stage() == 'TECH_INTERVIEW'}" class="badge badge-warning">3. PV Kỹ thuật</span>
+                                        <span th:if="${c.stage() == 'HR_INTERVIEW'}" class="badge badge-warning">4. PV HR</span>
+                                        <span th:if="${c.stage() == 'OFFER'}" class="badge badge-success">5. Gửi Offer</span>
+                                        <span th:if="${c.stage() == 'HIRED'}" class="badge badge-success">6. Đã nhận việc</span>
+                                        <span th:if="${c.stage() == 'REJECTED'}" class="badge badge-danger">Đã loại</span>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; gap: 6px;">
+                                            <a th:href="@{'/recruitment/candidate/' + ${c.id()}}" class="btn btn-outline btn-sm" title="Xem chi tiết & Chấm điểm">
+                                                <i class="fas fa-id-card"></i> Chi tiết
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="header-assets(pageTitle)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} + ' | TalentFlow - Portal Tuyển Dụng Nhân Sự'">TalentFlow - Portal Tuyển Dụng Nhân Sự</title>
+    <!-- Google Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/recruitment.css}">
+</head>
+
+<body>
+    <!-- SIDEBAR FRAGMENT -->
+    <aside th:fragment="sidebar(activeItem)" class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon">
+                <i class="fas fa-layer-group"></i>
+            </div>
+            <div>
+                <div class="logo-text">TalentFlow</div>
+                <div class="logo-sub">Hệ Thống Tuyển Dụng ATS</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Tổng quan & Vận hành</div>
+            <a th:href="@{/recruitment/dashboard}" th:classappend="${activeItem == 'dashboard' ? 'active' : ''}" class="nav-item">
+                <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
+                <span>Bảng điều khiển</span>
+            </a>
+            <a th:href="@{/recruitment/requisitions}" th:classappend="${activeItem == 'requisitions' ? 'active' : ''}" class="nav-item">
+                <span class="nav-icon"><i class="fas fa-file-invoice"></i></span>
+                <span>Yêu cầu tuyển dụng</span>
+            </a>
+            <a th:href="@{/recruitment/jobs}" th:classappend="${activeItem == 'jobs' ? 'active' : ''}" class="nav-item">
+                <span class="nav-icon"><i class="fas fa-briefcase"></i></span>
+                <span>Tin tuyển dụng</span>
+            </a>
+            <a th:href="@{/recruitment/pipeline}" th:classappend="${activeItem == 'pipeline' ? 'active' : ''}" class="nav-item">
+                <span class="nav-icon"><i class="fas fa-columns"></i></span>
+                <span>Quy trình Tuyển dụng (ATS)</span>
+            </a>
+            <a th:href="@{/recruitment/candidates}" th:classappend="${activeItem == 'candidates' ? 'active' : ''}" class="nav-item">
+                <span class="nav-icon"><i class="fas fa-user-tie"></i></span>
+                <span>Kho hồ sơ ứng viên</span>
+            </a>
+
+            <div class="nav-section-title">Đánh giá & Tuyển dụng</div>
+            <a th:href="@{/recruitment/assessments}" th:classappend="${activeItem == 'assessments' ? 'active' : ''}" class="nav-item">
+                <span class="nav-icon"><i class="fas fa-vial"></i></span>
+                <span>Bài test & Đánh giá</span>
+            </a>
+            <a th:href="@{/recruitment/interviews}" th:classappend="${activeItem == 'interviews' ? 'active' : ''}" class="nav-item">
+                <span class="nav-icon"><i class="fas fa-calendar-check"></i></span>
+                <span>Lịch phỏng vấn & Scorecard</span>
+            </a>
+            <a th:href="@{/recruitment/offers}" th:classappend="${activeItem == 'offers' ? 'active' : ''}" class="nav-item">
+                <span class="nav-icon"><i class="fas fa-file-signature"></i></span>
+                <span>Offer & Phê duyệt</span>
+            </a>
+            <a th:href="@{/recruitment/onboarding}" th:classappend="${activeItem == 'onboarding' ? 'active' : ''}" class="nav-item">
+                <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
+                <span>Onboarding tiếp nhận</span>
+            </a>
+
+            <div class="nav-section-title">Báo cáo & Quản trị</div>
+            <a th:href="@{/recruitment/reports}" th:classappend="${activeItem == 'reports' ? 'active' : ''}" class="nav-item">
+                <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
+                <span>Báo cáo & Xuất Excel</span>
+            </a>
+            <a th:href="@{/recruitment/settings}" th:classappend="${activeItem == 'settings' ? 'active' : ''}" class="nav-item">
+                <span class="nav-icon"><i class="fas fa-cog"></i></span>
+                <span>Quản trị & Cấu hình</span>
+            </a>
+
+            <div class="nav-section-title">Cổng Ứng Viên & Đồ án</div>
+            <a th:href="@{/careers}" target="_blank" class="nav-item">
+                <span class="nav-icon"><i class="fas fa-globe"></i></span>
+                <span>Trang việc làm (Careers)</span>
+            </a>
+            <a th:href="@{/careers/track}" target="_blank" class="nav-item">
+                <span class="nav-icon"><i class="fas fa-search-location"></i></span>
+                <span>Tra cứu trạng thái hồ sơ</span>
+            </a>
+            <a th:href="@{/recruitment/requirements}" th:classappend="${activeItem == 'requirements' ? 'active' : ''}" class="nav-item">
+                <span class="nav-icon"><i class="fas fa-file-contract"></i></span>
+                <span>Đặc tả SRS & Mobile API</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="avatar" alt="User">
+                <div class="user-info">
+                    <div class="user-name">Minh Hưng (HR Lead)</div>
+                    <div class="user-role">Quản lý tuyển dụng</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- TOPBAR FRAGMENT -->
+    <header th:fragment="topbar" class="topbar">
+        <div class="topbar-search">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" placeholder="Tìm kiếm ứng viên, tin tuyển dụng, kỹ năng...">
+        </div>
+
+        <div class="topbar-actions">
+            <a th:href="@{/careers}" target="_blank" class="btn btn-outline btn-sm">
+                <i class="fas fa-external-link-alt"></i> Cổng Careers
+            </a>
+            <a th:href="@{/recruitment/export-excel}" class="btn btn-outline btn-sm" style="color: #059669; border-color: #a7f3d0;">
+                <i class="fas fa-file-excel"></i> Xuất Excel
+            </a>
+            <button class="btn btn-primary btn-sm" onclick="openCreateJobModal()">
+                <i class="fas fa-plus"></i> Đăng tin mới
+            </button>
+        </div>
+    </header>
+</body>
+</html>

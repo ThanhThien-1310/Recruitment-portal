@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tra Cứu Hồ Sơ Tuyển Dụng | TechCorp Careers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/recruitment.css}">
+    <style>
+        .track-hero {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: white;
+            padding: 50px 20px 40px;
+            text-align: center;
+        }
+        .track-hero h1 { font-size: 32px; font-weight: 800; margin-bottom: 12px; }
+        .track-hero p { font-size: 15px; opacity: 0.9; max-width: 600px; margin: auto; }
+        
+        .career-nav {
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .search-box-track {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 8px 12px;
+            box-shadow: var(--shadow-lg);
+            max-width: 680px;
+            margin: -28px auto 40px;
+            display: flex;
+            gap: 10px;
+            border: 2px solid #e2e8f0;
+        }
+        .search-box-track input {
+            border: none;
+            outline: none;
+            font-size: 15px;
+            padding: 12px 16px;
+            flex: 1;
+        }
+
+        /* Stepper */
+        .stepper-container {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin: 40px 0 20px;
+        }
+        .stepper-container::before {
+            content: '';
+            position: absolute;
+            top: 24px;
+            left: 40px;
+            right: 40px;
+            height: 4px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+        .stepper-step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+        .step-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+        .stepper-step.completed .step-circle {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+        .stepper-step.active .step-circle {
+            background: var(--primary);
+            border-color: #93c5fd;
+            color: white;
+            box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.2);
+            animation: pulse-ring 2s infinite;
+        }
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+        }
+        .step-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        .step-date {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .action-banner {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border: 1px solid #bfdbfe;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body style="background-color: #f8fafc; color: var(--text-primary);">
+
+    <!-- NAVBAR -->
+    <nav class="career-nav">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 36px; height: 36px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white;">
+                <i class="fas fa-layer-group"></i>
+            </div>
+            <div>
+                <span style="font-weight: 800; font-size: 18px; color: var(--primary);">TechCorp</span>
+                <span style="font-weight: 600; font-size: 14px; color: var(--text-secondary); margin-left: 4px;">Careers</span>
+            </div>
+        </div>
+        <div style="display: flex; gap: 24px; align-items: center;">
+            <a th:href="@{/careers}" style="text-decoration: none; color: var(--text-secondary); font-weight: 600;">
+                <i class="fas fa-briefcase"></i> Tất Cả Việc Làm
+            </a>
+            <a th:href="@{/careers/track}" style="text-decoration: none; color: var(--primary); font-weight: 700;">
+                <i class="fas fa-search-location"></i> Tra Cứu Hồ Sơ
+            </a>
+            <a th:href="@{/recruitment/dashboard}" class="btn btn-outline btn-sm">
+                <i class="fas fa-user-shield"></i> Portal Tuyển Dụng (HR)
+            </a>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <div class="track-hero">
+        <h1><i class="fas fa-search-location"></i> Tra Cứu Trạng Thái Ứng Tuyển</h1>
+        <p>Kiểm tra tiến độ xét duyệt hồ sơ, làm bài test năng lực bảo mật và theo dõi lịch phỏng vấn của bạn theo thời gian thực.</p>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div style="max-width: 960px; margin: auto; padding: 0 20px 60px;">
+        
+        <!-- SEARCH BOX -->
+        <form th:action="@{/careers/track}" method="get" class="search-box-track">
+            <i class="fas fa-search" style="align-self: center; color: var(--text-muted); margin-left: 10px; font-size: 18px;"></i>
+            <input type="text" name="query" th:value="${query}" placeholder="Nhập mã hồ sơ (ví dụ: APP-2026-101), hoặc Email, Số điện thoại..." required>
+            <button type="submit" class="btn btn-primary" style="padding: 10px 24px;">Tra Cứu Tiến Trình</button>
+        </form>
+
+        <!-- QUICK SAMPLE LINKS -->
+        <div style="text-align: center; margin-top: -24px; margin-bottom: 30px; font-size: 13px; color: var(--text-muted);">
+            <span>Tra cứu nhanh mẫu:</span>
+            <a th:href="@{/careers/track(query='APP-2026-101')}" style="color: var(--primary); font-weight: 600; margin-left: 6px; text-decoration: none;">APP-2026-101 (Test Năng lực)</a>
+            <span style="margin: 0 6px;">•</span>
+            <a th:href="@{/careers/track(query='APP-2026-102')}" style="color: var(--primary); font-weight: 600; text-decoration: none;">APP-2026-102 (Phỏng vấn)</a>
+            <span style="margin: 0 6px;">•</span>
+            <a th:href="@{/careers/track(query='APP-2026-103')}" style="color: var(--primary); font-weight: 600; text-decoration: none;">APP-2026-103 (Đề nghị Offer)</a>
+        </div>
+
+        <!-- CANDIDATE PROFILE & STEPPER (IF FOUND) -->
+        <div th:if="${candidate != null}">
+            <div class="card" style="box-shadow: var(--shadow-md); margin-bottom: 24px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 24px;">
+                    <div style="display: flex; gap: 18px; align-items: center;">
+                        <div style="width: 64px; height: 64px; border-radius: 50%; background: #e0e7ff; color: #4338ca; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800;" th:text="${#strings.substring(candidate.name, 0, 1)}">
+                            N
+                        </div>
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <h2 style="font-size: 22px; font-weight: 800; margin: 0;" th:text="${candidate.name}">Nguyễn Văn An</h2>
+                                <span class="badge" th:classappend="${candidate.statusBadgeClass}" th:text="${candidate.status}">Đang làm bài test</span>
+                            </div>
+                            <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">
+                                <i class="fas fa-briefcase" style="color: var(--primary); margin-right: 4px;"></i> Vị trí: <strong th:text="${candidate.position}">Senior Java Backend Engineer</strong>
+                                <span style="margin: 0 8px;">|</span>
+                                <i class="fas fa-calendar-alt" style="color: var(--text-muted); margin-right: 4px;"></i> Ngày nộp: <span th:text="${candidate.applyDate}">10/10/2026</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Mã hồ sơ</div>
+                        <div style="font-size: 18px; font-weight: 800; color: var(--primary); font-family: monospace;" th:text="${candidate.applicationCode}">APP-2026-101</div>
+                    </div>
+                </div>
+
+                <!-- 6-STAGE TIMELINE STEPPER -->
+                <div class="stepper-container">
+                    <!-- Step 1: Nộp đơn -->
+                    <div class="stepper-step completed">
+                        <div class="step-circle"><i class="fas fa-check"></i></div>
+                        <div class="step-title">1. Nộp Hồ Sơ</div>
+                        <div class="step-date" th:text="${candidate.applyDate}">10/10/2026</div>
+                    </div>
+
+                    <!-- Step 2: Sơ loại -->
+                    <div class="stepper-step" th:classappend="${candidate.stage != 'NEW' ? 'completed' : 'active'}">
+                        <div class="step-circle">
+                            <i th:if="${candidate.stage != 'NEW'}" class="fas fa-check"></i>
+                            <span th:if="${candidate.stage == 'NEW'}">2</span>
+                        </div>
+                        <div class="step-title">2. Sơ Loại CV</div>
+                        <div class="step-date" th:text="${candidate.stage != 'NEW' ? 'Đã duyệt hồ sơ' : 'Đang duyệt CV'}">Đã duyệt</div>
+                    </div>
+
+                    <!-- Step 3: Bài Test -->
+                    <div class="stepper-step" th:classappend="${candidate.stage == 'ASSESSMENT' ? 'active' : (candidate.stage == 'TECH_INTERVIEW' or candidate.stage == 'HR_INTERVIEW' or candidate.stage == 'OFFER' or candidate.stage == 'HIRED' ? 'completed' : '')}">
+                        <div class="step-circle">
+                            <i th:if="${candidate.stage == 'TECH_INTERVIEW' or candidate.stage == 'HR_INTERVIEW' or candidate.stage == 'OFFER' or candidate.stage == 'HIRED'}" class="fas fa-check"></i>
+                            <span th:unless="${candidate.stage == 'TECH_INTERVIEW' or candidate.stage == 'HR_INTERVIEW' or candidate.stage == 'OFFER' or candidate.stage == 'HIRED'}">3</span>
+                        </div>
+                        <div class="step-title">3. Bài Test Năng Lực</div>
+                        <div class="step-date" th:text="${candidate.stage == 'ASSESSMENT' ? 'Cần làm bài test' : (candidate.stage == 'NEW' or candidate.stage == 'SCREENING' ? 'Chưa mở' : 'Đã đạt điểm test')}">Bài test</div>
+                    </div>
+
+                    <!-- Step 4: Phỏng vấn -->
+                    <div class="stepper-step" th:classappend="${candidate.stage == 'TECH_INTERVIEW' or candidate.stage == 'HR_INTERVIEW' ? 'active' : (candidate.stage == 'OFFER' or candidate.stage == 'HIRED' ? 'completed' : '')}">
+                        <div class="step-circle">
+                            <i th:if="${candidate.stage == 'OFFER' or candidate.stage == 'HIRED'}" class="fas fa-check"></i>
+                            <span th:unless="${candidate.stage == 'OFFER' or candidate.stage == 'HIRED'}">4</span>
+                        </div>
+                        <div class="step-title">4. Phỏng Vấn</div>
+                        <div class="step-date" th:text="${candidate.stage == 'TECH_INTERVIEW' or candidate.stage == 'HR_INTERVIEW' ? 'Đang diễn ra' : (candidate.stage == 'OFFER' or candidate.stage == 'HIRED' ? 'Đã đạt PV' : 'Chưa đến vòng')}">Phỏng vấn</div>
+                    </div>
+
+                    <!-- Step 5: Offer -->
+                    <div class="stepper-step" th:classappend="${candidate.stage == 'OFFER' ? 'active' : (candidate.stage == 'HIRED' ? 'completed' : '')}">
+                        <div class="step-circle">
+                            <i th:if="${candidate.stage == 'HIRED'}" class="fas fa-check"></i>
+                            <span th:unless="${candidate.stage == 'HIRED'}">5</span>
+                        </div>
+                        <div class="step-title">5. Thư Mời (Offer)</div>
+                        <div class="step-date" th:text="${candidate.stage == 'OFFER' ? 'Đã gửi offer' : (candidate.stage == 'HIRED' ? 'Đã ký offer' : 'Thỏa thuận lương')}">Thư mời</div>
+                    </div>
+
+                    <!-- Step 6: Onboarding -->
+                    <div class="stepper-step" th:classappend="${candidate.stage == 'HIRED' ? 'active completed' : ''}">
+                        <div class="step-circle">
+                            <i th:if="${candidate.stage == 'HIRED'}" class="fas fa-check"></i>
+                            <span th:unless="${candidate.stage == 'HIRED'}">6</span>
+                        </div>
+                        <div class="step-title">6. Onboarding</div>
+                        <div class="step-date" th:text="${candidate.stage == 'HIRED' ? 'Đang tiếp nhận' : 'Gia nhập công ty'}">Gia nhập TechCorp</div>
+                    </div>
+                </div>
+
+                <!-- CALL TO ACTION BANNER NẾU ĐANG Ở GIAI ĐOẠN TEST -->
+                <div class="action-banner" th:if="${candidate.stage == 'ASSESSMENT'}">
+                    <div>
+                        <div style="font-weight: 800; font-size: 16px; color: #1e3a8a; margin-bottom: 4px;">
+                            <i class="fas fa-laptop-code" style="margin-right: 8px;"></i> Bạn có 01 bài kiểm tra đánh giá năng lực cần hoàn thành!
+                        </div>
+                        <div style="font-size: 13px; color: #3b82f6;">
+                            Vị trí: <strong th:text="${candidate.appliedJobTitle}">Senior Java Backend Engineer</strong> (Thời gian: 60 phút). Hạn nộp: trong 48 giờ tới.
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <a th:href="@{/careers/assessment/TEST-SEC-8821}" class="btn btn-primary" style="box-shadow: 0 4px 12px rgba(37,99,235,0.3);">
+                            <i class="fas fa-play-circle"></i> Vào Làm Bài Test Ngay
+                        </a>
+                    </div>
+                </div>
+
+                <!-- BANNER NẾU ĐANG PHỎNG VẤN -->
+                <div class="action-banner" th:if="${candidate.stage == 'TECH_INTERVIEW' or candidate.stage == 'HR_INTERVIEW'}" style="background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); border-color: #ddd6fe;">
+                    <div>
+                        <div style="font-weight: 800; font-size: 16px; color: #5b21b6; margin-bottom: 4px;">
+                            <i class="fas fa-calendar-check" style="margin-right: 8px;"></i> Bạn có lịch phỏng vấn sắp tới cho vị trí <span th:text="${candidate.appliedJobTitle}">Vị trí</span>!
+                        </div>
+                        <div style="font-size: 13px; color: #6d28d9;">
+                            Thời gian: <strong th:text="${candidate.interviewTime}">26/10/2026 09:30</strong> | Người phỏng vấn: <span th:text="${candidate.interviewer}">Anh Tuấn (Tech Lead)</span>
+                        </div>
+                    </div>
+                    <div>
+                        <a href="https://meet.google.com/abc-xyz-ats" target="_blank" class="btn btn-primary" style="background: #7c3aed; border-color: #6d28d9;">
+                            <i class="fas fa-video"></i> Vào Phòng Phỏng Vấn (Google Meet)
+                        </a>
+                    </div>
+                </div>
+
+                <!-- BANNER NẾU ĐÃ CÓ OFFER -->
+                <div class="action-banner" th:if="${candidate.stage == 'OFFER'}" style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border-color: #fde68a;">
+                    <div>
+                        <div style="font-weight: 800; font-size: 16px; color: #92400e; margin-bottom: 4px;">
+                            <i class="fas fa-gift" style="margin-right: 8px;"></i> Chúc mừng! Bạn đã nhận được Thư mời làm việc (Offer Letter)!
+                        </div>
+                        <div style="font-size: 13px; color: #b45309;">
+                            Ghi chú tuyển dụng: <span th:text="${candidate.notes}">Đã gửi offer</span>
+                        </div>
+                    </div>
+                    <div>
+                        <button onclick="alert('Thư mời làm việc chính thức đã được gửi đến email cá nhân của bạn!')" class="btn btn-primary" style="background: #d97706; border-color: #b45309;">
+                            <i class="fas fa-file-contract"></i> Xem Chi Tiết Thư Mời
+                        </button>
+                    </div>
+                </div>
+
+                <!-- THÔNG TIN CHI TIẾT VÀ LỊCH SỬ XỬ LÝ -->
+                <div style="margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px;">
+                        <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 12px; color: var(--text-primary);"><i class="fas fa-info-circle" style="color: var(--primary);"></i> Thông Tin Chi Tiết Hồ Sơ</h4>
+                        <div style="font-size: 13px; line-height: 1.8; color: var(--text-secondary);">
+                            <div><strong>Họ và tên:</strong> <span th:text="${candidate.name}">Nguyễn Văn An</span></div>
+                            <div><strong>Email:</strong> <span th:text="${candidate.email}">an.nguyen@email.com</span></div>
+                            <div><strong>Số điện thoại:</strong> <span th:text="${candidate.phone}">0901 234 567</span></div>
+                            <div><strong>Kinh nghiệm:</strong> <span th:text="${candidate.experience}">4 năm kinh nghiệm</span></div>
+                            <div><strong>Mã bài test bảo mật:</strong> <code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px;">TEST-SEC-8821</code></div>
+                        </div>
+                    </div>
+
+                    <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px;">
+                        <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 12px; color: var(--text-primary);"><i class="fas fa-history" style="color: var(--primary);"></i> Nhật Ký Tiến Trình</h4>
+                        <ul style="list-style: none; padding: 0; margin: 0; font-size: 13px; line-height: 1.8; color: var(--text-secondary);">
+                            <li><i class="fas fa-check-circle" style="color: var(--success); margin-right: 6px;"></i> 10/10/2026: Nộp hồ sơ ứng tuyển thành công.</li>
+                            <li><i class="fas fa-check-circle" style="color: var(--success); margin-right: 6px;"></i> 12/10/2026: Bộ phận Talent Acquisition duyệt vòng hồ sơ (CV Score 88%).</li>
+                            <li><i class="fas fa-paper-plane" style="color: var(--primary); margin-right: 6px;"></i> 13/10/2026: Hệ thống tự động gửi đề thi trắc nghiệm & coding qua Email.</li>
+                            <li><i class="fas fa-clock" style="color: var(--warning); margin-right: 6px;"></i> Đang chờ: Ứng viên hoàn thành bài test hoặc Reply qua Webhook.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- HƯỚNG DẪN NỘP QUA EMAIL INBOUND WEBHOOK -->
+                <div style="margin-top: 20px; background: #fffbeb; border: 1px solid #fde68a; border-radius: var(--radius-md); padding: 16px; font-size: 13px; color: #92400e;">
+                    <i class="fas fa-envelope-open-text" style="font-size: 16px; margin-right: 6px;"></i>
+                    <strong>Hỗ trợ nộp bài đa kênh linh hoạt:</strong> Ngoài việc làm bài trực tiếp trên Web, bạn có thể giải bài offline và <em>Reply trực tiếp vào email thông báo nhận đề</em> kèm token <code>TEST-SEC-8821</code>. Cổng tiếp nhận Inbound Webhook tự động của TechCorp sẽ ghi nhận và cập nhật trạng thái vào portal.
+                </div>
+            </div>
+        </div>
+
+        <!-- NOT FOUND STATE -->
+        <div th:if="${candidate == null}" class="card" style="text-align: center; padding: 50px 20px;">
+            <i class="fas fa-search" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px;"></i>
+            <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">Không tìm thấy thông tin hồ sơ</h3>
+            <p style="color: var(--text-secondary); max-width: 480px; margin: auto; font-size: 14px; margin-bottom: 20px;">
+                Vui lòng kiểm tra lại Mã hồ sơ (VD: <code>APP-2026-101</code>) hoặc Email/Số điện thoại bạn đã sử dụng khi nộp hồ sơ.
+            </p>
+            <a th:href="@{/careers}" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Quay lại trang tuyển dụng</a>
+        </div>
+
+        <!-- CONTACT SUPPORT FOOTER -->
+        <div style="text-align: center; margin-top: 40px; color: var(--text-secondary); font-size: 13px;">
+            <p>Có thắc mắc về quá trình tuyển dụng? Liên hệ Bộ phận Talent Acquisition: <strong style="color: var(--primary);">tuyendung@techcorp.vn</strong> | Hotline: <strong>028 3822 xxxx</strong></p>
+        </div>
+
+    </div>
+
+</body>
+</html>
+

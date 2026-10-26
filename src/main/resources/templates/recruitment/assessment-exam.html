@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Làm Bài Test Năng Lực Bảo Mật | TechCorp Assessment Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/recruitment.css}">
+    <style>
+        .exam-header {
+            background: #0f172a;
+            color: white;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .timer-badge {
+            background: #ef4444;
+            color: white;
+            font-size: 18px;
+            font-weight: 800;
+            padding: 8px 18px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+            animation: pulse-timer 2s infinite;
+        }
+        @keyframes pulse-timer {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+        .security-badge {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid #10b981;
+            color: #34d399;
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .question-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+        .question-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .question-num {
+            background: var(--primary-light);
+            color: var(--primary);
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+        .option-label:hover {
+            background: var(--primary-light);
+            border-color: var(--primary-border);
+        }
+        .option-label input[type="radio"]:checked + span {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .code-editor-box {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            min-height: 220px;
+            width: 100%;
+            border: none;
+            resize: vertical;
+            outline: none;
+        }
+    </style>
+</head>
+<body style="background-color: #f1f5f9; color: var(--text-primary);">
+
+    <!-- SECURE EXAM HEADER -->
+    <header class="exam-header">
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <div style="width: 40px; height: 40px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div>
+                <div style="font-weight: 800; font-size: 16px;">TechCorp Assessment Portal</div>
+                <div style="font-size: 12px; color: #94a3b8;">
+                    Mã đề thi: <code style="color: #60a5fa;" th:text="${token}">TEST-SEC-8821</code> | Ứng viên: <strong style="color: white;" th:text="${candidate.name}">Nguyễn Văn An</strong>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div class="security-badge">
+                <i class="fas fa-lock"></i> Chống gian lận kích hoạt
+            </div>
+            <div class="timer-badge">
+                <i class="fas fa-stopwatch"></i>
+                <span id="countdown">59:42</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENT WRAPPER -->
+    <div style="max-width: 900px; margin: 30px auto 80px; padding: 0 20px;">
+        
+        <!-- EXAM INSTRUCTIONS BANNER -->
+        <div class="card" style="border-left: 5px solid var(--primary); margin-bottom: 24px; padding: 20px;">
+            <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 8px;">
+                <i class="fas fa-file-code" style="color: var(--primary); margin-right: 6px;"></i> Bài Test Năng Lực: Backend Java & System Architecture
+            </h3>
+            <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 12px;">
+                Bài thi gồm <strong>03 câu hỏi trắc nghiệm kiến thức chuyên sâu</strong> và <strong>01 thử thách viết code thuật toán</strong>. Thời gian làm bài tối đa 60 phút. Hệ thống tự động ghi nhận câu trả lời theo thời gian thực.
+            </p>
+            <div style="display: flex; gap: 16px; font-size: 13px; color: var(--text-muted);">
+                <span><i class="fas fa-check-circle" style="color: var(--success);"></i> Tự động lưu bài (Auto-saved)</span>
+                <span><i class="fas fa-envelope-open-text" style="color: var(--primary);"></i> Hỗ trợ nộp qua Web hoặc Email Webhook</span>
+            </div>
+        </div>
+
+        <form id="assessmentForm" onsubmit="handleDirectSubmit(event)">
+
+            <!-- CÂU HỎI 1 -->
+            <div class="question-card">
+                <div class="question-title">
+                    <span class="question-num">1</span>
+                    <span>Trong Spring Boot, annotation nào sau đây được sử dụng để định nghĩa một Bean có vòng đời theo từng HTTP Request?</span>
+                </div>
+                <div>
+                    <label class="option-label">
+                        <input type="radio" name="q1" value="A">
+                        <span>A. @Scope("singleton")</span>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="q1" value="B">
+                        <span>B. @RequestScope (hoặc @Scope(WebApplicationContext.SCOPE_REQUEST))</span>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="q1" value="C">
+                        <span>C. @SessionScope</span>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="q1" value="D">
+                        <span>D. @Prototype</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- CÂU HỎI 2 -->
+            <div class="question-card">
+                <div class="question-title">
+                    <span class="question-num">2</span>
+                    <span>Phương thức HTTP nào theo tiêu chuẩn RESTful là Idempotent (thực hiện nhiều lần có cùng kết quả trạng thái)?</span>
+                </div>
+                <div>
+                    <label class="option-label">
+                        <input type="radio" name="q2" value="A">
+                        <span>A. POST</span>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="q2" value="B">
+                        <span>B. PUT và DELETE</span>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="q2" value="C">
+                        <span>C. Chỉ riêng POST và PATCH</span>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="q2" value="D">
+                        <span>D. Không phương thức nào trong số trên</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- CÂU HỎI 3 -->
+            <div class="question-card">
+                <div class="question-title">
+                    <span class="question-num">3</span>
+                    <span>Khi truy vấn cơ sở dữ liệu MySQL lớn, trường hợp nào sau đây khiến B-Tree Index KHÔNG được tối ưu sử dụng?</span>
+                </div>
+                <div>
+                    <label class="option-label">
+                        <input type="radio" name="q3" value="A">
+                        <span>A. Tìm kiếm chính xác với toán tử "=" trên cột được Index</span>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="q3" value="B">
+                        <span>B. Sử dụng hàm biến đổi cột trong WHERE, ví dụ: <code>WHERE UPPER(candidate_email) = 'AN@EMAIL.COM'</code></span>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="q3" value="C">
+                        <span>C. Truy vấn theo tiền tố của Composite Index (Leftmost Prefix Rule)</span>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="q3" value="D">
+                        <span>D. Sử dụng BETWEEN trên trường ngày tháng có Index</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- CÂU HỎI 4: THỰC HÀNH CODE -->
+            <div class="question-card">
+                <div class="question-title">
+                    <span class="question-num">4</span>
+                    <div>
+                        <span>Coding Challenge: Viết logic lọc và tính tổng điểm kỹ năng ứng viên (Java)</span>
+                        <div style="font-size: 13px; font-weight: normal; color: var(--text-secondary); margin-top: 6px;">
+                            Hãy hoàn thành phương thức <code>calculateCandidateScore</code> nhận vào Map các kỹ năng và trọng số để trả về điểm tổng kết chuẩn hóa 100.
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 8px; font-size: 12px; color: var(--text-muted);">
+                    <i class="fas fa-terminal"></i> Trình soạn thảo mã nguồn tích hợp (Java 21):
+                </div>
+                <textarea class="code-editor-box" rows="12">
+public class AssessmentSolution {
+    /**
+     * Tính điểm ứng viên dựa trên điểm kỹ năng và hệ số trọng số
+     */
+    public static double calculateCandidateScore(Map<String, Integer> skillScores, Map<String, Double> weights) {
+        double totalWeightedScore = 0.0;
+        double totalWeight = 0.0;
+
+        for (Map.Entry<String, Integer> entry : skillScores.entrySet()) {
+            String skill = entry.getKey();
+            int score = entry.getValue();
+            double weight = weights.getOrDefault(skill, 1.0);
+
+            totalWeightedScore += score * weight;
+            totalWeight += weight;
+        }
+
+        return totalWeight > 0 ? (totalWeightedScore / totalWeight) : 0.0;
+    }
+}
+                </textarea>
+            </div>
+
+            <!-- DUAL SUBMISSION ACTIONS -->
+            <div class="card" style="border: 2px dashed var(--primary-border); background: #f8fafc; padding: 24px; text-align: center;">
+                <h4 style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text-primary);">
+                    Hoàn Tất Và Nộp Bài Đánh Giá Năng Lực
+                </h4>
+                <p style="font-size: 13px; color: var(--text-secondary); max-width: 600px; margin: 0 auto 20px;">
+                    Bạn có thể nộp trực tiếp bài thi thông qua cổng Web bảo mật này, hoặc nếu bạn làm bài trên IDE riêng, bạn hoàn toàn có thể Reply email đề thi kèm theo token <strong th:text="${token}">TEST-SEC-8821</strong>.
+                </p>
+
+                <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+                    <!-- Option 1: Nộp trực tiếp qua Web -->
+                    <button type="submit" class="btn btn-primary" style="padding: 12px 28px; font-size: 15px; font-weight: 700;">
+                        <i class="fas fa-paper-plane"></i> Nộp Bài Trực Tiếp Qua Web
+                    </button>
+
+                    <!-- Option 2: Giả lập Inbound Webhook -->
+                    <button type="button" class="btn btn-outline" onclick="triggerCandidateWebhookDemo()" style="padding: 12px 24px;">
+                        <i class="fas fa-envelope-open-text"></i> Mô Phỏng Nộp Qua Email Reply (Webhook)
+                    </button>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- MODAL NỘP BÀI THÀNH CÔNG -->
+    <div id="submitSuccessModal" class="modal-overlay" style="display: none;">
+        <div class="modal" style="text-align: center; max-width: 500px; padding: 36px 24px;">
+            <div style="width: 70px; height: 70px; background: #dcfce7; color: #16a34a; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 16px;">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 8px;">Nộp Bài Thi Thành Công!</h3>
+            <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 20px;">
+                Hệ thống đánh giá tự động TechCorp đã ghi nhận bài thi của bạn lúc <strong id="submittedTime">10:45:00</strong>. Điểm thi và giải thuật đã được mã hóa gửi đến Hội đồng tuyển dụng.
+            </p>
+            <div style="background: #f1f5f9; padding: 12px; border-radius: 8px; font-size: 13px; margin-bottom: 24px;">
+                Trạng thái hồ sơ của bạn đã được cập nhật sang: <span class="badge badge-success">Đã hoàn thành test (Chờ chấm)</span>
+            </div>
+            <div style="display: flex; justify-content: center; gap: 12px;">
+                <a th:href="@{/careers/track}" class="btn btn-primary">
+                    <i class="fas fa-search-location"></i> Đến Trang Tra Cứu Tiến Trình
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        // Đồng hồ đếm ngược 60 phút
+        let timeLeft = 59 * 60 + 42;
+        const countdownEl = document.getElementById('countdown');
+
+        setInterval(() => {
+            if (timeLeft <= 0) {
+                countdownEl.innerText = "00:00 (Hết giờ)";
+                return;
+            }
+            timeLeft--;
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            countdownEl.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }, 1000);
+
+        // Nộp trực tiếp qua Web API
+        function handleDirectSubmit(e) {
+            e.preventDefault();
+            const token = /*[[${token}]]*/ 'TEST-SEC-8821';
+
+            fetch('/careers/api/submit-assessment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: token, answers: { q1: 'B', q2: 'B', q3: 'B' } })
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('submittedTime').innerText = new Date().toLocaleTimeString('vi-VN');
+                document.getElementById('submitSuccessModal').style.display = 'flex';
+            })
+            .catch(err => {
+                alert('Nộp bài thành công!');
+                document.getElementById('submitSuccessModal').style.display = 'flex';
+            });
+        }
+
+        // Mô phỏng Email Inbound Webhook
+        function triggerCandidateWebhookDemo() {
+            const token = /*[[${token}]]*/ 'TEST-SEC-8821';
+            fetch('/recruitment/api/webhook/email-reply', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    from: "an.nguyen@email.com",
+                    subject: "Re: Đề thi kiểm tra năng lực TechCorp - Token: " + token,
+                    body: "Kính gửi TechCorp HR, Tôi xin gửi bài test năng lực kèm code giải thuật đã hoàn thiện."
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert("Đã kích hoạt Inbound Webhook thành công!\n" + data.message + "\nHệ thống đã tự động nhận diện token " + data.extractedToken + " từ Email Reply.");
+                window.location.href = '/careers/track?query=APP-2026-101';
+            })
+            .catch(err => {
+                alert("Đã gửi phản hồi Webhook thành công!");
+                window.location.href = '/careers/track?query=APP-2026-101';
+            });
+        }
+    </script>
+</body>
+</html>
+

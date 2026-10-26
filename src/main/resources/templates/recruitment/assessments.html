@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{recruitment/fragments :: header-assets('Bài Test & Đánh Giá Năng Lực')}"></head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div th:replace="~{recruitment/fragments :: sidebar('assessments')}"></div>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Topbar -->
+            <div th:replace="~{recruitment/fragments :: topbar}"></div>
+
+            <!-- Page Content -->
+            <main class="page-content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title"><i class="fas fa-vial" style="color: var(--primary); margin-right: 8px;"></i> Giao Bài Test & Đánh Giá Năng Lực (Assessments)</h1>
+                        <p class="page-subtitle">Quản lý ngân hàng đề thi, giao bài test bảo mật cho ứng viên, hỗ trợ nộp trực tiếp qua Web hoặc nhận bài tự động qua Email Reply (Inbound Webhook).</p>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-outline" onclick="triggerEmailWebhookDemo()"><i class="fas fa-envelope-open-text"></i> Mô phỏng Email Inbound Webhook</button>
+                        <button class="btn btn-primary" onclick="openAssignTestModal()"><i class="fas fa-paper-plane"></i> Giao bài test cho ứng viên</button>
+                    </div>
+                </div>
+
+                <!-- QUICK STATS -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon icon-blue"><i class="fas fa-tasks"></i></div>
+                        <div>
+                            <div class="stat-value" th:text="${assessments.size()}">4</div>
+                            <div class="stat-label">Bộ đề kiểm tra chuẩn hóa</div>
+                            <div class="stat-trend trend-up">Trắc nghiệm + Coding</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-purple"><i class="fas fa-user-clock"></i></div>
+                        <div>
+                            <div class="stat-value">6</div>
+                            <div class="stat-label">Ứng viên đã được giao bài</div>
+                            <div class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> 4 đã hoàn thành</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-green"><i class="fas fa-check-circle"></i></div>
+                        <div>
+                            <div class="stat-value">88.5</div>
+                            <div class="stat-label">Điểm trung bình đạt chuẩn</div>
+                            <div class="stat-trend trend-up">Tỷ lệ qua vòng test 78%</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-orange"><i class="fas fa-plug"></i></div>
+                        <div>
+                            <div class="stat-value">Active</div>
+                            <div class="stat-label">Inbound Webhook Email Reply</div>
+                            <div class="stat-trend trend-up"><i class="fas fa-bolt"></i> Tự động đồng bộ kết quả</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ASSIGNMENT TRACKING TABLE -->
+                <div class="card" style="margin-bottom: 24px;">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 class="card-title"><i class="fas fa-list-check" style="color: var(--primary);"></i> Tiến Độ Làm Bài Test Của Ứng Viên</h3>
+                        <span class="badge badge-info">Cập nhật thời gian thực</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Ứng viên</th>
+                                    <th>Vị trí ứng tuyển</th>
+                                    <th>Bộ đề kiểm tra</th>
+                                    <th>Phương thức nộp bài</th>
+                                    <th>Trạng thái</th>
+                                    <th>Điểm số</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="cand : ${candidates}" th:if="${cand.testStatus() != 'CHƯA_GIAO'}">
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <img th:src="${cand.avatarUrl()}" class="card-avatar" alt="Avatar">
+                                            <div>
+                                                <strong th:text="${cand.fullName()}">Họ tên</strong>
+                                                <div style="font-size: 11px; color: var(--text-muted);" th:text="${cand.email()}">email</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td th:text="${cand.appliedJobTitle()}">Vị trí</td>
+                                    <td>
+                                        <span th:if="${#strings.contains(cand.appliedJobTitle(), 'Java')}">Java Core & Spring Boot</span>
+                                        <span th:if="${#strings.contains(cand.appliedJobTitle(), 'Flutter')}">Mobile Flutter & Dart</span>
+                                        <span th:if="${#strings.contains(cand.appliedJobTitle(), 'Designer')}">UI/UX Design System</span>
+                                        <span th:if="${#strings.contains(cand.appliedJobTitle(), 'Thực tập')}">Java OOP & Thuật toán</span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${cand.testStatus() == 'ĐÃ_NỘP_EMAIL'}" class="badge badge-info">
+                                            <i class="fas fa-envelope"></i> Email Inbound Webhook
+                                        </span>
+                                        <span th:if="${cand.testStatus() == 'ĐÃ_NỘP_WEB' || cand.testStatus() == 'ĐÃ_CHẤM'}" class="badge badge-success">
+                                            <i class="fas fa-globe"></i> Nộp trực tiếp trên Web
+                                        </span>
+                                        <span th:if="${cand.testStatus() == 'ĐÃ_GIAO'}" class="badge badge-warning">
+                                            <i class="fas fa-hourglass-half"></i> Đang làm bài thi
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${cand.testStatus() == 'ĐÃ_CHẤM'}" class="badge badge-success">Đã chấm điểm</span>
+                                        <span th:if="${cand.testStatus() == 'ĐÃ_NỘP_EMAIL'}" class="badge badge-primary">Chờ Review Code</span>
+                                        <span th:if="${cand.testStatus() == 'ĐÃ_GIAO'}" class="badge badge-warning">Chưa nộp bài</span>
+                                    </td>
+                                    <td>
+                                        <strong style="color: #059669; font-size: 14px;" th:text="${cand.testScore()}">92/100</strong>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; gap: 6px;">
+                                            <a th:href="@{'/careers/assessment/test_token_' + ${cand.id()}}" target="_blank" class="btn btn-outline btn-sm" title="Mở trang thi bảo mật của ứng viên">
+                                                <i class="fas fa-external-link-alt"></i> Xem trang thi
+                                            </a>
+                                            <button class="btn btn-primary btn-sm" onclick="alert('Đã cập nhật điểm đánh giá vào hồ sơ!')">
+                                                <i class="fas fa-check"></i> Chấm điểm
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- QUESTION BANK SECTION -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-book" style="color: #8b5cf6;"></i> Ngân Hàng Bộ Đề Đánh Giá Năng Lực</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+                            <div th:each="test : ${assessments}" style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px;">
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+                                    <h4 style="font-weight: 700; color: #1e3a8a; font-size: 14px;" th:text="${test.title()}">Tên bài test</h4>
+                                    <span class="badge badge-primary" th:text="${test.level()}">Senior</span>
+                                </div>
+                                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">
+                                    <span><i class="fas fa-clock"></i> <span th:text="${test.durationMinutes()}">60</span> phút</span> • 
+                                    <span><i class="fas fa-question-circle"></i> <span th:text="${test.totalQuestions()}">25</span> câu hỏi</span> • 
+                                    <span th:text="${test.jobCategory()}">Phòng ban</span>
+                                </div>
+                                <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 14px;" th:text="${test.description()}">Mô tả đề thi...</p>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-outline btn-sm" onclick="alert('Xem trước bộ câu hỏi...')"><i class="fas fa-eye"></i> Xem đề</button>
+                                    <button class="btn btn-primary btn-sm" onclick="openAssignTestModal()"><i class="fas fa-share-square"></i> Giao đề này</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL ASSIGN TEST -->
+    <div id="assignTestModal" class="modal-overlay">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-paper-plane" style="color: var(--primary);"></i> Giao Bài Test Đánh Giá Năng Lực</h3>
+                <button class="close-btn" onclick="closeAssignTestModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="handleAssignTest(event)">
+                    <div class="form-group">
+                        <label class="form-label">Chọn ứng viên nhận bài test *</label>
+                        <select class="form-control" required>
+                            <option th:each="c : ${candidates}" th:text="${c.fullName()} + ' - ' + ${c.appliedJobTitle()} + ' (' + ${c.email()} + ')'">Ứng viên</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Chọn bộ đề thi *</label>
+                        <select class="form-control" required>
+                            <option th:each="t : ${assessments}" th:text="${t.title()} + ' (' + ${t.durationMinutes()} + ' phút)'">Bộ đề</option>
+                        </select>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                        <div class="form-group">
+                            <label class="form-label">Hạn chót nộp bài</label>
+                            <input type="datetime-local" class="form-control" value="2026-10-28T23:59">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hình thức nộp được phép</label>
+                            <select class="form-control">
+                                <option>Cả nộp trên Web & Email Reply</option>
+                                <option>Chỉ nộp trực tiếp qua Web bảo mật</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email thông báo mẫu sẽ gửi kèm link thi</label>
+                        <textarea class="form-control" rows="3" readonly style="background: #f8fafc; font-size: 12px;">Chào bạn, Bộ phận Tuyển dụng gửi bạn bài Test Năng lực chuyên môn. Link làm bài bảo mật: http://localhost:8080/careers/assessment/test_token_unique. Bạn có thể nộp trực tiếp trên web hoặc reply trực tiếp email này kèm file code.</textarea>
+                    </div>
+                    <div class="modal-footer" style="padding: 12px 0 0 0; margin-top: 10px;">
+                        <button type="button" class="btn btn-outline" onclick="closeAssignTestModal()">Hủy</button>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Tạo link & Gửi bài test</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openAssignTestModal() {
+            document.getElementById('assignTestModal').style.display = 'flex';
+        }
+        function closeAssignTestModal() {
+            document.getElementById('assignTestModal').style.display = 'none';
+        }
+        function handleAssignTest(e) {
+            e.preventDefault();
+            alert('Hệ thống đã tạo link làm bài test bảo mật và gửi email thông báo tự động đến ứng viên thành công!');
+            closeAssignTestModal();
+        }
+        function triggerEmailWebhookDemo() {
+            fetch('/recruitment/api/webhook/email-reply', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    from: "nam.lehoang@gmail.com",
+                    subject: "Re: [TalentFlow-ATS] Bài Test Năng Lực UI/UX - Lê Hoàng Nam",
+                    attachment: "portfolio_design_system_submission.zip"
+                })
+            }).then(r => r.json()).then(data => {
+                alert('Mô phỏng Inbound Webhook thành công:\n' + data.message);
+            });
+        }
+    </script>
+</body>
+</html>
+
