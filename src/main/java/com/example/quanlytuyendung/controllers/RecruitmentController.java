@@ -364,114 +364,34 @@ public class RecruitmentController {
     }
 
     // ==========================================
-    // CONTROLLER ENDPOINTS (HR PORTAL)
+    // CONTROLLER ENDPOINTS (PORTAL ROUTING)
     // ==========================================
 
-    @GetMapping({"", "/", "/recruitment", "/recruitment/dashboard"})
-    public String dashboard(Model model) {
-        model.addAttribute("jobs", getMockJobs());
-        model.addAttribute("candidates", getMockCandidates());
-        model.addAttribute("interviews", getMockInterviews());
-        model.addAttribute("activeMenu", "dashboard");
-        return "recruitment/dashboard";
+    // Trang chủ root (http://localhost:8080/): Mở Cổng Tìm Việc Công Khai (Job Board)
+    @GetMapping({"", "/"})
+    public String home() {
+        return "forward:/job_board.html";
     }
 
-    @GetMapping("/recruitment/requisitions")
-    public String requisitions(Model model) {
-        model.addAttribute("requisitions", getMockRequisitions());
-        model.addAttribute("activeMenu", "requisitions");
-        return "recruitment/requisitions";
-    }
-
-    @GetMapping("/recruitment/jobs")
-    public String jobs(Model model) {
-        model.addAttribute("jobs", getMockJobs());
-        model.addAttribute("activeMenu", "jobs");
-        return "recruitment/jobs";
-    }
-
-    @GetMapping("/recruitment/pipeline")
-    public String pipeline(@RequestParam(value = "jobId", required = false) Long jobId, Model model) {
-        List<Candidate> allCandidates = getMockCandidates();
-        List<Candidate> filtered = (jobId != null && jobId > 0)
-                ? allCandidates.stream().filter(c -> c.jobId().equals(jobId)).toList()
-                : allCandidates;
-
-        model.addAttribute("jobs", getMockJobs());
-        model.addAttribute("selectedJobId", jobId != null ? jobId : 0L);
-        model.addAttribute("candidates", filtered);
-
-        model.addAttribute("newCandidates", filtered.stream().filter(c -> "NEW".equals(c.stage())).toList());
-        model.addAttribute("screeningCandidates", filtered.stream().filter(c -> "SCREENING".equals(c.stage())).toList());
-        model.addAttribute("assessmentCandidates", filtered.stream().filter(c -> "ASSESSMENT".equals(c.stage())).toList());
-        model.addAttribute("techCandidates", filtered.stream().filter(c -> "TECH_INTERVIEW".equals(c.stage())).toList());
-        model.addAttribute("hrCandidates", filtered.stream().filter(c -> "HR_INTERVIEW".equals(c.stage())).toList());
-        model.addAttribute("offerCandidates", filtered.stream().filter(c -> "OFFER".equals(c.stage())).toList());
-        model.addAttribute("hiredCandidates", filtered.stream().filter(c -> "HIRED".equals(c.stage())).toList());
-        model.addAttribute("rejectedCandidates", filtered.stream().filter(c -> "REJECTED".equals(c.stage())).toList());
-
-        model.addAttribute("activeMenu", "pipeline");
-        return "recruitment/pipeline";
-    }
-
-    @GetMapping("/recruitment/candidates")
-    public String candidates(Model model) {
-        model.addAttribute("candidates", getMockCandidates());
-        model.addAttribute("jobs", getMockJobs());
-        model.addAttribute("activeMenu", "candidates");
-        return "recruitment/candidates";
-    }
-
-    @GetMapping("/recruitment/candidate/{id}")
-    public String candidateDetail(@PathVariable("id") Long id, Model model) {
-        Candidate candidate = getMockCandidates().stream()
-                .filter(c -> c.id().equals(id))
-                .findFirst()
-                .orElse(getMockCandidates().get(0));
-
-        model.addAttribute("candidate", candidate);
-        model.addAttribute("activeMenu", "candidates");
-        return "recruitment/candidate-detail";
-    }
-
-    @GetMapping("/recruitment/interviews")
-    public String interviews(Model model) {
-        model.addAttribute("interviews", getMockInterviews());
-        model.addAttribute("activeMenu", "interviews");
-        return "recruitment/interviews";
-    }
-
-    // Giao bài test & đánh giá năng lực
-    @GetMapping("/recruitment/assessments")
-    public String assessments(Model model) {
-        model.addAttribute("assessments", getMockAssessments());
-        model.addAttribute("candidates", getMockCandidates());
-        model.addAttribute("activeMenu", "assessments");
-        return "recruitment/assessments";
-    }
-
-    // Offer & Phê duyệt offer
-    @GetMapping("/recruitment/offers")
-    public String offers(Model model) {
-        model.addAttribute("offers", getMockOffers());
-        model.addAttribute("candidates", getMockCandidates());
-        model.addAttribute("activeMenu", "offers");
-        return "recruitment/offers";
-    }
-
-    // Onboarding cơ bản (checklist)
-    @GetMapping("/recruitment/onboarding")
-    public String onboarding(Model model) {
-        model.addAttribute("onboardingList", getMockOnboarding());
-        model.addAttribute("activeMenu", "onboarding");
-        return "recruitment/onboarding";
-    }
-
-    // Dashboard, báo cáo
-    @GetMapping("/recruitment/reports")
-    public String reports(Model model) {
-        model.addAttribute("activeMenu", "reports");
-        return "recruitment/reports";
+    // Cổng Quản Trị Tuyển Dụng ATS (http://localhost:8080/recruitment hoặc /admin)
+    @GetMapping({
+        "/recruitment", "/recruitment/", "/recruitment/dashboard",
+        "/admin", "/admin/", "/dashboard",
+        "/recruitment/requisitions",
+        "/recruitment/jobs",
+        "/recruitment/pipeline",
+        "/recruitment/candidates",
+        "/recruitment/candidate/{id}",
+        "/recruitment/interviews",
+        "/recruitment/assessments",
+        "/recruitment/offers",
+        "/recruitment/onboarding",
+        "/recruitment/reports",
+        "/recruitment/settings",
+        "/recruitment/requirements"
+    })
+    public String adminPortal() {
+        return "forward:/recruitment_prototype.html";
     }
 
     // Export Excel / CSV Download
@@ -490,20 +410,6 @@ public class RecruitmentController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Bao_Cao_Tuyen_Dung_2026.csv")
                 .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
                 .body(bytes);
-    }
-
-    // Quản trị người dùng, vai trò, phòng ban, cấu hình quy trình, email template, audit log
-    @GetMapping("/recruitment/settings")
-    public String settings(Model model) {
-        model.addAttribute("auditLogs", getMockAuditLogs());
-        model.addAttribute("activeMenu", "settings");
-        return "recruitment/settings";
-    }
-
-    @GetMapping("/recruitment/requirements")
-    public String requirementsDoc(Model model) {
-        model.addAttribute("activeMenu", "requirements");
-        return "recruitment/requirements";
     }
 
     // Inbound Webhook mô phỏng nhận bài test tự động qua Email reply
