@@ -55,12 +55,12 @@ class _JobListScreenState extends State<JobListScreen> {
             const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(color: Colors.emerald.shade50, borderRadius: BorderRadius.circular(10)),
+              decoration: BoxDecoration(color: const Color(0xFFECFDF5), borderRadius: BorderRadius.circular(10)),
               child: Row(
                 children: [
-                  const Icon(Icons.payments_outlined, color: Colors.emerald, size: 20),
+                  const Icon(Icons.payments_outlined, color: Color(0xFF059669), size: 20),
                   const SizedBox(width: 8),
-                  Text('Mức lương: ${job.salary}', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.emerald, fontSize: 14)),
+                  Text('Mức lương: ${job.salary}', style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF059669), fontSize: 14)),
                 ],
               ),
             ),
@@ -240,7 +240,7 @@ class _JobListScreenState extends State<JobListScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.between,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -252,7 +252,7 @@ class _JobListScreenState extends State<JobListScreen> {
                                         style: TextStyle(color: Colors.blue.shade700, fontSize: 11, fontWeight: FontWeight.bold)),
                                   ),
                                   Text(job.salary,
-                                      style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.emerald, fontSize: 13)),
+                                      style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF059669), fontSize: 13)),
                                 ],
                               ),
                               const SizedBox(height: 8),
@@ -299,3 +299,4 @@ class _JobListScreenState extends State<JobListScreen> {
     );
   }
 }
+

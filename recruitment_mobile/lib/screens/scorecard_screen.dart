@@ -87,7 +87,7 @@ class _ScorecardScreenState extends State<ScorecardScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.between,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
               Container(
@@ -293,3 +293,4 @@ class _ScorecardScreenState extends State<ScorecardScreen> {
     );
   }
 }
+
