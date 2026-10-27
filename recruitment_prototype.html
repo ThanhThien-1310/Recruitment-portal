@@ -7,7 +7,7 @@
     <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-                @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .tab-btn { transition: all 0.15s ease-in-out; }
         .tab-btn:hover { background-color: #f1f5f9; color: #0f172a; }
@@ -19,6 +19,43 @@
         .stepper-line { position: absolute; top: 20px; left: 40px; right: 40px; height: 3px; background: #e2e8f0; z-index: 1; }
         .exam-timer { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+        /* Modern sleek scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+            transition: background 0.2s ease;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 transparent;
+        }
+
+        /* Specific Kanban Board Sleek Scrollbar */
+        .custom-kanban-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
+        .custom-kanban-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 9999px;
+        }
+        .custom-kanban-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        .custom-kanban-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 h-screen flex flex-col overflow-hidden antialiased">
@@ -55,9 +92,9 @@
 
         <!-- CÁC HÀNH ĐỘNG GÓC PHẢI -->
         <div class="flex items-center gap-2.5">
-            <button onclick="switchTab('careers')" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center gap-1.5 transition shadow-2xs">
-                <i class="fas fa-external-link-alt text-slate-400 text-[11px]"></i> Xem Career Site
-            </button>
+            <a href="job_board.html" target="_blank" class="px-3 py-1.5 rounded-lg border border-blue-200 bg-blue-50/70 hover:bg-blue-100/70 text-blue-700 text-xs font-bold flex items-center gap-1.5 transition shadow-2xs">
+                <i class="fas fa-external-link-alt text-blue-600 text-[11px]"></i> Cổng Việc Làm (Job Board) ↗
+            </a>
             <button class="relative w-9 h-9 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 flex items-center justify-center transition" title="Thông báo hệ thống">
                 <i class="fas fa-bell text-sm"></i>
                 <span class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white"></span>
@@ -142,19 +179,18 @@
 
                 <!-- NHÓM 4: CỔNG ỨNG VIÊN (PUBLIC) -->
                 <div class="pt-2 border-t border-slate-100">
-                    <div class="sidebar-label px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-1.5">Cổng ứng viên (Public)</div>
-                    <div class="space-y-0.5">
-                        <button onclick="switchTab('careers')" id="btn-careers" class="tab-btn w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 transition">
-                            <i class="fas fa-globe w-4 text-center text-slate-400 text-sm"></i>
-                            <span class="sidebar-text truncate">Trang Career Site</span>
-                        </button>
-                        <button onclick="switchTab('track')" id="btn-track" class="tab-btn w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 transition">
-                            <i class="fas fa-search-location w-4 text-center text-slate-400 text-sm"></i>
-                            <span class="sidebar-text truncate">Tra cứu tiến trình</span>
-                        </button>
-                        <button onclick="switchTab('exam')" id="btn-exam" class="tab-btn w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 transition">
-                            <i class="fas fa-laptop-code w-4 text-center text-slate-400 text-sm"></i>
-                            <span class="sidebar-text truncate">Phòng thi online</span>
+                    <div class="sidebar-label px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-1.5">Cổng Ứng Viên (Public)</div>
+                    <div class="space-y-1">
+                        <a href="job_board.html" target="_blank" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200/60 transition">
+                            <span class="flex items-center gap-2.5">
+                                <i class="fas fa-globe text-blue-600 text-sm"></i>
+                                <span class="sidebar-text truncate">Mở Cổng Job Board</span>
+                            </span>
+                            <span class="text-[10px] bg-blue-200 text-blue-800 px-1.5 py-0.5 rounded font-mono font-bold">↗</span>
+                        </a>
+                        <button onclick="switchTab('careers')" id="btn-careers" class="tab-btn w-full flex items-center gap-3 px-3 py-1.5 rounded-xl text-xs font-medium text-slate-500 hover:text-slate-800 transition">
+                            <i class="fas fa-eye w-4 text-center text-slate-400 text-xs"></i>
+                            <span class="sidebar-text truncate">Xem trước Career Site</span>
                         </button>
                     </div>
                 </div>
@@ -163,23 +199,20 @@
         </aside>
 
         <!-- NỘI DUNG CHÍNH (TAB CONTENTS) -->
-        <main class="flex-1 overflow-y-auto p-6 lg:p-8 max-w-7xl w-full mx-auto">
+        <main class="flex-1 overflow-y-auto p-4 lg:p-6 max-w-[1480px] w-full mx-auto">
 
         <!-- ========================================== -->
         <!-- TAB 1: DASHBOARD & BÁO CÁO (REQUIREMENT 5) -->
         <!-- ========================================== -->
         <div id="tab-dashboard" class="tab-content">
             <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h1 class="text-2xl font-extrabold text-slate-900">Bảng Điều Khiển Tuyển Dụng & Báo Cáo</h1>
-                    <p class="text-slate-500 text-sm mt-1">Theo dõi thời gian thực các chỉ số phễu tuyển dụng, nguồn ứng viên và tiến độ tuyển tháng 10/2026.</p>
-                </div>
+                <h1 class="text-2xl font-extrabold text-slate-900">Tổng quan tuyển dụng</h1>
                 <div class="flex items-center gap-3">
                     <button onclick="exportExcelDemo()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold flex items-center gap-2 shadow-sm transition">
-                        <i class="fas fa-file-excel"></i> Xuất Báo Cáo Excel (.xlsx)
+                        <i class="fas fa-file-excel"></i> Xuất Excel
                     </button>
                     <button onclick="switchTab('pipeline')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold flex items-center gap-2 shadow-sm transition">
-                        <i class="fas fa-columns"></i> Bảng Pipeline ATS
+                        <i class="fas fa-columns"></i> Pipeline ATS
                     </button>
                 </div>
             </div>
@@ -225,12 +258,12 @@
                 <!-- Funnel 6 stages -->
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-2">
                     <h3 class="font-bold text-slate-900 text-base mb-4 flex items-center gap-2">
-                        <i class="fas fa-filter text-blue-600"></i> Phễu Chuyển Đổi Tuyển Dụng (Recruitment Funnel)
+                        <i class="fas fa-filter text-blue-600"></i> Phễu tuyển dụng
                     </h3>
                     <div class="space-y-3">
                         <div>
                             <div class="flex justify-between text-xs font-bold mb-1">
-                                <span>1. Hồ Sơ Mới Tiếp Nhận (Applied)</span>
+                                <span>1. Ứng tuyển</span>
                                 <span>142 ứng viên (100%)</span>
                             </div>
                             <div class="w-full bg-slate-100 h-4 rounded-full overflow-hidden">
@@ -239,7 +272,7 @@
                         </div>
                         <div>
                             <div class="flex justify-between text-xs font-bold mb-1">
-                                <span>2. Đạt Sơ Loại CV (Screening Passed)</span>
+                                <span>2. Sơ loại</span>
                                 <span>68 ứng viên (47.8%)</span>
                             </div>
                             <div class="w-full bg-slate-100 h-4 rounded-full overflow-hidden">
@@ -248,7 +281,7 @@
                         </div>
                         <div>
                             <div class="flex justify-between text-xs font-bold mb-1">
-                                <span>3. Hoàn Thành Bài Test Năng Lực (Assessment)</span>
+                                <span>3. Bài test</span>
                                 <span>32 ứng viên (22.5%)</span>
                             </div>
                             <div class="w-full bg-slate-100 h-4 rounded-full overflow-hidden">
@@ -257,7 +290,7 @@
                         </div>
                         <div>
                             <div class="flex justify-between text-xs font-bold mb-1">
-                                <span>4. Phỏng Vấn Kỹ Thuật & HR (Interviews)</span>
+                                <span>4. Phỏng vấn</span>
                                 <span>18 ứng viên (12.6%)</span>
                             </div>
                             <div class="w-full bg-slate-100 h-4 rounded-full overflow-hidden">
@@ -266,7 +299,7 @@
                         </div>
                         <div>
                             <div class="flex justify-between text-xs font-bold mb-1">
-                                <span>5. Gửi Đề Nghị Nhận Việc (Offer Sent)</span>
+                                <span>5. Gửi offer</span>
                                 <span>7 ứng viên (4.9%)</span>
                             </div>
                             <div class="w-full bg-slate-100 h-4 rounded-full overflow-hidden">
@@ -275,7 +308,7 @@
                         </div>
                         <div>
                             <div class="flex justify-between text-xs font-bold mb-1">
-                                <span>6. Nhận Việc & Onboarding (Hired)</span>
+                                <span>6. Nhận việc</span>
                                 <span>5 nhân sự (3.5%)</span>
                             </div>
                             <div class="w-full bg-slate-100 h-4 rounded-full overflow-hidden">
@@ -288,7 +321,7 @@
                 <!-- Source Breakdown -->
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                     <h3 class="font-bold text-slate-900 text-base mb-4 flex items-center gap-2">
-                        <i class="fas fa-pie-chart text-indigo-600"></i> Nguồn Hồ Sơ (Sourcing)
+                        <i class="fas fa-pie-chart text-indigo-600"></i> Nguồn ứng viên
                     </h3>
                     <div class="space-y-4 text-sm">
                         <div class="flex items-center justify-between">
@@ -300,7 +333,7 @@
                             <span class="font-bold">42 hồ sơ (29.5%)</span>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="flex items-center gap-2"><i class="fas fa-users text-purple-600"></i> Giới thiệu nội bộ (Referral)</span>
+                            <span class="flex items-center gap-2"><i class="fas fa-users text-purple-600"></i> Giới thiệu nội bộ</span>
                             <span class="font-bold">26 hồ sơ (18.3%)</span>
                         </div>
                         <div class="flex items-center justify-between">
@@ -313,27 +346,496 @@
         </div>
 
         <!-- ========================================== -->
-        <!-- TAB 6: BÀI TEST & INBOUND WEBHOOK (REQ 1) -->
+        <!-- TAB: TIN TUYỂN DỤNG                        -->
+        <!-- ========================================== -->
+        <div id="tab-jobs" class="tab-content hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-briefcase text-blue-600"></i> Tin tuyển dụng
+                </h1>
+                <button onclick="alert('Mở form tạo tin tuyển dụng mới')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs md:text-sm font-bold flex items-center gap-2 shadow-sm transition">
+                    <i class="fas fa-plus"></i> Tạo tin mới
+                </button>
+            </div>
+
+            <!-- SEARCH & FILTER -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-6 flex flex-wrap gap-4 items-center">
+                <div class="flex-1 min-w-[220px]">
+                    <input type="text" placeholder="Tìm theo chức danh, phòng ban..." class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                </div>
+                <div class="w-48">
+                    <select class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                        <option value="">Tất cả phòng ban</option>
+                        <option>Kỹ thuật & Công nghệ</option>
+                        <option>Sản phẩm & Thiết kế</option>
+                        <option>Nhân sự & Đào tạo</option>
+                    </select>
+                </div>
+                <div class="w-40">
+                    <select class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                        <option value="">Tất cả trạng thái</option>
+                        <option>Đang tuyển</option>
+                        <option>Tạm dừng</option>
+                        <option>Đã đóng</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- JOBS LIST -->
+            <div class="space-y-4">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-blue-400 transition">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                            <h3 class="text-base font-bold text-slate-900">Senior Java Backend Engineer</h3>
+                            <span class="px-2.5 py-0.5 bg-emerald-50 text-emerald-700 text-xs rounded-full font-bold">Đang tuyển</span>
+                            <span class="px-2.5 py-0.5 bg-blue-50 text-blue-700 text-xs rounded-full font-semibold">Toàn thời gian</span>
+                        </div>
+                        <div class="flex items-center gap-4 text-xs text-slate-500 flex-wrap">
+                            <span><i class="fas fa-building text-slate-400 mr-1"></i> Phòng Kỹ thuật & Công nghệ</span>
+                            <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> Hà Nội (Hybrid)</span>
+                            <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 25 - 35 Triệu</span>
+                            <span><i class="fas fa-users text-slate-400 mr-1"></i> Chỉ tiêu: <strong>2</strong></span>
+                            <span class="text-rose-500"><i class="fas fa-calendar-times mr-1"></i> Hạn: 15/11/2026</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 shrink-0">
+                        <div class="text-center pr-4 border-r border-slate-200">
+                            <div class="text-2xl font-extrabold text-blue-600">28</div>
+                            <div class="text-[11px] text-slate-400">Ứng viên</div>
+                        </div>
+                        <div class="flex flex-col gap-1.5">
+                            <button onclick="switchTab('pipeline')" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition">
+                                Xem Pipeline
+                            </button>
+                            <button onclick="switchTab('careers')" class="px-3.5 py-1.5 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-semibold transition">
+                                Xem Career Site
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-blue-400 transition">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                            <h3 class="text-base font-bold text-slate-900">Flutter Mobile Developer</h3>
+                            <span class="px-2.5 py-0.5 bg-emerald-50 text-emerald-700 text-xs rounded-full font-bold">Đang tuyển</span>
+                            <span class="px-2.5 py-0.5 bg-blue-50 text-blue-700 text-xs rounded-full font-semibold">Toàn thời gian</span>
+                        </div>
+                        <div class="flex items-center gap-4 text-xs text-slate-500 flex-wrap">
+                            <span><i class="fas fa-building text-slate-400 mr-1"></i> Phòng Kỹ thuật & Công nghệ</span>
+                            <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> Hà Nội / Remote</span>
+                            <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 18 - 28 Triệu</span>
+                            <span><i class="fas fa-users text-slate-400 mr-1"></i> Chỉ tiêu: <strong>3</strong></span>
+                            <span class="text-rose-500"><i class="fas fa-calendar-times mr-1"></i> Hạn: 20/11/2026</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 shrink-0">
+                        <div class="text-center pr-4 border-r border-slate-200">
+                            <div class="text-2xl font-extrabold text-blue-600">35</div>
+                            <div class="text-[11px] text-slate-400">Ứng viên</div>
+                        </div>
+                        <div class="flex flex-col gap-1.5">
+                            <button onclick="switchTab('pipeline')" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition">
+                                Xem Pipeline
+                            </button>
+                            <button onclick="switchTab('careers')" class="px-3.5 py-1.5 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-semibold transition">
+                                Xem Career Site
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-blue-400 transition">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                            <h3 class="text-base font-bold text-slate-900">UI/UX Product Designer</h3>
+                            <span class="px-2.5 py-0.5 bg-emerald-50 text-emerald-700 text-xs rounded-full font-bold">Đang tuyển</span>
+                            <span class="px-2.5 py-0.5 bg-blue-50 text-blue-700 text-xs rounded-full font-semibold">Toàn thời gian</span>
+                        </div>
+                        <div class="flex items-center gap-4 text-xs text-slate-500 flex-wrap">
+                            <span><i class="fas fa-building text-slate-400 mr-1"></i> Phòng Sản phẩm & Thiết kế</span>
+                            <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> TP. Hồ Chí Minh</span>
+                            <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 16 - 24 Triệu</span>
+                            <span><i class="fas fa-users text-slate-400 mr-1"></i> Chỉ tiêu: <strong>1</strong></span>
+                            <span class="text-rose-500"><i class="fas fa-calendar-times mr-1"></i> Hạn: 10/11/2026</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 shrink-0">
+                        <div class="text-center pr-4 border-r border-slate-200">
+                            <div class="text-2xl font-extrabold text-blue-600">19</div>
+                            <div class="text-[11px] text-slate-400">Ứng viên</div>
+                        </div>
+                        <div class="flex flex-col gap-1.5">
+                            <button onclick="switchTab('pipeline')" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition">
+                                Xem Pipeline
+                            </button>
+                            <button onclick="switchTab('careers')" class="px-3.5 py-1.5 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-semibold transition">
+                                Xem Career Site
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TAB: PIPELINE KANBAN                       -->
+        <!-- ========================================== -->
+        <div id="tab-pipeline" class="tab-content hidden">
+            <!-- Header & Actions -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fas fa-columns text-blue-600"></i> Pipeline tuyển dụng
+                    </h1>
+                    <div class="text-xs text-slate-500 mt-1">6 giai đoạn tuyển dụng • 7 ứng viên đang tiến hành</div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="exportExcelDemo()" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+                        <i class="fas fa-file-excel text-emerald-600"></i> Xuất Excel
+                    </button>
+                    <button onclick="alert('Thêm ứng viên mới vào pipeline ATS')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition">
+                        <i class="fas fa-user-plus"></i> Thêm ứng viên
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filter Bar & Scroll Controls -->
+            <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs mb-5 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex flex-wrap items-center gap-2.5 flex-1">
+                    <div class="relative min-w-[220px]">
+                        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" id="pipelineSearch" oninput="filterPipelineCards()" placeholder="Lọc theo tên ứng viên..." class="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:outline-none focus:bg-white focus:border-blue-500 transition">
+                    </div>
+                    <select id="pipelineJobFilter" onchange="filterPipelineCards()" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500">
+                        <option value="">Tất cả vị trí</option>
+                        <option value="Java">Senior Java Backend</option>
+                        <option value="Flutter">Flutter Mobile Developer</option>
+                        <option value="Designer">UI/UX Designer</option>
+                        <option value="Web">Thực tập sinh Web</option>
+                        <option value="HR">Chuyên viên HR</option>
+                    </select>
+                </div>
+
+                <!-- Sleek scroll controls -->
+                <div class="flex items-center gap-2">
+                    <span class="text-[11px] text-slate-400 font-medium hidden sm:inline"><i class="fas fa-info-circle mr-1"></i>Cuộn ngang:</span>
+                    <button onclick="scrollKanban(-280)" class="w-7 h-7 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 flex items-center justify-center text-slate-600 transition" title="Cuộn sang trái">
+                        <i class="fas fa-chevron-left text-[11px]"></i>
+                    </button>
+                    <button onclick="scrollKanban(280)" class="w-7 h-7 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 flex items-center justify-center text-slate-600 transition" title="Cuộn sang phải">
+                        <i class="fas fa-chevron-right text-[11px]"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- KANBAN BOARD (Responsive Grid + Custom Sleek Scrollbar) -->
+            <div id="kanbanBoard" class="flex xl:grid xl:grid-cols-6 gap-3.5 overflow-x-auto pb-4 custom-kanban-scroll">
+                
+                <!-- COL 1: Mới ứng tuyển -->
+                <div class="w-[230px] shrink-0 xl:w-auto xl:shrink bg-slate-100/70 p-3 rounded-2xl flex flex-col border border-slate-200/60">
+                    <div class="flex justify-between items-center mb-3 px-1 font-bold text-xs text-slate-700">
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                            <i class="fas fa-inbox text-blue-500 text-[11px]"></i> Mới ứng tuyển
+                        </span>
+                        <span class="bg-blue-100 text-blue-800 text-[10px] px-2 py-0.5 rounded-full font-bold">1</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="candidate-card bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs hover:shadow-md hover:border-blue-300 hover:-translate-y-0.5 transition cursor-pointer" data-name="Bùi Minh Trang" data-job="Flutter" onclick="switchTab('candidates')">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="font-bold text-xs text-slate-900">Bùi Minh Trang</div>
+                                <span class="w-6 h-6 rounded-full bg-blue-50 text-blue-600 font-bold text-[10px] flex items-center justify-center shrink-0">BT</span>
+                            </div>
+                            <div class="text-[11px] text-blue-600 font-semibold mt-0.5">Flutter Mobile Developer</div>
+                            <div class="text-[10px] text-slate-400 mt-1">1.5 năm kn • TopCV</div>
+                            <div class="mt-2.5 pt-2 border-t border-slate-100 flex justify-between items-center text-[11px]">
+                                <span class="text-amber-500 font-bold">★ 3.8</span>
+                                <span class="text-slate-400">26/10</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COL 2: Sơ loại CV -->
+                <div class="w-[230px] shrink-0 xl:w-auto xl:shrink bg-slate-100/70 p-3 rounded-2xl flex flex-col border border-slate-200/60">
+                    <div class="flex justify-between items-center mb-3 px-1 font-bold text-xs text-slate-700">
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                            <i class="fas fa-filter text-amber-500 text-[11px]"></i> Sơ loại CV
+                        </span>
+                        <span class="bg-amber-100 text-amber-800 text-[10px] px-2 py-0.5 rounded-full font-bold">1</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="candidate-card bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs hover:shadow-md hover:border-amber-300 hover:-translate-y-0.5 transition cursor-pointer" data-name="Vũ Đức Thắng" data-job="Web" onclick="switchTab('candidates')">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="font-bold text-xs text-slate-900">Vũ Đức Thắng</div>
+                                <span class="w-6 h-6 rounded-full bg-amber-50 text-amber-600 font-bold text-[10px] flex items-center justify-center shrink-0">VT</span>
+                            </div>
+                            <div class="text-[11px] text-blue-600 font-semibold mt-0.5">Thực tập sinh Web</div>
+                            <div class="text-[10px] text-slate-400 mt-1">Mới tốt nghiệp • TopCV</div>
+                            <div class="mt-2.5 pt-2 border-t border-slate-100 flex justify-between items-center text-[11px]">
+                                <span class="text-amber-500 font-bold">★ 4.0</span>
+                                <span class="text-slate-400">25/10</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COL 3: Bài test -->
+                <div class="w-[230px] shrink-0 xl:w-auto xl:shrink bg-slate-100/70 p-3 rounded-2xl flex flex-col border border-slate-200/60">
+                    <div class="flex justify-between items-center mb-3 px-1 font-bold text-xs text-slate-700">
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+                            <i class="fas fa-vial text-purple-500 text-[11px]"></i> Bài test
+                        </span>
+                        <span class="bg-purple-100 text-purple-800 text-[10px] px-2 py-0.5 rounded-full font-bold">1</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="candidate-card bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs hover:shadow-md hover:border-purple-300 hover:-translate-y-0.5 transition cursor-pointer" data-name="Nguyễn Văn An" data-job="Java" onclick="switchTab('assessments')">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="font-bold text-xs text-slate-900">Nguyễn Văn An</div>
+                                <span class="w-6 h-6 rounded-full bg-purple-50 text-purple-600 font-bold text-[10px] flex items-center justify-center shrink-0">NA</span>
+                            </div>
+                            <div class="text-[11px] text-blue-600 font-semibold mt-0.5">Senior Java Backend</div>
+                            <div class="text-[10px] text-purple-600 font-semibold mt-1">Đang làm: TEST-SEC-8821</div>
+                            <div class="mt-2.5 pt-2 border-t border-slate-100 flex justify-between items-center text-[11px]">
+                                <span class="text-amber-500 font-bold">★ 4.8</span>
+                                <span class="text-emerald-600 font-bold">92/100</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COL 4: Phỏng vấn -->
+                <div class="w-[230px] shrink-0 xl:w-auto xl:shrink bg-slate-100/70 p-3 rounded-2xl flex flex-col border border-slate-200/60">
+                    <div class="flex justify-between items-center mb-3 px-1 font-bold text-xs text-slate-700">
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-sky-500"></span>
+                            <i class="fas fa-calendar-check text-sky-600 text-[11px]"></i> Phỏng vấn
+                        </span>
+                        <span class="bg-sky-100 text-sky-800 text-[10px] px-2 py-0.5 rounded-full font-bold">2</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="candidate-card bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs hover:shadow-md hover:border-sky-300 hover:-translate-y-0.5 transition cursor-pointer" data-name="Trần Thị Mai" data-job="Flutter" onclick="switchTab('interviews')">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="font-bold text-xs text-slate-900">Trần Thị Mai</div>
+                                <span class="w-6 h-6 rounded-full bg-sky-50 text-sky-600 font-bold text-[10px] flex items-center justify-center shrink-0">TM</span>
+                            </div>
+                            <div class="text-[11px] text-blue-600 font-semibold mt-0.5">Flutter Mobile Dev</div>
+                            <div class="text-[10px] text-slate-400 mt-1">Hôm nay 14:00 • Tech Lead</div>
+                            <div class="mt-2.5 pt-2 border-t border-slate-100 flex justify-between items-center text-[11px]">
+                                <span class="text-amber-500 font-bold">★ 4.5</span>
+                                <span class="text-emerald-600 font-bold">88/100</span>
+                            </div>
+                        </div>
+                        <div class="candidate-card bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs hover:shadow-md hover:border-sky-300 hover:-translate-y-0.5 transition cursor-pointer" data-name="Lê Hoàng Nam" data-job="Designer" onclick="switchTab('interviews')">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="font-bold text-xs text-slate-900">Lê Hoàng Nam</div>
+                                <span class="w-6 h-6 rounded-full bg-indigo-50 text-indigo-600 font-bold text-[10px] flex items-center justify-center shrink-0">HN</span>
+                            </div>
+                            <div class="text-[11px] text-blue-600 font-semibold mt-0.5">UI/UX Designer</div>
+                            <div class="text-[10px] text-slate-400 mt-1">Hôm nay 15:30 • PM</div>
+                            <div class="mt-2.5 pt-2 border-t border-slate-100 flex justify-between items-center text-[11px]">
+                                <span class="text-amber-500 font-bold">★ 4.7</span>
+                                <span class="text-slate-500">Take-Home</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COL 5: Gửi offer -->
+                <div class="w-[230px] shrink-0 xl:w-auto xl:shrink bg-slate-100/70 p-3 rounded-2xl flex flex-col border border-slate-200/60">
+                    <div class="flex justify-between items-center mb-3 px-1 font-bold text-xs text-slate-700">
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                            <i class="fas fa-file-signature text-indigo-600 text-[11px]"></i> Gửi offer
+                        </span>
+                        <span class="bg-indigo-100 text-indigo-800 text-[10px] px-2 py-0.5 rounded-full font-bold">1</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="candidate-card bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs hover:shadow-md hover:border-indigo-300 hover:-translate-y-0.5 transition cursor-pointer" data-name="Phạm Quốc Bảo" data-job="Java" onclick="switchTab('offers')">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="font-bold text-xs text-slate-900">Phạm Quốc Bảo</div>
+                                <span class="w-6 h-6 rounded-full bg-indigo-50 text-indigo-600 font-bold text-[10px] flex items-center justify-center shrink-0">QB</span>
+                            </div>
+                            <div class="text-[11px] text-blue-600 font-semibold mt-0.5">Senior Java Backend</div>
+                            <div class="text-[10px] text-emerald-600 font-bold mt-1">32M Gross • Chờ phản hồi</div>
+                            <div class="mt-2.5 pt-2 border-t border-slate-100 flex justify-between items-center text-[11px]">
+                                <span class="text-amber-500 font-bold">★ 4.9</span>
+                                <span class="text-slate-400">Hạn 28/10</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COL 6: Đã nhận việc -->
+                <div class="w-[230px] shrink-0 xl:w-auto xl:shrink bg-slate-100/70 p-3 rounded-2xl flex flex-col border border-slate-200/60">
+                    <div class="flex justify-between items-center mb-3 px-1 font-bold text-xs text-slate-700">
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            <i class="fas fa-user-check text-emerald-600 text-[11px]"></i> Đã nhận việc
+                        </span>
+                        <span class="bg-emerald-100 text-emerald-800 text-[10px] px-2 py-0.5 rounded-full font-bold">1</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="candidate-card bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs hover:shadow-md hover:border-emerald-300 hover:-translate-y-0.5 transition cursor-pointer" data-name="Đỗ Hải Yến" data-job="HR" onclick="switchTab('onboarding')">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="font-bold text-xs text-slate-900">Đỗ Hải Yến</div>
+                                <span class="w-6 h-6 rounded-full bg-emerald-50 text-emerald-600 font-bold text-[10px] flex items-center justify-center shrink-0">HY</span>
+                            </div>
+                            <div class="text-[11px] text-blue-600 font-semibold mt-0.5">Chuyên viên HR</div>
+                            <div class="text-[10px] text-emerald-600 font-bold mt-1">Onboarding: 01/11</div>
+                            <div class="mt-2.5 pt-2 border-t border-slate-100 flex justify-between items-center text-[11px]">
+                                <span class="text-amber-500 font-bold">★ 4.6</span>
+                                <span class="text-emerald-600 font-bold">Hoàn tất</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TAB: KHO ỨNG VIÊN                          -->
+        <!-- ========================================== -->
+        <div id="tab-candidates" class="tab-content hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-user-friends text-blue-600"></i> Kho ứng viên
+                </h1>
+                <div class="flex items-center gap-2">
+                    <button onclick="exportExcelDemo()" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs md:text-sm font-semibold transition">
+                        <i class="fas fa-file-excel mr-1"></i> Xuất Excel
+                    </button>
+                    <button onclick="alert('Mở form nhập CV hàng loạt')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs md:text-sm font-bold flex items-center gap-1.5 shadow-sm transition">
+                        <i class="fas fa-file-import"></i> Nhập CV
+                    </button>
+                </div>
+            </div>
+
+            <!-- SEARCH & FILTER -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-6 flex flex-wrap gap-4 items-center">
+                <div class="flex-1 min-w-[200px]">
+                    <input type="text" placeholder="Tìm theo tên, email, kỹ năng..." class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                </div>
+                <div class="w-48">
+                    <select class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                        <option value="">Tất cả vị trí</option>
+                        <option>Senior Java Backend Engineer</option>
+                        <option>Flutter Mobile Developer</option>
+                        <option>UI/UX Product Designer</option>
+                    </select>
+                </div>
+                <div class="w-40">
+                    <select class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                        <option value="">Tất cả vòng</option>
+                        <option>Mới ứng tuyển</option>
+                        <option>Sơ loại CV</option>
+                        <option>Bài test</option>
+                        <option>Phỏng vấn</option>
+                        <option>Gửi offer</option>
+                        <option>Đã nhận việc</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- CANDIDATES TABLE -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-100 text-xs font-bold text-slate-500 uppercase">
+                            <tr>
+                                <th class="p-4">Ứng viên</th>
+                                <th class="p-4">Vị trí ứng tuyển</th>
+                                <th class="p-4">Vòng hiện tại</th>
+                                <th class="p-4">Đánh giá</th>
+                                <th class="p-4">Nguồn</th>
+                                <th class="p-4">Ngày nộp</th>
+                                <th class="p-4">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="p-4">
+                                    <div class="font-bold text-slate-900">Nguyễn Văn An</div>
+                                    <div class="text-xs text-slate-500">an.nguyen@email.com • 0912 345 678</div>
+                                </td>
+                                <td class="p-4 text-xs font-semibold text-slate-800">Senior Java Backend Engineer</td>
+                                <td class="p-4"><span class="px-2.5 py-1 bg-purple-50 text-purple-700 text-xs rounded-full font-bold">Bài test (92/100)</span></td>
+                                <td class="p-4 text-xs font-bold text-amber-500">★ 4.8</td>
+                                <td class="p-4 text-xs text-slate-600">TopCV</td>
+                                <td class="p-4 text-xs text-slate-500">24/10/2026</td>
+                                <td class="p-4">
+                                    <button onclick="switchTab('exam')" class="text-blue-600 hover:text-blue-800 font-bold text-xs">Xem bài test</button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="p-4">
+                                    <div class="font-bold text-slate-900">Trần Thị Mai</div>
+                                    <div class="text-xs text-slate-500">mai.tran@outlook.com • 0987 654 321</div>
+                                </td>
+                                <td class="p-4 text-xs font-semibold text-slate-800">Flutter Mobile Developer</td>
+                                <td class="p-4"><span class="px-2.5 py-1 bg-blue-50 text-blue-700 text-xs rounded-full font-bold">Phỏng vấn Kỹ thuật</span></td>
+                                <td class="p-4 text-xs font-bold text-amber-500">★ 4.5</td>
+                                <td class="p-4 text-xs text-slate-600">LinkedIn</td>
+                                <td class="p-4 text-xs text-slate-500">23/10/2026</td>
+                                <td class="p-4">
+                                    <button onclick="switchTab('interviews')" class="text-blue-600 hover:text-blue-800 font-bold text-xs">Lịch hẹn</button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="p-4">
+                                    <div class="font-bold text-slate-900">Lê Hoàng Nam</div>
+                                    <div class="text-xs text-slate-500">nam.lehoang@gmail.com • 0905 112 233</div>
+                                </td>
+                                <td class="p-4 text-xs font-semibold text-slate-800">UI/UX Product Designer</td>
+                                <td class="p-4"><span class="px-2.5 py-1 bg-blue-50 text-blue-700 text-xs rounded-full font-bold">Phỏng vấn HR</span></td>
+                                <td class="p-4 text-xs font-bold text-amber-500">★ 4.7</td>
+                                <td class="p-4 text-xs text-slate-600">ITviec</td>
+                                <td class="p-4 text-xs text-slate-500">21/10/2026</td>
+                                <td class="p-4">
+                                    <button onclick="switchTab('interviews')" class="text-blue-600 hover:text-blue-800 font-bold text-xs">Lịch hẹn</button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="p-4">
+                                    <div class="font-bold text-slate-900">Phạm Quốc Bảo</div>
+                                    <div class="text-xs text-slate-500">bao.pham@gmail.com • 0934 998 877</div>
+                                </td>
+                                <td class="p-4 text-xs font-semibold text-slate-800">Senior Java Backend Engineer</td>
+                                <td class="p-4"><span class="px-2.5 py-1 bg-amber-50 text-amber-700 text-xs rounded-full font-bold">Offer (32M)</span></td>
+                                <td class="p-4 text-xs font-bold text-amber-500">★ 4.9</td>
+                                <td class="p-4 text-xs text-slate-600">Nội bộ</td>
+                                <td class="p-4 text-xs text-slate-500">18/10/2026</td>
+                                <td class="p-4">
+                                    <button onclick="switchTab('offers')" class="text-blue-600 hover:text-blue-800 font-bold text-xs">Xem offer</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TAB: BÀI TEST & ĐÁNH GIÁ                   -->
         <!-- ========================================== -->
         <div id="tab-assessments" class="tab-content hidden">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-                <div>
-                    <h1 class="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-                        <i class="fas fa-vial text-blue-600"></i> Giao Bài Test & Đánh Giá Năng Lực (Assessments)
-                    </h1>
-                    <p class="text-slate-500 text-sm mt-1">
-                        Hỗ trợ Nhà tuyển dụng tải file đề bài (PDF/Word), hệ thống AI tự động quét bóc tách thành bài khảo sát trực tuyến hoặc nộp offline qua Web/Email.
-                    </p>
-                </div>
+                <h1 class="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-vial text-blue-600"></i> Bài test năng lực
+                </h1>
                 <div class="flex flex-wrap items-center gap-2">
-                    <button onclick="openUploadDocModal()" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs md:text-sm font-bold flex items-center gap-2 shadow-sm transition">
-                        <i class="fas fa-magic text-amber-300"></i> Tải Đề PDF/Word (AI Parser)
+                    <button onclick="openUploadDocModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs md:text-sm font-bold flex items-center gap-2 shadow-sm transition">
+                        <i class="fas fa-upload"></i> Tải lên đề thi
                     </button>
                     <button onclick="simulateWebhook()" class="px-3.5 py-2 bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 transition">
-                        <i class="fas fa-envelope-open-text"></i> Test Inbound Webhook
+                        <i class="fas fa-envelope-open-text"></i> Mô phỏng Webhook
                     </button>
                     <button onclick="switchTab('exam')" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 transition">
-                        <i class="fas fa-external-link-alt"></i> Xem Phòng Thi Ứng Viên
+                        <i class="fas fa-external-link-alt"></i> Xem phòng thi
                     </button>
                 </div>
             </div>
@@ -341,8 +843,8 @@
             <!-- ASSIGNMENT TRACKING TABLE -->
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-8">
                 <div class="p-4 bg-slate-50 border-b border-slate-200 font-bold text-sm text-slate-700 flex justify-between items-center">
-                    <span class="flex items-center gap-2"><i class="fas fa-tasks text-blue-600"></i> Danh Sách Ứng Viên Được Giao Bài Kiểm Tra</span>
-                    <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">Chế độ kép: Form Web & Offline</span>
+                    <span class="flex items-center gap-2"><i class="fas fa-tasks text-blue-600"></i> Danh sách bài test</span>
+                    <span class="text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full font-bold">Tất cả kênh</span>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm">
@@ -439,48 +941,99 @@
                     </table>
                 </div>
             </div>
+        </div>
 
-            <!-- HOW IT WORKS CALLOUT -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6">
-                    <h3 class="font-bold text-blue-900 text-base mb-2 flex items-center gap-2">
-                        <i class="fas fa-magic text-blue-600"></i> Cơ Chế AI Doc-to-Form Parser
-                    </h3>
-                    <p class="text-blue-800 text-sm mb-4">
-                        Nhà tuyển dụng chỉ cần upload file Word/PDF đề bài. Hệ thống trích xuất văn bản qua Apache POI / PDFBox, sau đó gửi prompt có cấu trúc đến <strong>Gemini 1.5 Flash</strong> để bóc tách thành danh sách câu hỏi, sinh ra trang thi online dạng khảo sát tự luận không giới hạn từ.
-                    </p>
-                    <button onclick="openUploadDocModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg shadow-sm transition flex items-center gap-2">
-                        <i class="fas fa-upload"></i> Thử Nghiệm Tải Lên Đề Bài Mới
-                    </button>
-                </div>
+        <!-- ========================================== -->
+        <!-- TAB: LỊCH PHỎNG VẤN                        -->
+        <!-- ========================================== -->
+        <div id="tab-interviews" class="tab-content hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-calendar-alt text-blue-600"></i> Lịch phỏng vấn
+                </h1>
+                <button onclick="alert('Mở form tạo lịch phỏng vấn mới')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs md:text-sm font-bold flex items-center gap-1.5 shadow-sm transition">
+                    <i class="fas fa-plus"></i> Đặt lịch mới
+                </button>
+            </div>
 
-                <div class="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl p-6">
-                    <h3 class="font-bold text-purple-900 text-base mb-2 flex items-center gap-2">
-                        <i class="fas fa-robot text-purple-600"></i> Cơ Chế Inbound Webhook (Reply Email)
-                    </h3>
-                    <p class="text-purple-800 text-sm mb-4">
-                        Nếu ứng viên muốn làm bài offline (Take-Home), họ tải file đề gốc về máy. Khi hoàn thành, chỉ cần <strong>Reply trực tiếp vào email nhận đề kèm file giải</strong>. Inbound Webhook tại <code>/api/v1/webhooks/resend-inbound</code> sẽ tự động gán bài vào hồ sơ mà không cần đăng nhập!
-                    </p>
-                    <button onclick="simulateWebhook()" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-lg shadow-sm transition flex items-center gap-2">
-                        <i class="fas fa-paper-plane"></i> Chạy Thử Mô Phỏng Inbound Webhook
-                    </button>
+            <!-- INTERVIEW SCHEDULES TABLE -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-100 text-xs font-bold text-slate-500 uppercase">
+                            <tr>
+                                <th class="p-4">Thời gian</th>
+                                <th class="p-4">Ứng viên</th>
+                                <th class="p-4">Vị trí</th>
+                                <th class="p-4">Vòng phỏng vấn</th>
+                                <th class="p-4">Hình thức</th>
+                                <th class="p-4">Người phỏng vấn</th>
+                                <th class="p-4">Trạng thái</th>
+                                <th class="p-4">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="p-4">
+                                    <div class="font-bold text-blue-600">Hôm nay (26/10)</div>
+                                    <div class="text-xs text-slate-400">09:30 - 10:30</div>
+                                </td>
+                                <td class="p-4 font-bold text-slate-900">Nguyễn Văn An</td>
+                                <td class="p-4 text-xs text-slate-700">Senior Java Backend Engineer</td>
+                                <td class="p-4"><span class="px-2 py-0.5 bg-blue-50 text-blue-700 text-xs rounded font-semibold">Phỏng vấn Kỹ thuật</span></td>
+                                <td class="p-4 text-xs text-blue-600 font-semibold"><i class="fas fa-video mr-1"></i> Google Meet</td>
+                                <td class="p-4 text-xs text-slate-600">Anh Tuấn (Tech Lead)</td>
+                                <td class="p-4"><span class="px-2.5 py-0.5 bg-amber-50 text-amber-700 text-xs rounded-full font-bold">Sắp diễn ra</span></td>
+                                <td class="p-4">
+                                    <button onclick="alert('Bảng chấm Scorecard 4 tiêu chí:\n- Kỹ thuật: 4.8/5\n- Problem Solving: 4.9/5\n- Giao tiếp: 4.5/5\n- Văn hóa: 4.8/5\n=> Quyết định: PASS')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition">Chấm điểm</button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="p-4">
+                                    <div class="font-bold text-blue-600">Hôm nay (26/10)</div>
+                                    <div class="text-xs text-slate-400">14:00 - 15:00</div>
+                                </td>
+                                <td class="p-4 font-bold text-slate-900">Trần Thị Mai</td>
+                                <td class="p-4 text-xs text-slate-700">Flutter Mobile Developer</td>
+                                <td class="p-4"><span class="px-2 py-0.5 bg-blue-50 text-blue-700 text-xs rounded font-semibold">Live Coding</span></td>
+                                <td class="p-4 text-xs text-emerald-600 font-semibold"><i class="fas fa-building mr-1"></i> Phòng họp 302</td>
+                                <td class="p-4 text-xs text-slate-600">Anh Hưng (Mobile Lead)</td>
+                                <td class="p-4"><span class="px-2.5 py-0.5 bg-amber-50 text-amber-700 text-xs rounded-full font-bold">Sắp diễn ra</span></td>
+                                <td class="p-4">
+                                    <button onclick="alert('Chấm điểm phỏng vấn cho Trần Thị Mai')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition">Chấm điểm</button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="p-4">
+                                    <div class="font-bold text-blue-600">Hôm nay (26/10)</div>
+                                    <div class="text-xs text-slate-400">15:30 - 16:30</div>
+                                </td>
+                                <td class="p-4 font-bold text-slate-900">Lê Hoàng Nam</td>
+                                <td class="p-4 text-xs text-slate-700">UI/UX Product Designer</td>
+                                <td class="p-4"><span class="px-2 py-0.5 bg-purple-50 text-purple-700 text-xs rounded-font-semibold">Phỏng vấn Portfolio</span></td>
+                                <td class="p-4 text-xs text-blue-600 font-semibold"><i class="fas fa-video mr-1"></i> Google Meet</td>
+                                <td class="p-4 text-xs text-slate-600">Anh Nam (PM)</td>
+                                <td class="p-4"><span class="px-2.5 py-0.5 bg-amber-50 text-amber-700 text-xs rounded-full font-bold">Sắp diễn ra</span></td>
+                                <td class="p-4">
+                                    <button onclick="alert('Chấm điểm phỏng vấn cho Lê Hoàng Nam')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition">Chấm điểm</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
         <!-- ========================================== -->
+        <!-- TAB: OFFER & PHÊ DUYỆT                     -->
+        <!-- ========================================== -->
         <div id="tab-offers" class="tab-content hidden">
             <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h1 class="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-                        <i class="fas fa-file-signature text-amber-600"></i> Quản Lý Offer & Luồng Phê Duyệt
-                    </h1>
-                    <p class="text-slate-500 text-sm mt-1">
-                        Luồng phê duyệt 5 bước: Soạn Thảo (Draft) &rarr; Chờ Phê Duyệt (Pending) &rarr; Đã Duyệt (Approved) &rarr; Đã Gửi (Sent) &rarr; Chấp Nhận (Accepted).
-                    </p>
-                </div>
-                <button onclick="openOfferModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold flex items-center gap-2 shadow-sm transition">
-                    <i class="fas fa-plus"></i> Tạo Offer Mới
+                <h1 class="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-file-signature text-amber-600"></i> Offer & Phê duyệt
+                </h1>
+                <button onclick="openOfferModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs md:text-sm font-bold flex items-center gap-2 shadow-sm transition">
+                    <i class="fas fa-plus"></i> Tạo offer
                 </button>
             </div>
 
@@ -507,11 +1060,11 @@
                             <td class="p-4">Lead DevOps Engineer</td>
                             <td class="p-4 font-bold text-emerald-600">42,000,000 VNĐ (Gross)</td>
                             <td class="p-4">CEO & HR Director</td>
-                            <td class="p-4"><span class="px-2.5 py-1 bg-amber-50 text-amber-700 text-xs rounded-full font-bold">Chờ Sếp Duyệt</span></td>
+                            <td class="p-4"><span class="px-2.5 py-1 bg-amber-50 text-amber-700 text-xs rounded-full font-bold">Chờ duyệt</span></td>
                             <td class="p-4 text-xs text-slate-500">28/10/2026</td>
                             <td class="p-4 flex gap-2">
-                                <button onclick="approveOfferDemo(this)" class="px-2.5 py-1 bg-emerald-600 text-white rounded text-xs font-bold hover:bg-emerald-700">Duyệt Ngay</button>
-                                <button onclick="previewOfferLetter()" class="px-2.5 py-1 border border-slate-300 rounded text-xs font-bold hover:bg-slate-50">Xem Thư</button>
+                                <button onclick="approveOfferDemo(this)" class="px-2.5 py-1 bg-emerald-600 text-white rounded text-xs font-bold hover:bg-emerald-700">Duyệt</button>
+                                <button onclick="previewOfferLetter()" class="px-2.5 py-1 border border-slate-300 rounded text-xs font-bold hover:bg-slate-50">Xem thư mời</button>
                             </td>
                         </tr>
                         <tr>
@@ -534,18 +1087,13 @@
         </div>
 
         <!-- ========================================== -->
-        <!-- TAB 8: ONBOARDING CHECKLIST (REQ 4)        -->
+        <!-- TAB: ONBOARDING                            -->
         <!-- ========================================== -->
         <div id="tab-onboarding" class="tab-content hidden">
             <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h1 class="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-                        <i class="fas fa-user-check text-emerald-600"></i> Quy Trình Tiếp Nhận Nhân Sự (Onboarding Checklist)
-                    </h1>
-                    <p class="text-slate-500 text-sm mt-1">
-                        Theo dõi danh sách các hạng mục chuẩn bị trước ngày làm việc đầu tiên của nhân sự mới.
-                    </p>
-                </div>
+                <h1 class="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-user-check text-emerald-600"></i> Tiếp nhận Onboarding
+                </h1>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -616,25 +1164,20 @@
         </div>
 
         <!-- ========================================== -->
-        <!-- TAB 9: QUẢN TRỊ HỆ THỐNG & AUDIT LOG (REQ 7) -->
+        <!-- TAB: CÀI ĐẶT HỆ THỐNG                      -->
         <!-- ========================================== -->
         <div id="tab-settings" class="tab-content hidden">
             <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h1 class="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-                        <i class="fas fa-sliders-h text-slate-700"></i> Quản Trị Hệ Thống, Phân Quyền & Audit Log
-                    </h1>
-                    <p class="text-slate-500 text-sm mt-1">
-                        Quản lý người dùng, vai trò (RBAC), phòng ban, cấu hình quy trình, mẫu email tự động và nhật ký hệ thống.
-                    </p>
-                </div>
+                <h1 class="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-sliders-h text-slate-700"></i> Cài đặt hệ thống
+                </h1>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- User RBAC -->
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                     <h3 class="font-bold text-slate-900 text-base mb-4 flex items-center gap-2">
-                        <i class="fas fa-users-cog text-blue-600"></i> Phân Quyền Vai Trò (RBAC)
+                        <i class="fas fa-users-cog text-blue-600"></i> Phân quyền (RBAC)
                     </h3>
                     <div class="space-y-3 text-sm">
                         <div class="p-3 bg-slate-50 rounded-lg flex justify-between items-center">
@@ -664,7 +1207,7 @@
                 <!-- Automated Email Templates -->
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                     <h3 class="font-bold text-slate-900 text-base mb-4 flex items-center gap-2">
-                        <i class="fas fa-envelope-open-text text-amber-600"></i> Mẫu Email Tự Động (Templates)
+                        <i class="fas fa-envelope-open-text text-amber-600"></i> Mẫu email tự động
                     </h3>
                     <div class="space-y-3 text-sm">
                         <div class="p-3 border border-slate-200 rounded-lg hover:border-blue-400 transition cursor-pointer">
@@ -694,7 +1237,7 @@
                 <!-- Audit Log -->
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                     <h3 class="font-bold text-slate-900 text-base mb-4 flex items-center gap-2">
-                        <i class="fas fa-history text-slate-600"></i> Nhật Ký Hệ Thống (Audit Log)
+                        <i class="fas fa-history text-slate-600"></i> Nhật ký hoạt động (Audit log)
                     </h3>
                     <div class="space-y-3 text-xs text-slate-600">
                         <div class="border-b border-slate-100 pb-2">
@@ -715,16 +1258,15 @@
         </div>
 
         <!-- ========================================== -->
-        <!-- TAB 10: CAREER SITE CÔNG KHAI (REQ 6)      -->
+        <!-- TAB: CAREER SITE CÔNG KHAI                 -->
         <!-- ========================================== -->
         <div id="tab-careers" class="tab-content hidden">
-            <div class="bg-gradient-to-r from-blue-700 to-indigo-800 rounded-3xl p-8 text-white mb-8 text-center shadow-lg">
-                <span class="bg-white/20 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Cơ Hội Nghề Nghiệp TechCorp</span>
-                <h2 class="text-3xl font-extrabold mt-3 mb-2">Kiến Tạo Sự Nghiệp Công Nghệ Đỉnh Cao</h2>
-                <p class="text-blue-100 max-w-xl mx-auto text-sm">Khám phá các vị trí tuyển dụng mở, chế độ đãi ngộ vượt trội và văn hóa tôn trọng tài năng.</p>
+            <div class="bg-gradient-to-r from-blue-700 to-indigo-800 rounded-2xl p-6 text-white mb-6 text-center shadow-sm">
+                <h2 class="text-2xl font-extrabold">Cơ hội việc làm tại TechCorp</h2>
+                <p class="text-blue-100 text-sm mt-1">Các vị trí tuyển dụng đang mở</p>
             </div>
 
-            <!-- SEARCH & FILTER TOOLBAR (NGÀNH NGHỀ & KHU VỰC) -->
+            <!-- SEARCH & FILTER TOOLBAR -->
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-6 flex flex-wrap gap-4 items-center">
                 <div class="flex-1 min-w-[200px]">
                     <input type="text" id="careerSearch" onkeyup="filterJobsDemo()" placeholder="Tìm kiếm theo chức danh (Java, Flutter, DevOps...)" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
@@ -746,7 +1288,7 @@
                     </select>
                 </div>
                 <button onclick="openOpenApplyModal()" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg text-sm font-bold flex items-center gap-1.5 shadow-sm">
-                    <i class="fas fa-file-upload"></i> Cổng Nộp CV Mở (Talent Pool)
+                    <i class="fas fa-file-upload"></i> Nộp CV mở
                 </button>
             </div>
 
@@ -787,19 +1329,18 @@
         </div>
 
         <!-- ========================================== -->
-        <!-- TAB 11: TRA CỨU HỒ SƠ LIVE STEPPER (REQ 6) -->
+        <!-- TAB: TRA CỨU HỒ SƠ                         -->
         <!-- ========================================== -->
         <div id="tab-track" class="tab-content hidden">
             <div class="max-w-3xl mx-auto">
                 <div class="text-center mb-8">
-                    <h1 class="text-2xl font-extrabold text-slate-900">Tra Cứu Trạng Thái Ứng Tuyển</h1>
-                    <p class="text-slate-500 text-sm mt-1">Nhập mã hồ sơ hoặc email để theo dõi tiến trình xét duyệt thời gian thực.</p>
+                    <h1 class="text-2xl font-extrabold text-slate-900">Tra cứu hồ sơ</h1>
                 </div>
 
                 <div class="bg-white p-3 rounded-2xl border border-slate-300 shadow-lg flex gap-3 mb-8">
                     <input type="text" id="trackInput" value="APP-2026-101" placeholder="Nhập mã hồ sơ (ví dụ: APP-2026-101)..." class="flex-1 px-4 py-2 border-none outline-none text-sm font-semibold">
                     <button onclick="lookupAppDemo()" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold shadow-sm">
-                        Tra Cứu
+                        Tra cứu
                     </button>
                 </div>
 
@@ -868,7 +1409,7 @@
                             <div class="text-xs text-blue-700 mt-0.5">Mã token đề thi: <strong>TEST-SEC-8821</strong> (Thời gian 60 phút)</div>
                         </div>
                         <button onclick="switchTab('exam')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg shadow transition">
-                            Vào Làm Bài Test Ngay &rarr;
+                            Làm bài test &rarr;
                         </button>
                     </div>
                 </div>
@@ -885,21 +1426,18 @@
             <div class="bg-slate-900 text-white p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 shadow-md">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center font-bold text-white shadow-md">
-                        <i class="fas fa-shield-alt text-lg"></i>
+                        <i class="fas fa-laptop-code text-lg"></i>
                     </div>
                     <div>
-                        <div class="font-extrabold text-base flex items-center gap-2">
-                            TechCorp Assessment Portal
-                            <span class="text-[10px] bg-blue-500/30 text-blue-300 border border-blue-400/30 px-2 py-0.5 rounded-full font-bold">Khảo sát & Tự luận mở</span>
-                        </div>
+                        <div class="font-extrabold text-base">Phòng thi trực tuyến</div>
                         <div class="text-xs text-slate-400 mt-0.5">
-                            Đề thi: <span class="text-white font-semibold">Java & System Architecture Core</span> | Token: <code class="text-blue-400 font-bold">TEST-SEC-8821</code> | Ứng viên: <span class="text-slate-300">Nguyễn Văn An</span>
+                            Đề thi: <span class="text-white font-semibold">Java & System Architecture</span> | Token: <code class="text-blue-400 font-bold">TEST-SEC-8821</code> | Ứng viên: <span class="text-slate-300">Nguyễn Văn An</span>
                         </div>
                     </div>
                 </div>
                 <div class="flex items-center gap-4 self-end md:self-auto">
                     <div id="globalSaveIndicator" class="text-xs text-emerald-400 font-bold flex items-center gap-1.5">
-                        <i class="fas fa-cloud-check text-emerald-400"></i> Đã tự động lưu nháp
+                        <i class="fas fa-check-circle text-emerald-400"></i> Đã lưu nháp
                     </div>
                     <div class="exam-timer bg-rose-600 text-white px-4 py-1.5 rounded-full font-mono font-extrabold text-xs md:text-sm shadow flex items-center gap-1.5">
                         <i class="fas fa-stopwatch"></i> 58:45
@@ -907,27 +1445,18 @@
                 </div>
             </div>
 
-            <!-- DUAL MODE NOTIFICATION BANNER -->
-            <div class="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border border-blue-200 rounded-2xl p-5 mb-6 shadow-sm">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div>
-                        <div class="font-bold text-slate-900 text-sm flex items-center gap-2">
-                            <i class="fas fa-info-circle text-blue-600"></i> Hướng Dẫn & Tùy Chọn Phương Thức Làm Bài
-                        </div>
-                        <p class="text-slate-600 text-xs mt-1 leading-relaxed">
-                            Bạn có thể làm bài theo <strong>2 phương thức linh hoạt</strong>:
-                            <br>• <strong>Cách 1 (Trực tiếp):</strong> Trả lời từng câu vào các ô tự luận mở bên dưới (không giới hạn số từ). Hệ thống tự động đếm từ và lưu nháp liên tục.
-                            <br>• <strong>Cách 2 (Offline Take-Home):</strong> Tải file đề bài gốc của Nhà tuyển dụng về máy cá nhân giải, sau đó kéo thả file nộp ở cuối trang hoặc Reply email nhận đề.
-                        </p>
-                    </div>
-                    <div class="flex flex-wrap items-center gap-2 shrink-0">
-                        <button onclick="downloadExamDocDemo('docx')" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm transition">
-                            <i class="fas fa-file-word text-blue-200"></i> Tải Đề Gốc (.DOCX - 145 KB)
-                        </button>
-                        <button onclick="downloadExamDocDemo('pdf')" class="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
-                            <i class="fas fa-file-pdf text-red-500"></i> Bản PDF
-                        </button>
-                    </div>
+            <!-- DOWNLOAD ACTION BAR -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-4 mb-6 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <div class="text-xs text-slate-600">
+                    <span class="font-semibold text-slate-900">Hình thức nộp:</span> Trả lời trực tiếp bên dưới hoặc tải tệp đính kèm hoàn chỉnh khi nộp bài.
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                    <button onclick="downloadExamDocDemo('docx')" class="px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
+                        <i class="fas fa-file-word text-blue-600"></i> Tải đề (.DOCX)
+                    </button>
+                    <button onclick="downloadExamDocDemo('pdf')" class="px-3 py-1.5 bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200 rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
+                        <i class="fas fa-file-pdf text-red-500"></i> PDF
+                    </button>
                 </div>
             </div>
 
@@ -1081,13 +1610,10 @@ public class ExamDocParserService {
             <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm mb-8">
                 <div class="flex items-center justify-between mb-3">
                     <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
-                        <i class="fas fa-paperclip text-blue-600"></i> Đính Kèm Tệp Bổ Trợ / Bài Làm Offline (Tùy chọn)
+                        <i class="fas fa-paperclip text-blue-600"></i> Tệp đính kèm (Tùy chọn)
                     </h3>
                     <span class="text-xs text-slate-400">Tối đa 25MB (.zip, .pdf, .docx, .png)</span>
                 </div>
-                <p class="text-slate-500 text-xs mb-4">
-                    Nếu bạn làm bài offline trên máy hoặc có file thiết kế sơ đồ kiến trúc, mã nguồn đóng gói, hãy tải file lên tại đây để nộp cùng bài thi:
-                </p>
 
                 <div class="border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-2xl p-6 text-center bg-slate-50/50 hover:bg-blue-50/20 transition cursor-pointer" onclick="document.getElementById('examAttachmentInput').click()">
                     <input type="file" id="examAttachmentInput" class="hidden" onchange="handleExamAttachment(this)">
@@ -1112,21 +1638,17 @@ public class ExamDocParserService {
             </div>
 
             <!-- SUBMIT BAR -->
-            <div class="p-6 bg-slate-900 text-white rounded-2xl border border-slate-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-xl">
-                <div>
-                    <div class="text-sm font-bold flex items-center gap-2 text-white">
-                        <i class="fas fa-check-circle text-emerald-400"></i> Tất Cả Câu Trả Lời Đã Được Lưu Trữ An Toàn
-                    </div>
-                    <div class="text-xs text-slate-400 mt-0.5">
-                        Tổng cộng: <span class="text-blue-300 font-bold">386 từ</span> đã soạn thảo • <span class="text-amber-300 font-bold">1 tệp</span> đính kèm • Sẵn sàng chuyển tới Hội đồng tuyển dụng
-                    </div>
+            <div class="p-5 bg-slate-900 text-white rounded-2xl border border-slate-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-lg">
+                <div class="text-xs text-slate-400">
+                    <span class="text-white font-bold text-sm block mb-0.5">Xác nhận nộp bài</span>
+                    Đã hoàn thành 3/3 câu • 1 tệp đính kèm
                 </div>
                 <div class="flex flex-wrap items-center gap-3">
-                    <button onclick="simulateWebhook()" class="px-4 py-2.5 border border-purple-400/40 bg-purple-500/20 text-purple-300 rounded-xl text-xs font-bold hover:bg-purple-500/30 transition flex items-center gap-1.5">
-                        <i class="fas fa-envelope-open-text"></i> Nộp Qua Email (Inbound Webhook)
+                    <button onclick="simulateWebhook()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+                        <i class="fas fa-envelope"></i> Mô phỏng nộp qua Email
                     </button>
-                    <button onclick="submitExamDirectDemo()" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs md:text-sm font-extrabold shadow-lg transition flex items-center gap-2">
-                        <i class="fas fa-paper-plane"></i> Nộp Bài Trực Tiếp Trên Web
+                    <button onclick="submitExamDirectDemo()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center gap-1.5">
+                        <i class="fas fa-paper-plane"></i> Nộp bài
                     </button>
                 </div>
             </div>
@@ -1136,44 +1658,47 @@ public class ExamDocParserService {
         <!-- TAB 13: BẢNG ĐẶC TẢ YÊU CẦU ĐỒ ÁN           -->
         <!-- ========================================== -->
         <div id="tab-specs" class="tab-content hidden">
-            <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
-                <h1 class="text-2xl font-extrabold text-slate-900 mb-2">Đặc Tả Yêu Cầu Đồ Án Kì IV: Portal Tuyển Dụng & Phỏng Vấn (ATS)</h1>
-                <p class="text-slate-500 text-sm mb-6">Bảng đối chiếu 7 nhóm yêu cầu cốt lõi với cấu trúc Module mã nguồn (Spring MVC + Flutter).</p>
+            <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-900">Đặc tả tài liệu</h1>
+                    </div>
+                </div>
 
-                <div class="space-y-4 text-sm">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
-                        <div class="font-bold text-blue-700 text-base mb-1">1. Giao bài test & đánh giá năng lực (Assessments)</div>
-                        <p class="text-slate-600">Ngân hàng đề thi, giao bài test bảo mật token cho ứng viên. Hỗ trợ 2 hình thức nộp: nộp trực tiếp trên Web và tự động ghi nhận bài làm khi ứng viên Reply email thông qua Inbound Webhook (<code>/recruitment/api/webhook/email-reply</code>).</p>
+                        <div class="font-bold text-slate-900 mb-1">1. Bài test & Đánh giá năng lực</div>
+                        <p class="text-slate-600 text-xs">Quản lý ngân hàng đề thi, giao bài bảo mật bằng token, hỗ trợ nộp trực tiếp trên web và nộp qua Inbound Email Webhook.</p>
                     </div>
 
                     <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
-                        <div class="font-bold text-blue-700 text-base mb-1">2. Đặt lịch phỏng vấn, phân công, scorecard, tổng hợp điểm</div>
-                        <p class="text-slate-600">Quản lý lịch phỏng vấn theo tuần/ngày, phân công người phỏng vấn (Interviewer), phiếu chấm điểm chuyên sâu theo thang điểm (Scorecard) và tổng hợp kết quả tự động.</p>
+                        <div class="font-bold text-slate-900 mb-1">2. Lịch phỏng vấn & Scorecard</div>
+                        <p class="text-slate-600 text-xs">Lên lịch theo ca, phân công hội đồng phỏng vấn, biểu mẫu chấm điểm theo tiêu chí và tổng hợp điểm tự động.</p>
                     </div>
 
                     <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
-                        <div class="font-bold text-blue-700 text-base mb-1">3. Offer và luồng phê duyệt offer</div>
-                        <p class="text-slate-600">Tạo thư mời nhận việc với mức lương, phụ cấp, ngày đi làm. Quy trình duyệt phân cấp (Draft &rarr; Pending &rarr; Approved &rarr; Sent &rarr; Accepted).</p>
+                        <div class="font-bold text-slate-900 mb-1">3. Offer & Phê duyệt</div>
+                        <p class="text-slate-600 text-xs">Tạo thư mời nhận việc và luồng duyệt đa cấp (Draft &rarr; Pending &rarr; Approved &rarr; Sent &rarr; Accepted).</p>
                     </div>
 
                     <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
-                        <div class="font-bold text-blue-700 text-base mb-1">4. Onboarding cơ bản (Checklist)</div>
-                        <p class="text-slate-600">Danh mục tiếp nhận nhân sự mới: Ký hợp đồng lao động, cấp email công ty, máy tính, phân công mentor và tham gia định hướng.</p>
+                        <div class="font-bold text-slate-900 mb-1">4. Tiếp nhận Onboarding</div>
+                        <p class="text-slate-600 text-xs">Quy trình checklist chuẩn bị hợp đồng, trang thiết bị, tài khoản email và kế hoạch định hướng nhân sự mới.</p>
                     </div>
 
                     <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
-                        <div class="font-bold text-blue-700 text-base mb-1">5. Dashboard, báo cáo & Export Excel</div>
-                        <p class="text-slate-600">Biểu đồ phễu 6 giai đoạn, chỉ số Time-to-Hire, thống kê nguồn ứng viên và nút xuất toàn bộ dữ liệu ra Excel/CSV (<code>/recruitment/export-excel</code>).</p>
+                        <div class="font-bold text-slate-900 mb-1">5. Tổng quan & Báo cáo</div>
+                        <p class="text-slate-600 text-xs">Phễu tuyển dụng 6 giai đoạn, chỉ số Time-to-Hire, phân tích nguồn tuyển và trích xuất dữ liệu Excel/CSV.</p>
                     </div>
 
                     <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
-                        <div class="font-bold text-blue-700 text-base mb-1">6. Career site công khai + Nộp CV mở + Tra cứu trạng thái + Thi online</div>
-                        <p class="text-slate-600">Cổng tuyển dụng public lọc theo ngành nghề & khu vực; form nộp CV mở vào Talent Pool; tra cứu trạng thái tiến trình thời gian thực theo mã APP; trang thi bảo mật có đồng hồ đếm ngược.</p>
+                        <div class="font-bold text-slate-900 mb-1">6. Cổng ứng viên (Career Site)</div>
+                        <p class="text-slate-600 text-xs">Cổng thông tin tuyển dụng công khai, nộp hồ sơ trực tuyến, tra cứu tiến trình và phòng thi bảo mật.</p>
                     </div>
 
-                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
-                        <div class="font-bold text-blue-700 text-base mb-1">7. Quản trị hệ thống, RBAC, phòng ban, template email, audit log</div>
-                        <p class="text-slate-600">Phân quyền vai trò (Admin, Recruiter, Interviewer), cấu hình quy trình các bước tuyển dụng, quản lý template email tự động và nhật ký audit log lưu vết mọi hoạt động.</p>
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 md:col-span-2">
+                        <div class="font-bold text-slate-900 mb-1">7. Quản trị hệ thống & RBAC</div>
+                        <p class="text-slate-600 text-xs">Phân quyền vai trò người dùng (Admin, Recruiter, Interviewer), cấu hình quy trình và nhật ký Audit Log.</p>
                     </div>
                 </div>
             </div>
@@ -1366,6 +1891,43 @@ public class ExamDocParserService {
                 }
                 alert('Đã đính kèm tệp: ' + file.name + ' vào bài làm của bạn!');
             }
+        function scrollKanban(amount) {
+            const board = document.getElementById('kanbanBoard');
+            if (board) {
+                board.scrollBy({ left: amount, behavior: 'smooth' });
+            }
+        }
+
+        function filterPipelineCards() {
+            const query = (document.getElementById('pipelineSearch')?.value || '').toLowerCase();
+            const job = (document.getElementById('pipelineJobFilter')?.value || '').toLowerCase();
+            
+            document.querySelectorAll('#kanbanBoard .candidate-card').forEach(card => {
+                const name = (card.getAttribute('data-name') || '').toLowerCase();
+                const cardJob = (card.getAttribute('data-job') || '').toLowerCase();
+                
+                const matchName = !query || name.includes(query);
+                const matchJob = !job || cardJob.includes(job);
+                
+                card.style.display = (matchName && matchJob) ? 'block' : 'none';
+            });
+        }
+
+        const initKanbanWheel = () => {
+            const board = document.getElementById('kanbanBoard');
+            if (board) {
+                board.addEventListener('wheel', (e) => {
+                    if (board.scrollWidth > board.clientWidth && Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                        e.preventDefault();
+                        board.scrollLeft += e.deltaY;
+                    }
+                }, { passive: false });
+            }
+        };
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initKanbanWheel);
+        } else {
+            initKanbanWheel();
         }
     
     </script>
