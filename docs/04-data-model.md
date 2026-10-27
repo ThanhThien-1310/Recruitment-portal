@@ -202,9 +202,12 @@ Unique: `(candidateId, requisitionId)` — cho phép cấu hình cho ứng tuy�
 | applicationId | cuid | FK Application |
 | candidateId | cuid | FK Candidate |
 | title | varchar(255) | Tên bài test / assignment |
-| type | enum | `TAKE_HOME`, `ONLINE_QUIZ` |
+| type | enum | `TAKE_HOME_DOCUMENT`, `ONLINE_SURVEY_FORM`, `ONLINE_QUIZ` |
 | instruction | text | Hướng dẫn làm bài |
-| attachmentKey | text | Key file đề bài trong MinIO (nếu có) |
+| originalDocKey | text | Key file đề bài gốc (.pdf, .docx) trong MinIO |
+| originalDocName | varchar(255) | Tên tệp gốc được nhà tuyển dụng tải lên |
+| parsedExamJson | jsonb | Danh sách câu hỏi tự luận được AI bóc tách: `[{ questionNumber, questionText, maxPoints, guidance }]` |
+| totalQuestions | int | Số lượng câu hỏi tự luận trong đề thi |
 | deadline | timestamptz | Hạn chót nộp bài |
 | token | varchar(64) | Unique token bảo mật truy cập web test |
 | replyToEmail | varchar(100) | Unique địa chỉ reply (test+<token>@...) |
@@ -215,7 +218,7 @@ Unique: `(candidateId, requisitionId)` — cho phép cấu hình cho ứng tuy�
 | gradedAt | timestamptz | Thời điểm chấm xong |
 | createdById | cuid | FK User (người giao) |
 
-**AssessmentSubmission**: `id`, `assessmentId` (FK), `channel` (`WEB`, `EMAIL`), `submittedAt` (timestamptz), `content` (text/link bài giải), `attachmentKeys` (text[] - danh sách file bài nộp trong MinIO), `isLate` (boolean), `emailMessageId` (varchar - đối soát email inbound).
+**AssessmentSubmission**: `id`, `assessmentId` (FK), `channel` (`WEB_FORM`, `WEB_UPLOAD`, `EMAIL_WEBHOOK`), `submittedAt` (timestamptz), `essayAnswersJson` (jsonb - danh sách câu trả lời của ứng viên: `[{ questionNumber, answerText, wordCount }]`), `content` (text - ghi chú thêm hoặc tóm tắt giải pháp), `attachmentKeys` (text[] - danh sách file bài giải / tài liệu bổ trợ đính kèm trong MinIO), `isLate` (boolean), `emailMessageId` (varchar - đối soát email inbound).
 
 ### 3.8 Phỏng vấn & đánh giá
 

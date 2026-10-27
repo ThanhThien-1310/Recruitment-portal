@@ -149,6 +149,10 @@ Mức ưu tiên: **M** = Must (MVP), **S** = Should (phase 2), **C** = Could (ph
 | FR-AS-06 | Tự động cập nhật trạng thái bài test: Đã nộp đúng hạn (`SUBMITTED`) hoặc Nộp trễ (`SUBMITTED_LATE`), hủy cảnh báo quá hạn oan | M |
 | FR-AS-07 | Nhà tuyển dụng / Chuyên gia chấm bài test: nhập điểm, nhận xét, phê duyệt hoặc yêu cầu bổ sung | M |
 | FR-AS-08 | Thư viện đề thi mẫu và ngân hàng câu hỏi trắc nghiệm đánh giá năng lực | S |
+| FR-AS-09 | Upload đề bài thi dạng tệp (PDF, Word .docx): Hệ thống tích hợp AI Doc-to-Form Parser quét nội dung, tự động bóc tách thành danh sách câu hỏi có cấu trúc kèm thang điểm dự kiến | M |
+| FR-AS-10 | Cho phép nhà tuyển dụng xem trước (Preview) và tinh chỉnh các câu hỏi được AI bóc tách trước khi kích hoạt đề thi | M |
+| FR-AS-11 | Trang làm bài thi trực tuyến dạng khảo sát (Online Survey Exam): hiển thị danh sách câu hỏi tự luận, mỗi câu có khung trả lời mở không giới hạn từ (unlimited word count), bộ đếm từ tự động và cơ chế auto-save nháp | M |
+| FR-AS-12 | Cung cấp nút tải đề bài gốc (.pdf, .docx) để ứng viên có thể làm offline (Take-home), sau đó nộp lại bằng upload tệp giải pháp trên web hoặc reply email qua Inbound Webhook | M |
 
 ### 4.7 Lịch & đánh giá phỏng vấn
 
@@ -289,6 +293,7 @@ Mức ưu tiên: **M** = Must (MVP), **S** = Should (phase 2), **C** = Could (ph
 | BR-16 | Khi hệ thống nhận được email nộp bài test hợp lệ, tác vụ nền tự động hủy/bỏ qua cảnh báo quá hạn cho bài test đó. |
 | BR-17 | Ứng viên nộp hồ sơ mở (Talent Network) được lưu ở trạng thái `TALENT_POOL` và tự động gắn tags kỹ năng qua AI CV Parser. |
 | BR-18 | Trả kết quả phỏng vấn 1-click: Nhấn nút "Pass" sẽ tự động gửi email chúc mừng, chuyển ứng viên sang vòng tiếp theo trong Kanban và cập nhật trạng thái "Đạt vòng PV" trên cổng tra cứu ứng viên. Nhấn nút "Deny" sẽ hiển thị popup chọn nhanh lý do loại, sau đó tự động gửi email cảm ơn & từ chối, chuyển hồ sơ sang cột Từ chối và cập nhật trạng thái tương ứng trên cổng tra cứu ứng viên. |
+| BR-19 | Đề bài kiểm tra hỗ trợ chế độ kép (Dual Mode): (1) Làm trực tiếp trên hệ thống qua giao diện khảo sát tự luận mở không giới hạn từ; hoặc (2) Tải file đề bài gốc (.pdf/.docx) về làm offline trên máy và nộp lại qua Upload web hoặc Reply email. Khi nộp online, hệ thống tự động lưu bản nháp mỗi 30 giây để đảm bảo không mất dữ liệu của ứng viên. |
 
 ## 7. Tiêu chí nghiệm thu mẫu (Acceptance Criteria)
 
@@ -338,6 +343,13 @@ Mức ưu tiên: **M** = Must (MVP), **S** = Should (phase 2), **C** = Could (ph
 - Then hệ thống tự động gửi email chúc mừng vượt qua vòng PV (qua Resend), đẩy ứng viên sang vòng tiếp theo trong Kanban, và cập nhật trạng thái "Đã đạt vòng [Tên vòng PV]" trên cổng tra cứu `/careers/status` của ứng viên.
 - When Recruiter bấm nút "Deny" và chọn lý do từ chối
 - Then hệ thống tự động gửi email cảm ơn & từ chối (qua Resend), chuyển hồ sơ sang cột Từ chối trong Kanban, và cập nhật trạng thái "Chưa phù hợp" trên cổng tra cứu của ứng viên.
+
+**AC-10 — Quét đề thi PDF/Word bằng AI & Thi trực tuyến dạng khảo sát mở**
+- Given Nhà tuyển dụng tải lên file đề thi `Backend_Senior_Exam.docx` hoặc PDF
+- When bấm "Quét & Bóc tách câu hỏi bằng AI"
+- Then hệ thống trích xuất chính xác các câu hỏi tự luận vào bảng Preview để duyệt và điều chỉnh;
+- When Ứng viên truy cập bằng Secure Token
+- Then giao diện hiển thị 2 lựa chọn: Bấm nút "Tải đề bài gốc" để làm offline HOẶC gõ câu trả lời vào các khung tự luận không giới hạn từ trên giao diện khảo sát trực tuyến; hệ thống tự động lưu bản nháp định kỳ và hiển thị số lượng từ đã viết cho từng câu hỏi.
 
 ## 8. Glossary
 

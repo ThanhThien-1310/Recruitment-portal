@@ -188,7 +188,7 @@ can('approve', 'Offer', { salary: { lte: threshold } });   // hr manager
 | Tags | `GET/POST /tags` · `DELETE /tags/:id` |
 | Applications | `GET/POST /applications` · `GET /applications/:id` · `POST /applications/:id/move` · `POST /applications/:id/reject` · `POST /applications/:id/withdraw` · `POST /applications/bulk-move` |
 | Pipeline | `GET /pipeline/stages` · `POST/PATCH/DELETE /pipeline/stages/:id` · `PUT /pipeline/stages/reorder` · `GET /pipeline/board?requisitionId=` |
-| Assessments | `GET/POST /assessments` · `GET/PATCH /assessments/:id` · `POST /assessments/:id/grade` · `GET /public/assessments/:token` · `POST /public/assessments/:token/submit` |
+| Assessments | `GET/POST /assessments` · `POST /assessments/upload-doc-parse` (AI quét file PDF/Word bóc tách câu hỏi) · `GET/PATCH /assessments/:id` · `POST /assessments/:id/grade` · `GET /public/assessments/:token` · `GET /public/assessments/:token/download-original` (tải file đề gốc) · `POST /public/assessments/:token/save-draft` · `POST /public/assessments/:token/submit` (nộp bài khảo sát online kèm file bổ trợ) |
 | Webhooks | `POST /webhooks/resend-inbound` (nhận email reply bài test từ ứng viên) |
 | Interviews | `GET/POST /interviews` · `GET/PATCH /interviews/:id` · `POST /interviews/:id/cancel` · `POST /interviews/:id/complete` · `POST /interviews/:id/result` (Pass/Deny 1-click) · `GET /interviews/:id/ics` |
 | Scorecards | `GET /interviews/:id/scorecards` · `PUT /interviews/:id/scorecards/me` · `POST /scorecards/:id/lock` · `GET /scorecard-templates` |

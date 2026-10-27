@@ -104,42 +104,69 @@ stateDiagram-v2
 - Chuyển sang **Hired** chỉ xảy ra tự động khi offer `ACCEPTED`.
 - Khi requisition đóng, application active phải được xử lý hàng loạt: Reject hoặc Talent pool.
 
-## 4. Luồng Giao bài test & Tiếp nhận bài nộp (Web & Inbound Email)
+## 4. Luồng Giao bài test, Quét đề AI & Tiếp nhận bài nộp (Survey Web & Inbound Email)
+
+Quy trình bài test năng lực hỗ trợ **AI Doc-to-Form Parser** và **Dual Completion Mode** (Làm trực tuyến hoặc Offline Take-home):
+
+1. **Nhà tuyển dụng tải lên tệp đề bài:** Recruiter tải lên file đề thi có sẵn (`.pdf` hoặc `.docx`).
+2. **AI Quét & Bóc tách câu hỏi:** Bộ trích xuất (Gemini Flash + Apache POI / PDFBox) phân tích văn bản, tự động bóc tách thành các câu hỏi tự luận / khảo sát kèm thang điểm dự kiến.
+3. **Xem trước & Xuất bản:** Recruiter duyệt nhanh nội dung câu hỏi và kích hoạt bài test.
+4. **Hai hình thức làm bài linh hoạt cho ứng viên:**
+   - **Hình thức 1 (Khảo sát trực tuyến - Online Survey Form):** Ứng viên mở link web bảo mật, trả lời trực tiếp từng câu hỏi vào các khung soạn thảo mở không giới hạn từ (unlimited word count), hệ thống tự động đếm từ và auto-save bản nháp liên tục.
+   - **Hình thức 2 (Làm offline - Take-Home):** Ứng viên bấm nút tải file đề bài gốc (.pdf/.docx) về máy cá nhân giải, sau đó nộp lại bằng cách upload tệp bài giải trên web hoặc Reply trực tiếp email nhận đề (Inbound Webhook tự động bóc tách).
 
 ```mermaid
 sequenceDiagram
     actor R as Recruiter / Reviewer
     participant S as Hệ thống ATS
+    participant AI as Gemini Doc Parser
     actor C as Ứng viên
     participant M as Email Provider (Resend)
-    participant Q as Worker Queue
     participant ST as Storage (MinIO)
 
-    R->>S: Giao bài test (Đề bài PDF/Quiz, deadline, người chấm)
-    S->>S: Sinh Secure Token & địa chỉ reply định danh (test+<token>@mail.congty.vn)
-    S->>Q: Đẩy job gửi mail đề bài
-    Q->>M: Gửi email đề bài cho ứng viên
-    M->>C: Nhận email đề bài (có link web & hướng dẫn reply)
-
-    alt Cách 1: Nộp trực tiếp trên Web
-        C->>S: Mở link /assessment/[token]
-        C->>S: Upload file bài giải (PDF/ZIP) hoặc hoàn thành Quiz
-        S->>ST: Lưu file bài giải
-        S->>S: Ghi nhận thời gian nộp, so sánh deadline -> SUBMITTED / SUBMITTED_LATE
-        S->>R: Thông báo: Ứng viên đã nộp bài test (qua Web)
-    else Cách 2: Reply trực tiếp vào Email đề bài
-        C->>M: Ứng viên bấm Reply kèm file đính kèm / link bài giải
-        M->>S: Inbound Webhook POST /api/v1/webhooks/resend-inbound
-        S->>S: Trích xuất token từ địa chỉ nhận/tiêu đề
-        S->>S: Đọc timestamp email (Date/received_at) so sánh deadline
-        S->>ST: Bóc tách file đính kèm từ email lưu vào MinIO
-        S->>S: Cập nhật Assessment: SUBMITTED (hoặc SUBMITTED_LATE nếu quá giờ gửi)
-        S->>S: Hủy lịch cron cảnh báo quá hạn
-        S->>R: Thông báo: Ứng viên đã nộp bài test (qua Email)
+    rect rgb(240, 245, 255)
+    Note over R,AI: Giai đoạn 1: Tải lên đề thi & AI Quét tạo Form
+    R->>S: Upload file đề thi (.pdf / .docx)
+    S->>ST: Lưu trữ file đề bài gốc
+    S->>AI: Gửi văn bản đề bài yêu cầu trích xuất cấu trúc câu hỏi
+    AI-->>S: Trả về JSON: [{ questionNumber, questionText, maxPoints }]
+    S-->>R: Hiển thị giao diện Preview danh sách câu hỏi tự luận đã bóc tách
+    R->>S: Xác nhận & Giao bài test cho ứng viên (kèm deadline)
     end
 
-    R->>S: Xem bài nộp, chấm điểm & nhận xét
-    S->>S: Cập nhật kết quả bài test vào hồ sơ ứng viên
+    S->>S: Sinh Secure Token & địa chỉ reply định danh (test+<token>@mail.congty.vn)
+    S->>M: Gửi email mời làm bài (kèm link làm bài online & hướng dẫn reply)
+    M->>C: Nhận email đề bài
+
+    rect rgb(245, 255, 245)
+    Note over C,ST: Giai đoạn 2: Ứng viên chọn 1 trong 2 hình thức làm bài
+    alt Lựa chọn A: Làm trực tuyến trên Web (Survey Form mở không giới hạn từ)
+        C->>S: Mở link bảo mật /assessment/[token]
+        S-->>C: Render trang khảo sát tự luận với các câu hỏi đã bóc tách
+        loop Tự động lưu nháp (Auto-Save)
+            C->>S: Gõ nội dung trả lời vào khung tự luận mở
+            S->>S: Auto-save bản nháp (LocalStorage / API Debounce 30s)
+        end
+        C->>S: Bấm nút [Nộp bài trực tiếp] (có thể đính kèm file bổ trợ)
+        S->>S: Ghi nhận thời gian nộp -> Cập nhật SUBMITTED / SUBMITTED_LATE
+    else Lựa chọn B: Tải file đề gốc về làm Offline (Take-home)
+        C->>S: Bấm nút [Tải đề bài gốc (.PDF/.DOCX)]
+        S-->>C: Tải file đề bài từ MinIO về máy cá nhân
+        Note over C: Ứng viên giải bài trên Word / IDE cá nhân
+        alt Nộp qua Web
+            C->>S: Kéo thả file bài giải (.pdf/.docx/.zip) lên form và bấm nộp
+            S->>ST: Lưu file bài giải vào MinIO
+        else Nộp qua Email Reply (Inbound Webhook)
+            C->>M: Reply trực tiếp email nhận đề kèm tệp bài giải
+            M->>S: Inbound Webhook POST /api/v1/webhooks/resend-inbound
+            S->>ST: Bóc tách file đính kèm lưu vào MinIO
+            S->>S: Lấy timestamp email so sánh deadline -> Cập nhật SUBMITTED
+        end
+    end
+    end
+
+    S->>R: Thông báo: Ứng viên đã nộp bài test (kèm câu trả lời form & file đính kèm)
+    R->>S: Xem bài nộp, chấm điểm từng câu tự luận & nhận xét tổng quát
 ```
 
 ## 5. Luồng đặt lịch, đánh giá & Trả kết quả phỏng vấn 1-click

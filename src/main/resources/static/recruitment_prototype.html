@@ -316,94 +316,194 @@
         <!-- TAB 6: BÀI TEST & INBOUND WEBHOOK (REQ 1) -->
         <!-- ========================================== -->
         <div id="tab-assessments" class="tab-content hidden">
-            <div class="flex justify-between items-center mb-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                 <div>
                     <h1 class="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
                         <i class="fas fa-vial text-blue-600"></i> Giao Bài Test & Đánh Giá Năng Lực (Assessments)
                     </h1>
                     <p class="text-slate-500 text-sm mt-1">
-                        Hỗ trợ nộp trực tiếp qua Web bảo mật hoặc nhận bài tự động qua Email Reply (Inbound Webhook).
+                        Hỗ trợ Nhà tuyển dụng tải file đề bài (PDF/Word), hệ thống AI tự động quét bóc tách thành bài khảo sát trực tuyến hoặc nộp offline qua Web/Email.
                     </p>
                 </div>
-                <div class="flex items-center gap-2">
-                    <button onclick="simulateWebhook()" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-semibold flex items-center gap-2 shadow-sm transition">
-                        <i class="fas fa-envelope-open-text"></i> Mô Phỏng Email Inbound Webhook
+                <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="openUploadDocModal()" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs md:text-sm font-bold flex items-center gap-2 shadow-sm transition">
+                        <i class="fas fa-magic text-amber-300"></i> Tải Đề PDF/Word (AI Parser)
                     </button>
-                    <button onclick="switchTab('exam')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold flex items-center gap-2 shadow-sm transition">
-                        <i class="fas fa-play-circle"></i> Trải Nghiệm Làm Bài Test
+                    <button onclick="simulateWebhook()" class="px-3.5 py-2 bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 transition">
+                        <i class="fas fa-envelope-open-text"></i> Test Inbound Webhook
                     </button>
+                    <button onclick="switchTab('exam')" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 transition">
+                        <i class="fas fa-external-link-alt"></i> Xem Phòng Thi Ứng Viên
+                    </button>
+                </div>
+            </div>
+
+            <!-- AI SCANNING BANNER & STATS -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-4 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center text-xl shadow-md">
+                        <i class="fas fa-file-invoice"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-semibold text-blue-600 uppercase tracking-wider">Đề thi tải lên</div>
+                        <div class="text-xl font-extrabold text-slate-900">4 Đề Đã Bóc Tách</div>
+                        <div class="text-xs text-slate-500 mt-0.5">Hỗ trợ .docx, .pdf, .txt</div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-4 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-xl shadow-md">
+                        <i class="fas fa-poll-h"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-semibold text-emerald-600 uppercase tracking-wider">Khảo sát trực tuyến</div>
+                        <div class="text-xl font-extrabold text-slate-900">Không giới hạn từ</div>
+                        <div class="text-xs text-slate-500 mt-0.5">Tự động đếm từ & lưu nháp</div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-2xl p-4 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-purple-600 text-white flex items-center justify-center text-xl shadow-md">
+                        <i class="fas fa-reply-all"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-semibold text-purple-600 uppercase tracking-wider">Nộp bài linh hoạt</div>
+                        <div class="text-xl font-extrabold text-slate-900">2 Kênh Tiếp Nhận</div>
+                        <div class="text-xs text-slate-500 mt-0.5">Web Form + Inbound Email Reply</div>
+                    </div>
                 </div>
             </div>
 
             <!-- ASSIGNMENT TRACKING TABLE -->
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-8">
                 <div class="p-4 bg-slate-50 border-b border-slate-200 font-bold text-sm text-slate-700 flex justify-between items-center">
-                    <span>Danh Sách Ứng Viên Được Giao Bài Kiểm Tra</span>
-                    <span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-bold">4 Đề thi chuẩn hóa</span>
+                    <span class="flex items-center gap-2"><i class="fas fa-tasks text-blue-600"></i> Danh Sách Ứng Viên Được Giao Bài Kiểm Tra</span>
+                    <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold">Chế độ kép: Form Web & Offline</span>
                 </div>
-                <table class="w-full text-left text-sm">
-                    <thead class="bg-slate-100 text-xs font-bold text-slate-500 uppercase">
-                        <tr>
-                            <th class="p-4">Ứng Viên</th>
-                            <th class="p-4">Tên Bài Test</th>
-                            <th class="p-4">Mã Token</th>
-                            <th class="p-4">Kênh Nộp Bài</th>
-                            <th class="p-4">Trạng Thái</th>
-                            <th class="p-4">Điểm Số</th>
-                            <th class="p-4">Hành Động</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-200">
-                        <tr>
-                            <td class="p-4 font-bold text-slate-900">
-                                Nguyễn Văn An
-                                <div class="text-xs font-normal text-slate-500">an.nguyen@email.com</div>
-                            </td>
-                            <td class="p-4">Java & Spring Boot Core</td>
-                            <td class="p-4"><code class="bg-slate-100 px-2 py-1 rounded text-xs text-blue-600 font-bold">TEST-SEC-8821</code></td>
-                            <td class="p-4"><span class="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-md font-semibold"><i class="fas fa-globe"></i> Web Trực Tiếp</span></td>
-                            <td class="p-4"><span class="px-2.5 py-1 bg-amber-50 text-amber-700 text-xs rounded-full font-bold">Đang làm bài</span></td>
-                            <td class="p-4 font-bold text-slate-400">--/100</td>
-                            <td class="p-4">
-                                <button onclick="switchTab('exam')" class="text-blue-600 hover:text-blue-800 font-bold text-xs">Vào làm bài &rarr;</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="p-4 font-bold text-slate-900">
-                                Trần Thị Bình
-                                <div class="text-xs font-normal text-slate-500">binh.tran@email.com</div>
-                            </td>
-                            <td class="p-4">Flutter & Mobile Architecture</td>
-                            <td class="p-4"><code class="bg-slate-100 px-2 py-1 rounded text-xs text-purple-600 font-bold">TEST-SEC-7742</code></td>
-                            <td class="p-4"><span class="px-2 py-1 bg-purple-50 text-purple-700 text-xs rounded-md font-semibold"><i class="fas fa-envelope-open-text"></i> Email Inbound Webhook</span></td>
-                            <td class="p-4"><span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-xs rounded-full font-bold">Đã chấm điểm</span></td>
-                            <td class="p-4 font-bold text-emerald-600">86/100</td>
-                            <td class="p-4">
-                                <button onclick="alert('Điểm chi tiết: Trắc nghiệm 46/50, Clean Code Flutter 40/50')" class="text-slate-600 hover:text-slate-900 font-bold text-xs">Xem chi tiết</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-100 text-xs font-bold text-slate-500 uppercase">
+                            <tr>
+                                <th class="p-4">Ứng Viên</th>
+                                <th class="p-4">Đề Thi & Tệp Gốc</th>
+                                <th class="p-4">Mã Token</th>
+                                <th class="p-4">Kênh Làm Bài</th>
+                                <th class="p-4">Trạng Thái</th>
+                                <th class="p-4">Điểm Số</th>
+                                <th class="p-4">Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr class="hover:bg-slate-50/80 transition">
+                                <td class="p-4 font-bold text-slate-900">
+                                    Nguyễn Văn An
+                                    <div class="text-xs font-normal text-slate-500">an.nguyen@email.com</div>
+                                </td>
+                                <td class="p-4">
+                                    <div class="font-semibold text-slate-800">Java & System Architecture Core</div>
+                                    <div class="flex items-center gap-1.5 text-xs text-blue-600 mt-0.5">
+                                        <i class="fas fa-file-word"></i>
+                                        <code>De_Thi_Backend_2026.docx</code>
+                                        <span class="text-slate-400">• 3 câu tự luận</span>
+                                    </div>
+                                </td>
+                                <td class="p-4"><code class="bg-slate-100 px-2 py-1 rounded text-xs text-blue-600 font-bold">TEST-SEC-8821</code></td>
+                                <td class="p-4">
+                                    <span class="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-md font-semibold flex items-center gap-1.5 w-fit">
+                                        <i class="fas fa-laptop-code"></i> Khảo sát Web Online
+                                    </span>
+                                </td>
+                                <td class="p-4"><span class="px-2.5 py-1 bg-amber-50 text-amber-700 text-xs rounded-full font-bold">Đang làm bài (Lưu nháp 3/3 câu)</span></td>
+                                <td class="p-4 font-bold text-slate-400">--/100</td>
+                                <td class="p-4">
+                                    <button onclick="switchTab('exam')" class="text-blue-600 hover:text-blue-800 font-bold text-xs flex items-center gap-1">
+                                        Vào làm bài <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50/80 transition">
+                                <td class="p-4 font-bold text-slate-900">
+                                    Trần Thị Bình
+                                    <div class="text-xs font-normal text-slate-500">binh.tran@email.com</div>
+                                </td>
+                                <td class="p-4">
+                                    <div class="font-semibold text-slate-800">Flutter & Mobile Architecture</div>
+                                    <div class="flex items-center gap-1.5 text-xs text-red-600 mt-0.5">
+                                        <i class="fas fa-file-pdf"></i>
+                                        <code>Mobile_Senior_TakeHome.pdf</code>
+                                        <span class="text-slate-400">• 4 câu tự luận</span>
+                                    </div>
+                                </td>
+                                <td class="p-4"><code class="bg-slate-100 px-2 py-1 rounded text-xs text-purple-600 font-bold">TEST-SEC-7742</code></td>
+                                <td class="p-4">
+                                    <span class="px-2 py-1 bg-purple-50 text-purple-700 text-xs rounded-md font-semibold flex items-center gap-1.5 w-fit">
+                                        <i class="fas fa-envelope-open-text"></i> Email Inbound Webhook
+                                    </span>
+                                </td>
+                                <td class="p-4"><span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-xs rounded-full font-bold">Đã chấm điểm</span></td>
+                                <td class="p-4 font-bold text-emerald-600">86/100</td>
+                                <td class="p-4">
+                                    <button onclick="alert('BÀI CHẤM CHI TIẾT (Trần Thị Bình):\n- Điểm câu 1 (State Management): 28/30\n- Điểm câu 2 (Offline Sync): 30/35\n- Điểm câu 3 (Performance Benchmark): 28/35\n=> Tổng điểm: 86/100 (Khuyến nghị: PASS vào vòng phỏng vấn chuyên môn)')" class="text-slate-600 hover:text-slate-900 font-bold text-xs">Xem chi tiết</button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50/80 transition">
+                                <td class="p-4 font-bold text-slate-900">
+                                    Lê Hoàng Cường
+                                    <div class="text-xs font-normal text-slate-500">cuong.le@email.com</div>
+                                </td>
+                                <td class="p-4">
+                                    <div class="font-semibold text-slate-800">Product Design & Case Study</div>
+                                    <div class="flex items-center gap-1.5 text-xs text-blue-600 mt-0.5">
+                                        <i class="fas fa-file-word"></i>
+                                        <code>UIUX_Product_Design.docx</code>
+                                        <span class="text-slate-400">• 2 câu tự luận</span>
+                                    </div>
+                                </td>
+                                <td class="p-4"><code class="bg-slate-100 px-2 py-1 rounded text-xs text-blue-600 font-bold">TEST-SEC-9905</code></td>
+                                <td class="p-4">
+                                    <span class="px-2 py-1 bg-teal-50 text-teal-700 text-xs rounded-md font-semibold flex items-center gap-1.5 w-fit">
+                                        <i class="fas fa-cloud-upload-alt"></i> Web Form + File ZIP đính kèm
+                                    </span>
+                                </td>
+                                <td class="p-4"><span class="px-2.5 py-1 bg-blue-50 text-blue-700 text-xs rounded-full font-bold">Đã nộp bài (Chờ chấm)</span></td>
+                                <td class="p-4 font-bold text-slate-400">Chờ chấm</td>
+                                <td class="p-4">
+                                    <button onclick="alert('BÀI LÀM ĐÃ NỘP CỦA LÊ HOÀNG CƯỜNG:\n- 2 câu trả lời tự luận trực tuyến (tổng 840 từ)\n- 1 tệp đính kèm: UI_Redesign_Figma.zip (4.8 MB)\n- Nộp lúc 08:30 sáng nay (Đúng hạn)')" class="text-blue-600 hover:text-blue-800 font-bold text-xs">Chấm bài ngay &rarr;</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            <!-- INBOUND WEBHOOK EXPLANATION BOX -->
-            <div class="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl p-6">
-                <h3 class="font-bold text-purple-900 text-base mb-2 flex items-center gap-2">
-                    <i class="fas fa-robot text-purple-600"></i> Cơ Chế Inbound Webhook Tự Động Tiếp Nhận Bài Thi Qua Email
-                </h3>
-                <p class="text-purple-800 text-sm mb-4">
-                    Khi ứng viên nhận email đề thi từ hệ thống ATS, nếu ứng viên giải bài offline trên IDE cá nhân, họ chỉ cần <strong>Reply trực tiếp email kèm file bài giải</strong>. Hệ thống webhook tại endpoint <code>/recruitment/api/webhook/email-reply</code> sẽ tự động trích xuất token bảo mật, gán bài làm vào hồ sơ ứng viên và thông báo cho người chấm.
-                </p>
-                <div class="flex gap-3">
-                    <button onclick="simulateWebhook()" class="px-4 py-2 bg-purple-600 text-white font-bold text-xs rounded-lg shadow-sm hover:bg-purple-700 transition">
-                        Bấm để chạy Test Mô Phỏng Inbound Webhook
+            <!-- HOW IT WORKS CALLOUT -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6">
+                    <h3 class="font-bold text-blue-900 text-base mb-2 flex items-center gap-2">
+                        <i class="fas fa-magic text-blue-600"></i> Cơ Chế AI Doc-to-Form Parser
+                    </h3>
+                    <p class="text-blue-800 text-sm mb-4">
+                        Nhà tuyển dụng chỉ cần upload file Word/PDF đề bài. Hệ thống trích xuất văn bản qua Apache POI / PDFBox, sau đó gửi prompt có cấu trúc đến <strong>Gemini 1.5 Flash</strong> để bóc tách thành danh sách câu hỏi, sinh ra trang thi online dạng khảo sát tự luận không giới hạn từ.
+                    </p>
+                    <button onclick="openUploadDocModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg shadow-sm transition flex items-center gap-2">
+                        <i class="fas fa-upload"></i> Thử Nghiệm Tải Lên Đề Bài Mới
+                    </button>
+                </div>
+
+                <div class="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl p-6">
+                    <h3 class="font-bold text-purple-900 text-base mb-2 flex items-center gap-2">
+                        <i class="fas fa-robot text-purple-600"></i> Cơ Chế Inbound Webhook (Reply Email)
+                    </h3>
+                    <p class="text-purple-800 text-sm mb-4">
+                        Nếu ứng viên muốn làm bài offline (Take-Home), họ tải file đề gốc về máy. Khi hoàn thành, chỉ cần <strong>Reply trực tiếp vào email nhận đề kèm file giải</strong>. Inbound Webhook tại <code>/api/v1/webhooks/resend-inbound</code> sẽ tự động gán bài vào hồ sơ mà không cần đăng nhập!
+                    </p>
+                    <button onclick="simulateWebhook()" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-lg shadow-sm transition flex items-center gap-2">
+                        <i class="fas fa-paper-plane"></i> Chạy Thử Mô Phỏng Inbound Webhook
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- TAB 7: OFFER & PHÊ DUYỆT (REQUIREMENT 3)  -->
         <!-- ========================================== -->
         <div id="tab-offers" class="tab-content hidden">
             <div class="flex justify-between items-center mb-6">
@@ -813,71 +913,256 @@
 
         <!-- ========================================== -->
         <!-- TAB 12: BÀI THI BẢO MẬT & TIMER (REQ 1 & 6)-->
+                <!-- ========================================== -->
+        <!-- TAB 12: PHÒNG THI ONLINE (SURVEY & ESSAY)  -->
         <!-- ========================================== -->
         <div id="tab-exam" class="tab-content hidden">
             <!-- Header bar of Exam -->
-            <div class="bg-slate-900 text-white p-4 rounded-2xl flex justify-between items-center mb-6 shadow-md">
+            <div class="bg-slate-900 text-white p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 shadow-md">
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-white"><i class="fas fa-shield-alt"></i></div>
+                    <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center font-bold text-white shadow-md">
+                        <i class="fas fa-shield-alt text-lg"></i>
+                    </div>
                     <div>
-                        <div class="font-extrabold text-sm">TechCorp Assessment Engine</div>
-                        <div class="text-xs text-slate-400">Đề thi: Java & Spring Core | Token: <code class="text-blue-400">TEST-SEC-8821</code></div>
+                        <div class="font-extrabold text-base flex items-center gap-2">
+                            TechCorp Assessment Portal
+                            <span class="text-[10px] bg-blue-500/30 text-blue-300 border border-blue-400/30 px-2 py-0.5 rounded-full font-bold">Khảo sát & Tự luận mở</span>
+                        </div>
+                        <div class="text-xs text-slate-400 mt-0.5">
+                            Đề thi: <span class="text-white font-semibold">Java & System Architecture Core</span> | Token: <code class="text-blue-400 font-bold">TEST-SEC-8821</code> | Ứng viên: <span class="text-slate-300">Nguyễn Văn An</span>
+                        </div>
                     </div>
                 </div>
-                <div class="flex items-center gap-4">
-                    <span class="text-xs text-emerald-400 font-bold flex items-center gap-1.5"><i class="fas fa-lock"></i> Giám sát chống gian lận</span>
-                    <div class="exam-timer bg-red-600 text-white px-4 py-1.5 rounded-full font-mono font-extrabold text-sm shadow">
-                        <i class="fas fa-stopwatch mr-1"></i> 58:45
+                <div class="flex items-center gap-4 self-end md:self-auto">
+                    <div id="globalSaveIndicator" class="text-xs text-emerald-400 font-bold flex items-center gap-1.5">
+                        <i class="fas fa-cloud-check text-emerald-400"></i> Đã tự động lưu nháp
+                    </div>
+                    <div class="exam-timer bg-rose-600 text-white px-4 py-1.5 rounded-full font-mono font-extrabold text-xs md:text-sm shadow flex items-center gap-1.5">
+                        <i class="fas fa-stopwatch"></i> 58:45
                     </div>
                 </div>
             </div>
 
-            <!-- EXAM QUESTIONS -->
-            <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm mb-6">
-                <h3 class="font-bold text-slate-900 text-base mb-4">Câu 1: Trong Spring Boot, annotation nào chỉ định một Bean chỉ được tạo mới theo từng HTTP Request?</h3>
-                <div class="space-y-2 text-sm">
-                    <label class="block p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
-                        <input type="radio" name="demo_q1" class="mr-2"> A. @Scope("singleton")
-                    </label>
-                    <label class="block p-3 border border-blue-400 bg-blue-50/50 rounded-lg cursor-pointer font-bold text-blue-700">
-                        <input type="radio" name="demo_q1" checked class="mr-2"> B. @RequestScope (hoặc @Scope(WebApplicationContext.SCOPE_REQUEST))
-                    </label>
-                    <label class="block p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
-                        <input type="radio" name="demo_q1" class="mr-2"> C. @SessionScope
-                    </label>
+            <!-- DUAL MODE NOTIFICATION BANNER -->
+            <div class="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border border-blue-200 rounded-2xl p-5 mb-6 shadow-sm">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <div class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                            <i class="fas fa-info-circle text-blue-600"></i> Hướng Dẫn & Tùy Chọn Phương Thức Làm Bài
+                        </div>
+                        <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                            Bạn có thể làm bài theo <strong>2 phương thức linh hoạt</strong>:
+                            <br>• <strong>Cách 1 (Trực tiếp):</strong> Trả lời từng câu vào các ô tự luận mở bên dưới (không giới hạn số từ). Hệ thống tự động đếm từ và lưu nháp liên tục.
+                            <br>• <strong>Cách 2 (Offline Take-Home):</strong> Tải file đề bài gốc của Nhà tuyển dụng về máy cá nhân giải, sau đó kéo thả file nộp ở cuối trang hoặc Reply email nhận đề.
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2 shrink-0">
+                        <button onclick="downloadExamDocDemo('docx')" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm transition">
+                            <i class="fas fa-file-word text-blue-200"></i> Tải Đề Gốc (.DOCX - 145 KB)
+                        </button>
+                        <button onclick="downloadExamDocDemo('pdf')" class="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
+                            <i class="fas fa-file-pdf text-red-500"></i> Bản PDF
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm mb-6">
-                <h3 class="font-bold text-slate-900 text-base mb-2">Câu 2 (Thực hành Code): Viết hàm tính tổng điểm ứng viên theo trọng số kỹ năng</h3>
-                <div class="text-xs text-slate-500 mb-3">Ngôn ngữ: Java 21 / Spring MVC</div>
-                <div class="bg-slate-900 text-slate-200 font-mono text-xs p-4 rounded-xl">
-<pre>public class AssessmentSolution {
-    public static double calculateScore(Map&lt;String, Integer&gt; scores, Map&lt;String, Double&gt; weights) {
-        double weightedSum = 0;
-        double totalWeight = 0;
-        for (var entry : scores.entrySet()) {
-            double w = weights.getOrDefault(entry.getKey(), 1.0);
-            weightedSum += entry.getValue() * w;
-            totalWeight += w;
-        }
-        return totalWeight > 0 ? (weightedSum / totalWeight) : 0;
+            <!-- EXAM QUESTIONS (SURVEY STYLE) -->
+            <div class="space-y-6 mb-8">
+                <!-- QUESTION 1 -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                    <div class="flex justify-between items-start gap-4 mb-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 font-extrabold text-xs flex items-center justify-center shrink-0">01</span>
+                            <h3 class="font-bold text-slate-900 text-sm md:text-base">
+                                Xử lý tranh chấp dữ liệu đồng thời (Concurrency Control) & Tối ưu Database
+                            </h3>
+                        </div>
+                        <span class="text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-full shrink-0">35 Điểm</span>
+                    </div>
+
+                    <div class="p-3.5 bg-slate-50 rounded-xl text-xs text-slate-700 mb-4 border border-slate-100 leading-relaxed">
+                        <strong class="text-slate-900">Tình huống:</strong> Trong kịch bản có 1,000 ứng viên cùng nộp hồ sơ vào một tin tuyển dụng "hot" tại cùng một giây, hãy trình bày giải pháp xử lý tranh chấp đồng thời tại tầng Database và Application để đảm bảo tính toàn vẹn dữ liệu (không trùng mã hồ sơ, không vượt quota phỏng vấn). So sánh ưu/nhược điểm của <strong>Optimistic Locking</strong> vs <strong>Pessimistic Locking</strong> trong bài toán này.
+                    </div>
+
+                    <!-- Mini Formatting Toolbar -->
+                    <div class="flex items-center gap-1 p-2 bg-slate-100 border border-slate-200 rounded-t-xl text-xs text-slate-600">
+                        <button type="button" class="px-2 py-1 hover:bg-slate-200 rounded font-bold" title="In đậm">B</button>
+                        <button type="button" class="px-2 py-1 hover:bg-slate-200 rounded italic" title="In nghiêng">I</button>
+                        <button type="button" class="px-2 py-1 hover:bg-slate-200 rounded font-mono" title="Mã nguồn">&lt;/&gt;</button>
+                        <button type="button" class="px-2 py-1 hover:bg-slate-200 rounded" title="Danh sách gạch đầu dòng">• List</button>
+                        <span class="text-slate-300 mx-1">|</span>
+                        <span class="text-[11px] text-slate-500 italic"><i class="fas fa-pen-fancy mr-1"></i> Khung trả lời mở không giới hạn từ (auto-expand)</span>
+                    </div>
+
+                    <!-- Textarea -->
+                    <textarea id="q1_answer" oninput="autoExpand(this)" data-counter="q1_counter" data-save="q1_save" class="w-full min-h-[140px] p-4 bg-slate-50 border-x border-b border-slate-200 rounded-b-xl text-sm font-sans text-slate-800 focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition resize-y leading-relaxed" placeholder="Nhập phần trả lời hoặc trình bày giải thuật của bạn tại đây... Khung nhập liệu tự dãn, không giới hạn độ dài.">Theo em, đối với bài toán 1,000 ứng viên đồng thời nộp đơn vào 1 vị trí tuyển dụng:
+
+1. Cơ chế Khóa (Concurrency Control):
+- Áp dụng Optimistic Locking (@Version trong JPA/Hibernate) cho bảng Requisition để theo dõi chỉ số headcount/quota. Khi có xung đột cập nhật, hệ thống bắt OptimisticLockException và retry tối đa 3 lần với exponential backoff.
+- Đối với sinh mã hồ sơ (Application Code): Sử dụng PostgreSQL Sequence kết hợp Snowflake ID để sinh mã đơn tức thì không cần khóa bảng, đảm bảo thông lượng tối đa.
+
+2. So sánh Optimistic vs Pessimistic:
+- Optimistic Locking: Phù hợp cho tỉ lệ đọc cao, ghi phân tán, tránh giữ kết nối database lâu.
+- Pessimistic Locking (SELECT ... FOR UPDATE): Chỉ dùng khi bước trừ chỉ tiêu cuối cùng bắt buộc nghiêm ngặt, tuy nhiên sẽ gây bottleneck nếu lưu lượng vượt ngưỡng 500 RPS.</textarea>
+
+                    <div class="flex justify-between items-center mt-3 text-xs">
+                        <span id="q1_save" class="text-emerald-600 font-semibold flex items-center gap-1">
+                            <i class="fas fa-check-circle"></i> Đã tự động lưu nháp lúc 09:42:15
+                        </span>
+                        <span id="q1_counter" class="font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full">
+                            172 từ (1,154 ký tự)
+                        </span>
+                    </div>
+                </div>
+
+                <!-- QUESTION 2 -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                    <div class="flex justify-between items-start gap-4 mb-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 font-extrabold text-xs flex items-center justify-center shrink-0">02</span>
+                            <h3 class="font-bold text-slate-900 text-sm md:text-base">
+                                Thiết kế mô hình dữ liệu cho tính năng Tiếp nhận bài thi qua Email (Inbound Webhook)
+                            </h3>
+                        </div>
+                        <span class="text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-full shrink-0">35 Điểm</span>
+                    </div>
+
+                    <div class="p-3.5 bg-slate-50 rounded-xl text-xs text-slate-700 mb-4 border border-slate-100 leading-relaxed">
+                        <strong class="text-slate-900">Yêu cầu:</strong> Hãy thiết kế cấu trúc bảng Database (Entity) và sơ đồ luồng dữ liệu khi Ứng viên Reply email nhận đề. Nêu rõ cách hệ thống bóc tách Token bảo mật, kiểm tra deadline, lưu file bài giải vào MinIO và thông báo cho người chấm.
+                    </div>
+
+                    <!-- Mini Formatting Toolbar -->
+                    <div class="flex items-center gap-1 p-2 bg-slate-100 border border-slate-200 rounded-t-xl text-xs text-slate-600">
+                        <button type="button" class="px-2 py-1 hover:bg-slate-200 rounded font-bold">B</button>
+                        <button type="button" class="px-2 py-1 hover:bg-slate-200 rounded italic">I</button>
+                        <button type="button" class="px-2 py-1 hover:bg-slate-200 rounded font-mono">&lt;/&gt;</button>
+                        <button type="button" class="px-2 py-1 hover:bg-slate-200 rounded">• List</button>
+                        <span class="text-slate-300 mx-1">|</span>
+                        <span class="text-[11px] text-slate-500 italic"><i class="fas fa-pen-fancy mr-1"></i> Khung trả lời mở không giới hạn từ</span>
+                    </div>
+
+                    <!-- Textarea -->
+                    <textarea id="q2_answer" oninput="autoExpand(this)" data-counter="q2_counter" data-save="q2_save" class="w-full min-h-[140px] p-4 bg-slate-50 border-x border-b border-slate-200 rounded-b-xl text-sm font-sans text-slate-800 focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition resize-y leading-relaxed" placeholder="Nhập phần phân tích thiết kế schema và quy trình xử lý...">1. Mô hình thực thể (Data Model):
+- Assessment: id (CUID), applicationId, token (Unique Index), replyToEmail, originalDocKey, parsedExamJson, deadline, status (PENDING, SUBMITTED, SUBMITTED_LATE).
+- AssessmentSubmission: id, assessmentId, channel (WEB_FORM, EMAIL_WEBHOOK), essayAnswersJson, attachmentKeys (Array), emailMessageId, submittedAt, isLate.
+
+2. Quy trình xử lý Inbound Webhook:
+- Bước 1: Resend Inbound Webhook POST payload về /api/v1/webhooks/resend-inbound.
+- Bước 2: Regex trích xuất Token từ header 'To' (test+{token}@mail.congty.vn) hoặc 'Subject'.
+- Bước 3: Đọc timestamp email (Date header) so sánh với Assessment.deadline để xác định đúng hạn/trễ hạn.
+- Bước 4: Đẩy file đính kèm lên MinIO private bucket, cập nhật trạng thái SUBMITTED và bắn Event cho Recruiter.</textarea>
+
+                    <div class="flex justify-between items-center mt-3 text-xs">
+                        <span id="q2_save" class="text-emerald-600 font-semibold flex items-center gap-1">
+                            <i class="fas fa-check-circle"></i> Đã tự động lưu nháp lúc 09:44:02
+                        </span>
+                        <span id="q2_counter" class="font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full">
+                            158 từ (1,098 ký tự)
+                        </span>
+                    </div>
+                </div>
+
+                <!-- QUESTION 3 -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                    <div class="flex justify-between items-start gap-4 mb-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 font-extrabold text-xs flex items-center justify-center shrink-0">03</span>
+                            <h3 class="font-bold text-slate-900 text-sm md:text-base">
+                                Mã nguồn hoặc Giải thuật bóc tách đề thi PDF/Word bằng AI (Doc-to-Form)
+                            </h3>
+                        </div>
+                        <span class="text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-full shrink-0">30 Điểm</span>
+                    </div>
+
+                    <div class="p-3.5 bg-slate-50 rounded-xl text-xs text-slate-700 mb-4 border border-slate-100 leading-relaxed">
+                        <strong class="text-slate-900">Yêu cầu:</strong> Viết đoạn mã (Java 21 / Spring Boot hoặc ngôn ngữ bạn thành thạo) tiếp nhận tệp đề thi (.pdf / .docx), bóc tách văn bản thô và gọi API AI (Gemini Flash) với JSON Schema để trích xuất danh sách câu hỏi.
+                    </div>
+
+                    <!-- Mini Formatting Toolbar -->
+                    <div class="flex items-center gap-1 p-2 bg-slate-100 border border-slate-200 rounded-t-xl text-xs text-slate-600">
+                        <button type="button" class="px-2 py-1 hover:bg-slate-200 rounded font-bold">B</button>
+                        <button type="button" class="px-2 py-1 hover:bg-slate-200 rounded italic">I</button>
+                        <button type="button" class="px-2 py-1 hover:bg-slate-200 rounded font-mono">&lt;/&gt;</button>
+                        <button type="button" class="px-2 py-1 hover:bg-slate-200 rounded">• List</button>
+                        <span class="text-slate-300 mx-1">|</span>
+                        <span class="text-[11px] text-slate-500 italic"><i class="fas fa-pen-fancy mr-1"></i> Khung trả lời mở không giới hạn từ</span>
+                    </div>
+
+                    <!-- Textarea -->
+                    <textarea id="q3_answer" oninput="autoExpand(this)" data-counter="q3_counter" data-save="q3_save" class="w-full min-h-[140px] p-4 bg-slate-50 border-x border-b border-slate-200 rounded-b-xl text-sm font-sans text-slate-800 focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition resize-y leading-relaxed font-mono" placeholder="Viết mã nguồn hoặc mã giả giải thuật của bạn tại đây...">@Service
+public class ExamDocParserService {
+    public ParsedExamDto parseExamFile(MultipartFile file) throws IOException {
+        String rawText = extractRawText(file); // Apache POI cho docx, PDFBox cho pdf
+        String prompt = """
+            Trích xuất các câu hỏi từ đề thi thành mảng JSON gồm:
+            questionNumber, questionText, maxPoints, guidance
+            """;
+        return geminiClient.generateStructuredOutput(prompt, rawText, ParsedExamDto.class);
     }
-}</pre>
+}</textarea>
+
+                    <div class="flex justify-between items-center mt-3 text-xs">
+                        <span id="q3_save" class="text-emerald-600 font-semibold flex items-center gap-1">
+                            <i class="fas fa-check-circle"></i> Đã tự động lưu nháp lúc 09:45:30
+                        </span>
+                        <span id="q3_counter" class="font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full">
+                            56 từ (430 ký tự)
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUPPORTING FILES & ATTACHMENTS (FOR OFFLINE / EXTRA ASSETS) -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm mb-8">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                        <i class="fas fa-paperclip text-blue-600"></i> Đính Kèm Tệp Bổ Trợ / Bài Làm Offline (Tùy chọn)
+                    </h3>
+                    <span class="text-xs text-slate-400">Tối đa 25MB (.zip, .pdf, .docx, .png)</span>
+                </div>
+                <p class="text-slate-500 text-xs mb-4">
+                    Nếu bạn làm bài offline trên máy hoặc có file thiết kế sơ đồ kiến trúc, mã nguồn đóng gói, hãy tải file lên tại đây để nộp cùng bài thi:
+                </p>
+
+                <div class="border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-2xl p-6 text-center bg-slate-50/50 hover:bg-blue-50/20 transition cursor-pointer" onclick="document.getElementById('examAttachmentInput').click()">
+                    <input type="file" id="examAttachmentInput" class="hidden" onchange="handleExamAttachment(this)">
+                    <i class="fas fa-cloud-upload-alt text-3xl text-slate-400 mb-2"></i>
+                    <div class="text-xs font-bold text-slate-700">Bấm để chọn tệp hoặc kéo thả tệp vào đây</div>
+                    <div class="text-[11px] text-slate-400 mt-1">Đã hỗ trợ: .ZIP, .DOCX, .PDF, .PNG</div>
+                </div>
+
+                <!-- Attached File List -->
+                <div id="attachedFilesList" class="mt-4 space-y-2">
+                    <div class="flex items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs">
+                        <div class="flex items-center gap-2.5 text-slate-700 font-semibold">
+                            <i class="fas fa-file-archive text-amber-500 text-sm"></i>
+                            <span>System_Architecture_Solution_v1.zip</span>
+                            <span class="text-slate-400 font-normal">(3.4 MB)</span>
+                        </div>
+                        <button onclick="this.parentElement.remove()" class="text-rose-500 hover:text-rose-700 font-bold px-2 py-1">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <!-- SUBMIT BAR -->
-            <div class="p-6 bg-slate-100 rounded-2xl border border-slate-200 flex justify-between items-center">
-                <div class="text-xs text-slate-600">
-                    <i class="fas fa-check-circle text-emerald-600 mr-1"></i> Tất cả các câu trả lời đã được tự động lưu (Auto-saved).
+            <div class="p-6 bg-slate-900 text-white rounded-2xl border border-slate-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-xl">
+                <div>
+                    <div class="text-sm font-bold flex items-center gap-2 text-white">
+                        <i class="fas fa-check-circle text-emerald-400"></i> Tất Cả Câu Trả Lời Đã Được Lưu Trữ An Toàn
+                    </div>
+                    <div class="text-xs text-slate-400 mt-0.5">
+                        Tổng cộng: <span class="text-blue-300 font-bold">386 từ</span> đã soạn thảo • <span class="text-amber-300 font-bold">1 tệp</span> đính kèm • Sẵn sàng chuyển tới Hội đồng tuyển dụng
+                    </div>
                 </div>
-                <div class="flex gap-3">
-                    <button onclick="simulateWebhook()" class="px-4 py-2 border border-purple-300 bg-purple-50 text-purple-700 rounded-lg text-xs font-bold hover:bg-purple-100">
-                        <i class="fas fa-envelope-open-text mr-1"></i> Nộp Qua Email Reply (Webhook)
+                <div class="flex flex-wrap items-center gap-3">
+                    <button onclick="simulateWebhook()" class="px-4 py-2.5 border border-purple-400/40 bg-purple-500/20 text-purple-300 rounded-xl text-xs font-bold hover:bg-purple-500/30 transition flex items-center gap-1.5">
+                        <i class="fas fa-envelope-open-text"></i> Nộp Qua Email (Inbound Webhook)
                     </button>
-                    <button onclick="submitExamDirectDemo()" class="px-5 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 shadow">
-                        <i class="fas fa-paper-plane mr-1"></i> Nộp Bài Trực Tiếp Qua Web
+                    <button onclick="submitExamDirectDemo()" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs md:text-sm font-extrabold shadow-lg transition flex items-center gap-2">
+                        <i class="fas fa-paper-plane"></i> Nộp Bài Trực Tiếp Trên Web
                     </button>
                 </div>
             </div>
@@ -1012,6 +1297,219 @@
                 }
             });
         }
+    
+        function autoExpand(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = (textarea.scrollHeight + 5) + 'px';
+            updateWordCount(textarea);
+        }
+
+        function updateWordCount(textarea) {
+            const text = textarea.value.trim();
+            const words = text ? text.split(/\s+/).length : 0;
+            const counterId = textarea.getAttribute('data-counter');
+            if (counterId) {
+                const el = document.getElementById(counterId);
+                if (el) el.innerText = words + ' từ (' + text.length + ' ký tự)';
+            }
+            const saveId = textarea.getAttribute('data-save');
+            if (saveId) {
+                const el = document.getElementById(saveId);
+                if (el) el.innerHTML = '<i class="fas fa-check-circle"></i> Đã tự động lưu nháp lúc ' + new Date().toLocaleTimeString('vi-VN');
+            }
+        }
+
+        function openUploadDocModal() {
+            const modal = document.getElementById('uploadDocModal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeUploadDocModal() {
+            const modal = document.getElementById('uploadDocModal');
+            if (modal) modal.classList.add('hidden');
+            const progress = document.getElementById('scanProgressBar');
+            if (progress) progress.classList.add('hidden');
+            const result = document.getElementById('scanResultPreview');
+            if (result) result.classList.add('hidden');
+            const btn = document.getElementById('btnStartScan');
+            if (btn) btn.classList.remove('hidden');
+        }
+
+        function selectSampleDoc(name, kb) {
+            document.getElementById('selectedDocName').innerText = name;
+        }
+
+        function startScanDocDemo() {
+            const btn = document.getElementById('btnStartScan');
+            const progress = document.getElementById('scanProgressBar');
+            const result = document.getElementById('scanResultPreview');
+            const barFill = document.getElementById('scanBarFill');
+            const statusText = document.getElementById('scanStatusText');
+            const percentText = document.getElementById('scanPercentText');
+
+            if (btn) btn.classList.add('hidden');
+            if (progress) progress.classList.remove('hidden');
+            if (result) result.classList.add('hidden');
+
+            let pct = 20;
+            barFill.style.width = pct + '%';
+            percentText.innerText = pct + '%';
+            statusText.innerHTML = '<i class="fas fa-spinner fa-spin text-blue-600 mr-1.5"></i> Đang đọc tệp văn bản qua Apache POI...';
+
+            setTimeout(() => {
+                pct = 65;
+                barFill.style.width = pct + '%';
+                percentText.innerText = pct + '%';
+                statusText.innerHTML = '<i class="fas fa-brain fa-spin text-purple-600 mr-1.5"></i> Gemini 1.5 Flash đang bóc tách câu hỏi & thang điểm...';
+            }, 700);
+
+            setTimeout(() => {
+                pct = 100;
+                barFill.style.width = pct + '%';
+                percentText.innerText = pct + '%';
+                statusText.innerHTML = '<i class="fas fa-check text-emerald-600 mr-1.5"></i> Hoàn tất bóc tách cấu trúc đề thi!';
+            }, 1400);
+
+            setTimeout(() => {
+                progress.classList.add('hidden');
+                result.classList.remove('hidden');
+            }, 1800);
+        }
+
+        function publishExamFromModal() {
+            alert('KÍCH HOẠT BÀI THI THÀNH CÔNG!\n\n- Đề thi đã được chuyển thành Form làm bài khảo sát tự luận không giới hạn từ.\n- Token bảo mật TEST-SEC-8821 đã được cấp phát cho ứng viên Nguyễn Văn An.\n- Hệ thống đang chuyển đến giao diện làm bài trực tuyến...');
+            closeUploadDocModal();
+            switchTab('exam');
+        }
+
+        function downloadExamDocDemo(format) {
+            if (format === 'docx') {
+                alert('Đang tải xuống tệp đề bài gốc: De_Thi_Backend_Architect_2026.docx (145 KB)\n\nỨng viên có thể mở file này để làm bài offline trên máy cá nhân, sau đó nộp lại qua Upload web hoặc Reply email nhận đề.');
+            } else {
+                alert('Đang tải xuống bản PDF đề thi: De_Thi_Backend_Architect_2026.pdf (320 KB)');
+            }
+        }
+
+        function handleExamAttachment(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const list = document.getElementById('attachedFilesList');
+                if (list) {
+                    const row = document.createElement('div');
+                    row.className = 'flex items-center justify-between p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs';
+                    row.innerHTML = '<div class="flex items-center gap-2.5 text-emerald-800 font-semibold"><i class="fas fa-file-alt text-emerald-600"></i><span>' + file.name + '</span><span class="text-emerald-500 font-normal">(' + Math.round(file.size / 1024) + ' KB)</span></div><button onclick="this.parentElement.remove()" class="text-rose-500 hover:text-rose-700 font-bold px-2 py-1"><i class="fas fa-trash"></i></button>';
+                    list.appendChild(row);
+                }
+                alert('Đã đính kèm tệp: ' + file.name + ' vào bài làm của bạn!');
+            }
+        }
+    
     </script>
+
+    <!-- ============================================================ -->
+    <!-- MODAL: TẢI LÊN ĐỀ THI & AI DOC-TO-FORM PARSER (NHÀ TUYỂN DỤNG) -->
+    <!-- ============================================================ -->
+    <div id="uploadDocModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8">
+            <div class="flex justify-between items-center pb-4 border-b border-slate-100">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-lg">
+                        <i class="fas fa-magic"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-extrabold text-slate-900">Tải Lên Đề Thi & Quét Bằng AI (Doc-to-Form)</h2>
+                        <p class="text-xs text-slate-500">Tự động chuyển tệp Word/PDF thành bài thi khảo sát tự luận cho ứng viên</p>
+                    </div>
+                </div>
+                <button onclick="closeUploadDocModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center font-bold">
+                    &times;
+                </button>
+            </div>
+
+            <!-- STEP 1: CHỌN HOẶC TẢI FILE ĐỀ BÀI -->
+            <div class="mt-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-2">1. Chọn hoặc kéo thả tệp đề bài (.docx, .pdf):</label>
+                    <div class="border-2 border-dashed border-blue-300 hover:border-blue-500 rounded-2xl p-6 text-center bg-blue-50/30 hover:bg-blue-50/60 transition cursor-pointer">
+                        <i class="fas fa-file-word text-3xl text-blue-600 mb-2"></i>
+                        <div id="selectedDocName" class="text-sm font-bold text-slate-800">De_Thi_Backend_Architect_2026.docx</div>
+                        <div class="text-xs text-slate-500 mt-1">Dung lượng: 145 KB • Đã sẵn sàng phân tích</div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-500 font-semibold">Hoặc chọn đề bài mẫu có sẵn:</span>
+                    <button type="button" onclick="selectSampleDoc('De_Thi_Backend_Architect_2026.docx', 145)" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-semibold text-slate-700 transition">
+                        Backend Architect (.docx)
+                    </button>
+                    <button type="button" onclick="selectSampleDoc('Case_Study_Product_Manager.pdf', 320)" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-semibold text-slate-700 transition">
+                        PM Case Study (.pdf)
+                    </button>
+                </div>
+
+                <!-- SCAN BUTTON & PROGRESS -->
+                <div class="pt-2">
+                    <button id="btnStartScan" onclick="startScanDocDemo()" class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-sm font-bold flex items-center justify-center gap-2 shadow-md transition">
+                        <i class="fas fa-robot text-amber-300"></i> Bắt Đầu Quét & Bóc Tách Câu Hỏi Bằng AI (Gemini Flash)
+                    </button>
+                </div>
+
+                <!-- SCANNING SIMULATION PROGRESS -->
+                <div id="scanProgressBar" class="hidden p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
+                    <div class="flex justify-between text-xs font-bold text-slate-700">
+                        <span id="scanStatusText"><i class="fas fa-spinner fa-spin text-blue-600 mr-1.5"></i> Đang đọc nội dung tệp...</span>
+                        <span id="scanPercentText">35%</span>
+                    </div>
+                    <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                        <div id="scanBarFill" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 35%"></div>
+                    </div>
+                </div>
+
+                <!-- SCAN RESULT PREVIEW -->
+                <div id="scanResultPreview" class="hidden space-y-4 pt-2">
+                    <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 font-bold flex items-center justify-between">
+                        <span><i class="fas fa-check-circle text-emerald-600 mr-1"></i> Bóc tách thành công 3 câu hỏi tự luận mở!</span>
+                        <span class="bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full text-[11px]">Tổng: 100 Điểm</span>
+                    </div>
+
+                    <div class="space-y-3 text-xs max-h-56 overflow-y-auto pr-1">
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                            <div class="flex justify-between font-bold text-slate-900 mb-1">
+                                <span>Câu 1: Xử lý Concurrency Control & Database Locking</span>
+                                <span class="text-blue-600">35 Điểm</span>
+                            </div>
+                            <div class="text-slate-500">Dạng: Khảo sát tự luận mở (không giới hạn từ) • Auto-save nháp</div>
+                        </div>
+
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                            <div class="flex justify-between font-bold text-slate-900 mb-1">
+                                <span>Câu 2: Thiết kế Schema & Luồng Inbound Webhook</span>
+                                <span class="text-blue-600">35 Điểm</span>
+                            </div>
+                            <div class="text-slate-500">Dạng: Phân tích kỹ thuật & Data Model • Đính kèm file bổ trợ</div>
+                        </div>
+
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                            <div class="flex justify-between font-bold text-slate-900 mb-1">
+                                <span>Câu 3: Viết mã nguồn Doc-to-Form Parser</span>
+                                <span class="text-blue-600">30 Điểm</span>
+                            </div>
+                            <div class="text-slate-500">Dạng: Viết Code Java 21 / Spring Boot • Code highlight</div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-3 pt-3 border-t border-slate-100">
+                        <button type="button" onclick="closeUploadDocModal()" class="px-4 py-2 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-xl text-xs font-bold transition">
+                            Hủy
+                        </button>
+                        <button type="button" onclick="publishExamFromModal()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-extrabold shadow transition flex items-center gap-1.5">
+                            <i class="fas fa-check"></i> Lưu & Kích Hoạt Phòng Thi Cho Ứng Viên
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
