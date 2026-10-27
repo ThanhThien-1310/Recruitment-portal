@@ -394,6 +394,12 @@ public class RecruitmentController {
         return "forward:/recruitment_prototype.html";
     }
 
+    // Trình Xem Trước Mô Phỏng Ứng Dụng Mobile Flutter (http://localhost:8080/mobile)
+    @GetMapping({"/mobile", "/mobile/", "/mobile-preview"})
+    public String mobilePortal() {
+        return "forward:/mobile_preview.html";
+    }
+
     // Export Excel / CSV Download
     @GetMapping("/recruitment/export-excel")
     public ResponseEntity<byte[]> exportExcel() {
