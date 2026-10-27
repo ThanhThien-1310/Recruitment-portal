@@ -16,77 +16,10 @@ public class CareersController {
         this.recruitmentController = recruitmentController;
     }
 
-    // Trang chủ tuyển dụng công khai: Lọc theo ngành nghề & khu vực
-    @GetMapping({"", "/"})
-    public String careerPortal(
-            @RequestParam(value = "department", required = false) String department,
-            @RequestParam(value = "location", required = false) String location,
-            @RequestParam(value = "keyword", required = false) String keyword,
-            Model model) {
-
-        List<RecruitmentController.JobPosting> allJobs = recruitmentController.getMockJobs();
-        List<RecruitmentController.JobPosting> filtered = allJobs.stream()
-                .filter(j -> department == null || department.isEmpty() || j.department().toLowerCase().contains(department.toLowerCase()))
-                .filter(j -> location == null || location.isEmpty() || j.location().toLowerCase().contains(location.toLowerCase()))
-                .filter(j -> keyword == null || keyword.isEmpty() || j.title().toLowerCase().contains(keyword.toLowerCase()))
-                .toList();
-
-        model.addAttribute("jobs", filtered);
-        model.addAttribute("selectedDepartment", department != null ? department : "");
-        model.addAttribute("selectedLocation", location != null ? location : "");
-        model.addAttribute("keyword", keyword != null ? keyword : "");
-        return "recruitment/careers";
-    }
-
-    // Chi tiết công việc & Form nộp CV theo việc
-    @GetMapping("/job/{id}")
-    public String jobDetail(@PathVariable("id") Long id, Model model) {
-        var job = recruitmentController.getMockJobs().stream()
-                .filter(j -> j.id().equals(id))
-                .findFirst()
-                .orElse(recruitmentController.getMockJobs().get(0));
-        model.addAttribute("job", job);
-        return "recruitment/job-detail";
-    }
-
-    // Tra cứu trạng thái hồ sơ ứng tuyển
-    @GetMapping("/track")
-    public String trackApplication(
-            @RequestParam(value = "query", required = false) String query,
-            Model model) {
-
-        RecruitmentController.Candidate foundCandidate = null;
-        if (query != null && !query.trim().isEmpty()) {
-            String q = query.trim().toLowerCase();
-            foundCandidate = recruitmentController.getMockCandidates().stream()
-                    .filter(c -> c.applicationCode().toLowerCase().equals(q)
-                            || c.email().toLowerCase().equals(q)
-                            || c.phone().replace(" ", "").contains(q.replace(" ", "")))
-                    .findFirst()
-                    .orElse(null);
-        }
-
-        // Default demo candidate if no search query provided yet
-        if (foundCandidate == null && (query == null || query.isEmpty())) {
-            foundCandidate = recruitmentController.getMockCandidates().get(0); // Nguyễn Văn An
-        }
-
-        model.addAttribute("candidate", foundCandidate);
-        model.addAttribute("query", query != null ? query : "");
-        return "recruitment/track-application";
-    }
-
-    // Trang làm bài test năng lực bảo mật (Secure Assessment Portal)
-    @GetMapping("/assessment/{token}")
-    public String secureAssessment(
-            @PathVariable("token") String token,
-            Model model) {
-
-        // Match or provide demo test
-        var candidate = recruitmentController.getMockCandidates().get(0); // Nguyễn Văn An
-        model.addAttribute("candidate", candidate);
-        model.addAttribute("token", token);
-        return "recruitment/assessment-exam";
+    // Cổng thông tin tuyển dụng & việc làm công khai (Job Board)
+    @GetMapping({"", "/", "/jobs", "/track", "/exam", "/job/{id}", "/assessment/{token}"})
+    public String publicJobBoard() {
+        return "forward:/job_board.html";
     }
 
     // API nộp bài test trực tiếp qua Web
