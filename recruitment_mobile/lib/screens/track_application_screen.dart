@@ -181,7 +181,7 @@ class _TrackApplicationScreenState extends State<TrackApplicationScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.between,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
                           child: Text(
@@ -289,3 +289,4 @@ class _TrackApplicationScreenState extends State<TrackApplicationScreen> {
     );
   }
 }
+

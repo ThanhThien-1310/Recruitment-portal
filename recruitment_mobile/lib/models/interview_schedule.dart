@@ -57,3 +57,4 @@ class InterviewSchedule {
     return (technicalScore + problemSolvingScore + communicationScore + culturalFitScore) / 4.0;
   }
 }
+
