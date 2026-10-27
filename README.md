@@ -53,3 +53,4 @@ QuanLyTuyenDung/
 
 ### Mở Prototype nhanh (Không cần server)
 - Nhấp đúp chuột vào file `recruitment_prototype.html` để mở trực tiếp trên Chrome / Edge / Cốc Cốc.
+
