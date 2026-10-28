@@ -167,6 +167,18 @@ public class RecruitmentController {
             String detail
     ) {}
 
+    public record ApprovalItem(
+            Long id,
+            String category, // offer, requisition
+            String title,
+            String subtitle,
+            String tag,
+            String highlight,
+            Map<String, String> details,
+            String actionTitle,
+            String status
+    ) {}
+
     // ================= MOCK DATA GENERATORS =================
     public List<Requisition> getMockRequisitions() {
         return List.of(
@@ -363,6 +375,31 @@ public class RecruitmentController {
         );
     }
 
+    public List<ApprovalItem> getMockApprovals() {
+        return List.of(
+            new ApprovalItem(
+                1L, "offer", "Phạm Quốc Bảo", "Senior Java Backend Engineer",
+                "Thư mời nhận việc", "32M VNĐ",
+                Map.of(
+                    "Thưởng gia nhập:", "10.000.000 VNĐ",
+                    "Ngày nhận việc:", "01/11/2026",
+                    "Người tạo đề xuất:", "Thu Hà (HR Manager)"
+                ),
+                "Duyệt Offer", "PENDING"
+            ),
+            new ApprovalItem(
+                2L, "requisition", "Flutter Mobile Developer", "Phòng Kỹ thuật & Công nghệ",
+                "Đề xuất tuyển dụng", "3 chỉ tiêu",
+                Map.of(
+                    "Khung lương:", "18 - 28 Triệu VNĐ",
+                    "Độ ưu tiên:", "Cao (Gấp)",
+                    "Hạn tuyển dụng:", "20/11/2026"
+                ),
+                "Duyệt Đề Xuất", "PENDING"
+            )
+        );
+    }
+
     // ==========================================
     // CONTROLLER ENDPOINTS (PORTAL ROUTING)
     // ==========================================
@@ -449,5 +486,63 @@ public class RecruitmentController {
     @GetMapping("/recruitment/api/interviews")
     public List<InterviewSchedule> apiGetInterviews() {
         return getMockInterviews();
+    }
+
+    // API Phê duyệt yêu cầu (Offer & Requisition) dành cho Mobile ATS & Web
+    @ResponseBody
+    @GetMapping("/recruitment/api/approvals")
+    public List<ApprovalItem> apiGetApprovals() {
+        return getMockApprovals();
+    }
+
+    @ResponseBody
+    @PostMapping("/recruitment/api/approvals/{id}/action")
+    public Map<String, Object> apiHandleApprovalAction(@PathVariable Long id, @RequestBody(required = false) Map<String, String> payload) {
+        String action = payload != null && payload.containsKey("action") ? payload.get("action") : "APPROVE";
+        Map<String, Object> res = new HashMap<>();
+        res.put("status", "SUCCESS");
+        res.put("approvalId", id);
+        res.put("action", action);
+        res.put("message", "Thao tác " + action + " cho yêu cầu #" + id + " đã được ghi nhận vào hệ thống TalentFlow ATS.");
+        res.put("timestamp", new Date().toString());
+        return res;
+    }
+
+    // API Chấm điểm Scorecard phỏng vấn (1-Click PASS/FAIL & điểm tiêu chí)
+    @ResponseBody
+    @PostMapping({"/recruitment/api/candidates/{id}/evaluate", "/recruitment/api/interviews/{id}/evaluate"})
+    public Map<String, Object> apiSubmitEvaluation(@PathVariable Long id, @RequestBody(required = false) Map<String, Object> payload) {
+        Map<String, Object> res = new HashMap<>();
+        res.put("status", "SUCCESS");
+        res.put("interviewId", id);
+        res.put("message", "Điểm đánh giá Scorecard đã được đồng bộ lên TalentFlow Portal.");
+        if (payload != null) {
+            res.put("evaluatedScores", payload);
+        }
+        res.put("recordedAt", new Date().toString());
+        return res;
+    }
+
+    // API Lấy nhanh tóm tắt hồ sơ CV ứng viên phục vụ Mobile Bottom Sheet
+    @ResponseBody
+    @GetMapping("/recruitment/api/candidates/{id}/cv-summary")
+    public Map<String, Object> apiGetCandidateCvSummary(@PathVariable Long id) {
+        Candidate candidate = getMockCandidates().stream()
+                .filter(c -> c.id().equals(id))
+                .findFirst()
+                .orElse(getMockCandidates().get(0));
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("candidateId", candidate.id());
+        res.put("fullName", candidate.fullName());
+        res.put("appliedJobTitle", candidate.appliedJobTitle());
+        res.put("experience", candidate.experience());
+        res.put("education", candidate.education());
+        res.put("skills", candidate.skills());
+        res.put("matchRate", (int)(candidate.rating() * 20));
+        res.put("stage", candidate.stage());
+        res.put("notes", candidate.notes());
+        res.put("pdfUrl", "/files/cv/CV_" + candidate.fullName().replaceAll(" ", "_") + ".pdf");
+        return res;
     }
 }

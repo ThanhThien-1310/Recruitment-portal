@@ -17,7 +17,7 @@ class _ScorecardScreenState extends State<ScorecardScreen> {
   double _commScore = 4.5;
   double _cultureScore = 4.5;
   final TextEditingController _notesController = TextEditingController(
-    text: 'Ứng viên nắm chắc kiến thức chuyên môn, giao tiếp tự tin và có tư duy logic tốt.',
+    text: 'Kiến trúc Microservices vững, giao tiếp tự tin, tư duy thiết kế hệ thống tốt.',
   );
   bool _isSubmitting = false;
 
@@ -48,13 +48,13 @@ class _ScorecardScreenState extends State<ScorecardScreen> {
         icon: Icon(
           isPass ? Icons.check_circle : Icons.cancel,
           color: isPass ? Colors.green : Colors.red,
-          size: 48,
+          size: 44,
         ),
-        title: Text(isPass ? 'Đã Chấp Thuận (Pass)!' : 'Đã Từ Chối (Deny)'),
+        title: Text(isPass ? 'Đã Chấp Thuận (PASS)' : 'Đã Từ Chối (FAIL)'),
         content: Text(
           isPass
-              ? 'Hệ thống đã tự động gửi email chúc mừng tới ${widget.interview.candidateName} và chuyển ứng viên sang vòng tiếp theo.'
-              : 'Đã gửi email phản hồi từ chối cho ứng viên ${widget.interview.candidateName}.',
+              ? 'Kết quả điểm GPA (${_averageScore.toStringAsFixed(1)}/5.0) đã được đồng bộ lên Portal ATS.'
+              : 'Đã ghi nhận kết quả đánh giá cho ${widget.interview.candidateName}.',
         ),
         actions: [
           FilledButton(
@@ -62,7 +62,7 @@ class _ScorecardScreenState extends State<ScorecardScreen> {
               Navigator.pop(ctx);
               Navigator.pop(context);
             },
-            child: const Text('Xong'),
+            child: const Text('Đóng'),
           ),
         ],
       ),
@@ -71,16 +71,15 @@ class _ScorecardScreenState extends State<ScorecardScreen> {
 
   Widget _buildCriterionSlider({
     required String title,
-    required String subtitle,
     required double value,
     required ValueChanged<double> onChanged,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(14),
         border: Border.all(color: Colors.grey.shade200),
       ),
       child: Column(
@@ -89,28 +88,19 @@ class _ScorecardScreenState extends State<ScorecardScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  '${value.toStringAsFixed(1)} / 5.0',
-                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue.shade700),
-                ),
+              Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF1E293B))),
+              Text(
+                '${value.toStringAsFixed(1)} / 5.0',
+                style: const TextStyle(fontWeight: FontWeight.w900, color: Color(0xFF2563EB), fontSize: 13),
               ),
             ],
           ),
-          const SizedBox(height: 4),
-          Text(subtitle, style: TextStyle(color: Colors.grey.shade600, fontSize: 12)),
           Slider(
             value: value,
             min: 1.0,
             max: 5.0,
             divisions: 8,
-            activeColor: Colors.blue.shade600,
+            activeColor: const Color(0xFF2563EB),
             onChanged: onChanged,
           ),
         ],
@@ -123,130 +113,111 @@ class _ScorecardScreenState extends State<ScorecardScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        title: const Text('Phiếu Chấm Điểm Scorecard', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+        title: const Text('Phiếu Đánh Giá', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
         elevation: 0,
         backgroundColor: Colors.white,
-        foregroundColor: Colors.black87,
+        foregroundColor: const Color(0xFF0F172A),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Candidate info card
+            // Candidate mini banner
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(colors: [Color(0xFF1E3A8A), Color(0xFF2563EB)]),
-                borderRadius: BorderRadius.circular(16),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: Colors.grey.shade200),
               ),
               child: Row(
                 children: [
                   CircleAvatar(
-                    radius: 26,
-                    backgroundColor: Colors.white.withOpacity(0.2),
+                    radius: 20,
+                    backgroundColor: Colors.blue.shade100,
                     child: Text(
                       widget.interview.candidateName.substring(0, 1),
-                      style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+                      style: const TextStyle(color: Color(0xFF1E3A8A), fontWeight: FontWeight.bold),
                     ),
                   ),
-                  const SizedBox(width: 14),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(widget.interview.candidateName,
-                            style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 2),
+                            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF0F172A))),
                         Text(widget.interview.jobTitle,
-                            style: const TextStyle(color: Colors.white70, fontSize: 13)),
-                        const SizedBox(height: 4),
-                        Text('Vòng: ${widget.interview.round}',
-                            style: const TextStyle(color: Colors.amberAccent, fontSize: 12, fontWeight: FontWeight.bold)),
+                            style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEFF6FF),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      children: [
+                        const Text('GPA', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.grey)),
+                        Text(
+                          _averageScore.toStringAsFixed(1),
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Color(0xFF2563EB)),
+                        ),
                       ],
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
 
-            // GPA Badge
-            Center(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Colors.blue.shade300, width: 2),
-                  boxShadow: [
-                    BoxShadow(color: Colors.blue.withOpacity(0.08), blurRadius: 10, offset: const Offset(0, 4)),
-                  ],
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.stars, color: Colors.amber, size: 22),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Điểm Trung Bình: ${_averageScore.toStringAsFixed(2)} / 5.0',
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Color(0xFF1E293B)),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            // 4 Criteria Sliders
+            // 4 Criteria
             _buildCriterionSlider(
-              title: '1. Kiến Thức Kỹ Thuật Chuyên Môn',
-              subtitle: 'Độ sâu về OOP, Database Indexing, Microservices, Frameworks.',
+              title: '1. Kỹ thuật chuyên môn',
               value: _techScore,
               onChanged: (v) => setState(() => _techScore = v),
             ),
             _buildCriterionSlider(
-              title: '2. Tư Duy Giải Quyết Vấn Đề (Problem Solving)',
-              subtitle: 'Thuật toán, phân tích bug, thiết kế luồng xử lý edge-cases.',
+              title: '2. Tư duy giải quyết vấn đề',
               value: _problemScore,
               onChanged: (v) => setState(() => _problemScore = v),
             ),
             _buildCriterionSlider(
-              title: '3. Kỹ Năng Giao Tiếp & Diễn Đạt',
-              subtitle: 'Trình bày rõ ràng, lắng nghe tốt, khả năng phối hợp nhóm.',
+              title: '3. Kỹ năng giao tiếp',
               value: _commScore,
               onChanged: (v) => setState(() => _commScore = v),
             ),
             _buildCriterionSlider(
-              title: '4. Độ Phù Hợp Văn Hóa Doanh Nghiệp',
-              subtitle: 'Tinh thần chủ động, trách nhiệm, tôn trọng tập thể.',
+              title: '4. Phù hợp văn hóa',
               value: _cultureScore,
               onChanged: (v) => setState(() => _cultureScore = v),
             ),
 
-            // Detailed Feedback Notes
+            // Notes
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(14),
                 border: Border.all(color: Colors.grey.shade200),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Nhận Xét Tổng Hợp Của Phỏng Vấn Viên',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                  const SizedBox(height: 8),
+                  const Text('Ghi chú nhận xét:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                  const SizedBox(height: 6),
                   TextField(
                     controller: _notesController,
-                    maxLines: 3,
+                    maxLines: 2,
                     decoration: InputDecoration(
-                      hintText: 'Nhập ghi chú chi tiết về ứng viên...',
                       filled: true,
-                      fillColor: Colors.grey.shade50,
+                      fillColor: const Color(0xFFF8FAFC),
+                      contentPadding: const EdgeInsets.all(10),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(8),
                         borderSide: BorderSide(color: Colors.grey.shade300),
                       ),
                     ),
@@ -254,43 +225,41 @@ class _ScorecardScreenState extends State<ScorecardScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
 
-            // 1-Click Action Buttons: PASS or DENY (Rule BR-18)
+            // Actions
             Row(
               children: [
                 Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: _isSubmitting ? null : () => _submitDecision('DENY'),
-                    icon: const Icon(Icons.close, color: Colors.red),
-                    label: const Text('Deny (Từ chối)', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                  child: OutlinedButton(
+                    onPressed: _isSubmitting ? null : () => _submitDecision('FAIL'),
                     style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      side: const BorderSide(color: Colors.red),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      side: BorderSide(color: Colors.grey.shade300),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      foregroundColor: Colors.grey.shade700,
                     ),
+                    child: const Text('Từ chối (FAIL)', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
                   ),
                 ),
-                const SizedBox(width: 14),
+                const SizedBox(width: 10),
                 Expanded(
-                  child: FilledButton.icon(
+                  child: FilledButton(
                     onPressed: _isSubmitting ? null : () => _submitDecision('PASS'),
-                    icon: const Icon(Icons.check, color: Colors.white),
-                    label: const Text('Pass (Đạt Vòng Này)', style: TextStyle(fontWeight: FontWeight.bold)),
                     style: FilledButton.styleFrom(
-                      backgroundColor: const Color(0xFF16A34A),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      backgroundColor: const Color(0xFF2563EB),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     ),
+                    child: const Text('Đạt (PASS)', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
           ],
         ),
       ),
     );
   }
 }
-
