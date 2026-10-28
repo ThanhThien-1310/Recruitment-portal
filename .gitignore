@@ -36,3 +36,13 @@ build/
 Thumbs.db
 *.log
 
+### Flutter / Dart Mobile ###
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+pubspec.lock
+recruitment_mobile/build/
+
