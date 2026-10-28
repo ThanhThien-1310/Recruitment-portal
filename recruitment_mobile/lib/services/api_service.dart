@@ -83,9 +83,50 @@ class ApiService {
       ).timeout(const Duration(seconds: 3));
 
       return response.statusCode == 200;
+  // Lấy danh sách phê duyệt (Offer & Requisition)
+  static Future<List<Map<String, dynamic>>> getApprovals() async {
+    try {
+      final response = await http
+          .get(Uri.parse('$baseUrl/recruitment/api/approvals'))
+          .timeout(const Duration(seconds: 3));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
+        return data.cast<Map<String, dynamic>>();
+      }
+    } catch (_) {}
+
+    return _mockApprovals;
+  }
+
+  // Gửi thao tác phê duyệt
+  static Future<bool> submitApprovalAction(int id, String action) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/recruitment/api/approvals/$id/action'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'action': action}),
+      ).timeout(const Duration(seconds: 3));
+
+      return response.statusCode == 200;
     } catch (_) {
       return true; // Simulate offline success
     }
+  }
+
+  // Lấy tóm tắt CV nhanh
+  static Future<Map<String, dynamic>?> getCandidateCvSummary(int id) async {
+    try {
+      final response = await http
+          .get(Uri.parse('$baseUrl/recruitment/api/candidates/$id/cv-summary'))
+          .timeout(const Duration(seconds: 3));
+
+      if (response.statusCode == 200) {
+        return jsonDecode(utf8.decode(response.bodyBytes));
+      }
+    } catch (_) {}
+
+    return null;
   }
 
   // Dữ liệu mẫu dự phòng
@@ -219,6 +260,37 @@ class ApiService {
       culturalFitScore: 4.5,
       decision: 'PASS',
     ),
+  ];
+
+  static final List<Map<String, dynamic>> _mockApprovals = [
+    {
+      'id': 1,
+      'category': 'offer',
+      'title': 'Phạm Quốc Bảo',
+      'subtitle': 'Senior Java Backend Engineer',
+      'tag': 'Thư mời nhận việc',
+      'highlight': '32M VNĐ',
+      'details': {
+        'Thưởng gia nhập:': '10.000.000 VNĐ',
+        'Ngày nhận việc:': '01/11/2026',
+        'Người tạo đề xuất:': 'Thu Hà (HR Manager)',
+      },
+      'actionTitle': 'Duyệt Offer',
+    },
+    {
+      'id': 2,
+      'category': 'requisition',
+      'title': 'Flutter Mobile Developer',
+      'subtitle': 'Phòng Kỹ thuật & Công nghệ',
+      'tag': 'Đề xuất tuyển dụng',
+      'highlight': '3 chỉ tiêu',
+      'details': {
+        'Khung lương:': '18 - 28 Triệu VNĐ',
+        'Độ ưu tiên:': 'Cao (Gấp)',
+        'Hạn tuyển dụng:': '20/11/2026',
+      },
+      'actionTitle': 'Duyệt Đề Xuất',
+    },
   ];
 }
 

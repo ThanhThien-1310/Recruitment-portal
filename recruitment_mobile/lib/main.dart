@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens/interview_schedule_screen.dart';
-import 'screens/job_list_screen.dart';
-import 'screens/track_application_screen.dart';
+import 'screens/approvals_screen.dart';
+import 'screens/candidate_list_screen.dart';
 
 void main() {
   runApp(const TalentFlowMobileApp());
@@ -46,9 +46,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _currentIndex = 0;
 
   final List<Widget> _screens = const [
-    InterviewScheduleScreen(), // Dành cho Interviewer
-    JobListScreen(),           // Dành cho Candidate / Tuyển dụng
-    TrackApplicationScreen(),  // Tra cứu trạng thái hồ sơ
+    InterviewScheduleScreen(), // Lịch PV & Scorecard
+    ApprovalsScreen(),         // Phê duyệt Offer & Requisitions
+    CandidateListScreen(),     // Kho hồ sơ ứng viên
   ];
 
   @override
@@ -72,14 +72,20 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               label: 'Lịch PV',
             ),
             NavigationDestination(
-              icon: Icon(Icons.work_outline),
-              selectedIcon: Icon(Icons.work, color: Color(0xFF2563EB)),
-              label: 'Việc Làm',
+              icon: Badge(
+                label: Text('2'),
+                child: Icon(Icons.assignment_turned_in_outlined),
+              ),
+              selectedIcon: Badge(
+                label: Text('2'),
+                child: Icon(Icons.assignment_turned_in, color: Color(0xFF2563EB)),
+              ),
+              label: 'Phê duyệt',
             ),
             NavigationDestination(
-              icon: Icon(Icons.search_outlined),
-              selectedIcon: Icon(Icons.search, color: Color(0xFF2563EB)),
-              label: 'Tra Cứu',
+              icon: Icon(Icons.people_outline),
+              selectedIcon: Icon(Icons.people, color: Color(0xFF2563EB)),
+              label: 'Ứng viên',
             ),
           ],
         ),
@@ -87,4 +93,3 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     );
   }
 }
-

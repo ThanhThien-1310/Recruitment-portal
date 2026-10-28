@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TalentFlow Mobile — Trình Xem Trước Ứng Dụng Di Động (Flutter ATS Simulator)</title>
+    <title>TalentFlow ATS Mobile — Ứng Dụng Nội Bộ Cho Ban Tuyển Dụng</title>
     <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -63,6 +63,15 @@
             flex: 1;
             overflow-y: auto;
         }
+
+        /* Slide up sheet animation */
+        .sheet-up {
+            animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
     </style>
 </head>
 <body class="text-slate-100 flex flex-col items-center justify-center p-4 md:p-8">
@@ -72,23 +81,23 @@
         <div>
             <div class="flex items-center gap-3">
                 <span class="px-2.5 py-1 bg-blue-600/30 text-blue-400 border border-blue-500/30 rounded-lg text-xs font-mono font-bold">
-                    FLUTTER 3.24 / DART
+                    TALENTFLOW ATS INTERNAL
                 </span>
                 <h1 class="text-xl md:text-2xl font-black text-white flex items-center gap-2">
-                    <i class="fas fa-mobile-screen-button text-blue-500"></i> TalentFlow Mobile Simulator
+                    <i class="fas fa-mobile-screen-button text-blue-500"></i> TalentFlow Staff App
                 </h1>
             </div>
             <p class="text-xs text-slate-400 mt-1">
-                Mô phỏng 100% giao diện từ file <code class="text-amber-300">recruitment_mobile/lib/main.dart</code> (Không cần cài Flutter SDK)
+                Ứng dụng di động nội bộ dành cho Ban tuyển dụng, Trưởng phòng & Hội đồng phỏng vấn
             </p>
         </div>
 
         <div class="flex items-center gap-2 text-xs">
             <a href="/recruitment" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl font-bold transition flex items-center gap-1.5">
-                <i class="fas fa-chart-line text-blue-400"></i> Mở ATS Admin
+                <i class="fas fa-chart-line text-blue-400"></i> Portal Quản Trị ATS
             </a>
             <a href="/careers" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl font-bold transition flex items-center gap-1.5">
-                <i class="fas fa-briefcase text-emerald-400"></i> Mở Job Board
+                <i class="fas fa-globe text-emerald-400"></i> Cổng Việc Làm (Public)
             </a>
         </div>
     </header>
@@ -114,364 +123,495 @@
                 </div>
             </div>
 
+            <!-- APP HEADER (COMPACT TOPBAR) -->
+            <div class="h-13 bg-white border-b border-slate-200 px-4 flex items-center justify-between shrink-0 z-30 select-none">
+                <div class="flex items-center gap-2.5">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="w-8 h-8 rounded-full border border-slate-200 object-cover" alt="User">
+                    <div>
+                        <div class="text-xs font-black text-slate-900 leading-tight">Minh Hưng</div>
+                        <div class="text-[10px] text-slate-400 font-medium">Hội đồng tuyển dụng</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <button onclick="alert('Không có thông báo mới')" class="relative w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 transition">
+                        <i class="fas fa-bell text-xs"></i>
+                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full"></span>
+                    </button>
+                    <button onclick="refreshData()" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 transition" title="Làm mới">
+                        <i class="fas fa-rotate text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
             <!-- MOBILE CONTENT CONTAINER -->
             <div class="flex-1 bg-slate-50 text-slate-900 overflow-hidden flex flex-col relative">
 
                 <!-- ============================================== -->
-                <!-- SCREEN 1: LỊCH PHỎNG VẤN (INTERVIEWER VIEW)   -->
+                <!-- SCREEN 1: LỊCH PHỎNG VẤN (INTERVIEWS)          -->
                 <!-- ============================================== -->
-                <div id="screenSchedule" class="screen-view active mobile-screen p-4 space-y-3.5">
-                    <!-- App Bar -->
-                    <div class="flex justify-between items-center pb-2 border-b border-slate-200">
-                        <div>
-                            <h2 class="text-base font-extrabold text-slate-900">Lịch Phỏng Vấn Của Tôi</h2>
-                            <p class="text-[11px] text-slate-500">Hôm nay, 27 Tháng 10 • 3 ca phỏng vấn</p>
-                        </div>
-                        <button onclick="refreshSchedule()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition">
-                            <i class="fas fa-rotate text-xs"></i>
-                        </button>
+                <div id="screenSchedule" class="screen-view active mobile-screen p-3.5 space-y-3">
+                    <!-- Date Filter Pills -->
+                    <div class="flex gap-1.5 bg-slate-200/70 p-1 rounded-xl text-xs font-bold">
+                        <button onclick="filterSchedule('today', this)" class="schedule-filter-btn flex-1 py-1.5 bg-white text-blue-600 rounded-lg shadow-2xs text-[11px] text-center transition">Hôm nay (3)</button>
+                        <button onclick="filterSchedule('week', this)" class="schedule-filter-btn flex-1 py-1.5 text-slate-600 rounded-lg text-[11px] text-center transition">Tuần này (7)</button>
+                        <button onclick="filterSchedule('done', this)" class="schedule-filter-btn flex-1 py-1.5 text-slate-600 rounded-lg text-[11px] text-center transition">Đã chấm</button>
                     </div>
 
                     <!-- Interview Card 1 -->
-                    <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm space-y-3">
+                    <div class="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-2xs space-y-2.5">
                         <div class="flex justify-between items-start">
                             <div>
-                                <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wide bg-blue-50 text-blue-700">
-                                    09:00 - 10:00 (Sắp diễn ra)
+                                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wide bg-blue-50 text-blue-700">
+                                    09:30 - 10:30
                                 </span>
                                 <h3 class="text-sm font-extrabold text-slate-900 mt-1">Nguyễn Văn An</h3>
-                                <p class="text-xs text-slate-500">Senior Java Backend Architect</p>
+                                <p class="text-xs text-slate-500 font-medium">Senior Java Backend Engineer</p>
                             </div>
-                            <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full text-[10px] font-bold flex items-center gap-1">
-                                <i class="fas fa-video"></i> Google Meet
+                            <span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200/60 rounded-md text-[10px] font-bold flex items-center gap-1">
+                                <i class="fas fa-video text-[9px]"></i> Meet
                             </span>
                         </div>
 
-                        <div class="p-2.5 bg-slate-50 rounded-xl text-xs space-y-1">
-                            <div class="flex justify-between text-slate-500">
-                                <span>Vòng phỏng vấn:</span>
-                                <span class="font-bold text-slate-800">Kỹ thuật & Kiến trúc Hệ thống</span>
-                            </div>
-                            <div class="flex justify-between text-slate-500">
-                                <span>Phòng họp:</span>
-                                <span class="font-bold text-blue-600 underline">meet.google.com/abc-xyz</span>
-                            </div>
+                        <div class="text-[11px] text-slate-500 flex items-center justify-between pt-1 border-t border-slate-100">
+                            <span>Vòng: <strong class="text-slate-800">Kỹ thuật (Vòng 2)</strong></span>
+                            <span class="font-mono text-blue-600 font-bold">APP-2026-101</span>
                         </div>
 
                         <div class="flex gap-2 pt-1">
-                            <button onclick="openScorecard('Nguyễn Văn An', 'Senior Java Backend', 1)" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center justify-center gap-1.5">
-                                <i class="fas fa-star-half-stroke"></i> Chấm Điểm (Scorecard)
+                            <button onclick="openCvModal('Nguyễn Văn An', 'Senior Java Backend', '4.5 năm', 'Java, Spring Boot, Microservices, Kafka, Docker', 95, 'ĐH Bách Khoa Hà Nội (CNTT)')" class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5">
+                                <i class="fas fa-file-lines text-slate-500"></i> Xem CV
+                            </button>
+                            <button onclick="openScorecard('Nguyễn Văn An', 'Senior Java Backend', 1)" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-2xs">
+                                <i class="fas fa-star-half-stroke"></i> Chấm điểm
                             </button>
                         </div>
                     </div>
 
                     <!-- Interview Card 2 -->
-                    <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm space-y-3">
+                    <div class="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-2xs space-y-2.5">
                         <div class="flex justify-between items-start">
                             <div>
-                                <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wide bg-slate-100 text-slate-600">
-                                    14:30 - 15:30
+                                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wide bg-slate-100 text-slate-700">
+                                    14:00 - 15:00
                                 </span>
-                                <h3 class="text-sm font-extrabold text-slate-900 mt-1">Lê Thị Mai</h3>
-                                <p class="text-xs text-slate-500">Product Manager (Fintech)</p>
+                                <h3 class="text-sm font-extrabold text-slate-900 mt-1">Trần Thị Mai</h3>
+                                <p class="text-xs text-slate-500 font-medium">Flutter Mobile Developer</p>
                             </div>
-                            <span class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded-full text-[10px] font-bold flex items-center gap-1">
-                                <i class="fas fa-building"></i> P.302 Trực tiếp
+                            <span class="px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200/60 rounded-md text-[10px] font-bold flex items-center gap-1">
+                                <i class="fas fa-building text-[9px]"></i> P.302
                             </span>
                         </div>
 
-                        <div class="p-2.5 bg-slate-50 rounded-xl text-xs space-y-1">
-                            <div class="flex justify-between text-slate-500">
-                                <span>Vòng phỏng vấn:</span>
-                                <span class="font-bold text-slate-800">Product Sense & Leadership</span>
-                            </div>
-                            <div class="flex justify-between text-slate-500">
-                                <span>Người cùng PV:</span>
-                                <span class="font-bold text-slate-800">Trần Văn Bình (CPO)</span>
-                            </div>
+                        <div class="text-[11px] text-slate-500 flex items-center justify-between pt-1 border-t border-slate-100">
+                            <span>Vòng: <strong class="text-slate-800">Kỹ thuật & Live Code</strong></span>
+                            <span class="font-mono text-blue-600 font-bold">APP-2026-102</span>
                         </div>
 
                         <div class="flex gap-2 pt-1">
-                            <button onclick="openScorecard('Lê Thị Mai', 'Product Manager (Fintech)', 2)" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center justify-center gap-1.5">
-                                <i class="fas fa-star-half-stroke"></i> Chấm Điểm (Scorecard)
+                            <button onclick="openCvModal('Trần Thị Mai', 'Flutter Mobile Developer', '2.5 năm', 'Flutter, Dart, Bloc, REST API, Firebase', 90, 'ĐH Công nghệ - ĐHQGHN')" class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5">
+                                <i class="fas fa-file-lines text-slate-500"></i> Xem CV
+                            </button>
+                            <button onclick="openScorecard('Trần Thị Mai', 'Flutter Mobile Developer', 2)" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-2xs">
+                                <i class="fas fa-star-half-stroke"></i> Chấm điểm
                             </button>
                         </div>
                     </div>
 
                     <!-- Interview Card 3 -->
-                    <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm space-y-3">
+                    <div class="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-2xs space-y-2.5">
                         <div class="flex justify-between items-start">
                             <div>
-                                <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wide bg-slate-100 text-slate-600">
-                                    16:00 - 17:00
+                                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wide bg-slate-100 text-slate-700">
+                                    15:30 - 16:30
                                 </span>
-                                <h3 class="text-sm font-extrabold text-slate-900 mt-1">Trần Đức Minh</h3>
-                                <p class="text-xs text-slate-500">Flutter Mobile Developer</p>
+                                <h3 class="text-sm font-extrabold text-slate-900 mt-1">Lê Hoàng Nam</h3>
+                                <p class="text-xs text-slate-500 font-medium">UI/UX Product Designer</p>
                             </div>
-                            <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full text-[10px] font-bold flex items-center gap-1">
-                                <i class="fas fa-video"></i> Google Meet
+                            <span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200/60 rounded-md text-[10px] font-bold flex items-center gap-1">
+                                <i class="fas fa-video text-[9px]"></i> Meet
                             </span>
                         </div>
 
+                        <div class="text-[11px] text-slate-500 flex items-center justify-between pt-1 border-t border-slate-100">
+                            <span>Vòng: <strong class="text-slate-800">Portfolio & HR</strong></span>
+                            <span class="font-mono text-blue-600 font-bold">APP-2026-103</span>
+                        </div>
+
                         <div class="flex gap-2 pt-1">
-                            <button onclick="openScorecard('Trần Đức Minh', 'Flutter Mobile Developer', 3)" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center justify-center gap-1.5">
-                                <i class="fas fa-star-half-stroke"></i> Chấm Điểm (Scorecard)
+                            <button onclick="openCvModal('Lê Hoàng Nam', 'UI/UX Product Designer', '3 năm', 'Figma, Design System, User Research, Prototyping', 88, 'ĐH Kiến Trúc TP.HCM')" class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5">
+                                <i class="fas fa-file-lines text-slate-500"></i> Xem CV
+                            </button>
+                            <button onclick="openScorecard('Lê Hoàng Nam', 'UI/UX Product Designer', 3)" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-2xs">
+                                <i class="fas fa-star-half-stroke"></i> Chấm điểm
                             </button>
                         </div>
                     </div>
                 </div>
 
                 <!-- ============================================== -->
-                <!-- SCREEN 2: SCORECARD PHỎNG VẤN (DRILL DOWN)   -->
+                <!-- SCREEN 2: PHÊ DUYỆT (APPROVALS)                -->
                 <!-- ============================================== -->
-                <div id="screenScorecard" class="screen-view mobile-screen p-4 space-y-4">
+                <div id="screenApprovals" class="screen-view mobile-screen p-3.5 space-y-3">
+                    <!-- Category Tabs -->
+                    <div class="flex gap-1.5 bg-slate-200/70 p-1 rounded-xl text-xs font-bold">
+                        <button onclick="filterApprovalCategory('all', this)" class="approval-filter-btn flex-1 py-1.5 bg-white text-blue-600 rounded-lg shadow-2xs text-[11px] text-center transition">Tất cả (2)</button>
+                        <button onclick="filterApprovalCategory('offer', this)" class="approval-filter-btn flex-1 py-1.5 text-slate-600 rounded-lg text-[11px] text-center transition">Offer (1)</button>
+                        <button onclick="filterApprovalCategory('requisition', this)" class="approval-filter-btn flex-1 py-1.5 text-slate-600 rounded-lg text-[11px] text-center transition">Nhu cầu (1)</button>
+                    </div>
+
+                    <!-- Approval Item 1: Offer -->
+                    <div id="approval-card-1" class="approval-item bg-white rounded-2xl p-3.5 border border-slate-200 shadow-2xs space-y-2.5" data-category="offer">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wide bg-amber-50 text-amber-700 border border-amber-200/60">
+                                    Thư mời nhận việc
+                                </span>
+                                <h3 class="text-sm font-extrabold text-slate-900 mt-1.5">Phạm Quốc Bảo</h3>
+                                <p class="text-xs text-slate-500 font-medium">Senior Java Backend Engineer</p>
+                            </div>
+                            <span class="text-xs font-black text-emerald-600">32M VNĐ</span>
+                        </div>
+
+                        <div class="p-2.5 bg-slate-50 rounded-xl text-[11px] space-y-1 border border-slate-100">
+                            <div class="flex justify-between text-slate-500">
+                                <span>Thưởng gia nhập:</span>
+                                <span class="font-bold text-slate-800">10.000.000 VNĐ</span>
+                            </div>
+                            <div class="flex justify-between text-slate-500">
+                                <span>Ngày nhận việc:</span>
+                                <span class="font-bold text-slate-800">01/11/2026</span>
+                            </div>
+                            <div class="flex justify-between text-slate-500">
+                                <span>Người tạo đề xuất:</span>
+                                <span class="font-bold text-slate-800">Thu Hà (HR Manager)</span>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-2 pt-1">
+                            <button onclick="handleApprovalAction(1, 'Từ chối', 'Phạm Quốc Bảo')" class="flex-1 py-2 bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-700 rounded-xl text-xs font-bold transition">
+                                Từ chối
+                            </button>
+                            <button onclick="handleApprovalAction(1, 'Duyệt', 'Phạm Quốc Bảo')" class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-2xs">
+                                Duyệt Offer
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Approval Item 2: Requisition -->
+                    <div id="approval-card-2" class="approval-item bg-white rounded-2xl p-3.5 border border-slate-200 shadow-2xs space-y-2.5" data-category="requisition">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wide bg-blue-50 text-blue-700 border border-blue-200/60">
+                                    Đề xuất tuyển dụng
+                                </span>
+                                <h3 class="text-sm font-extrabold text-slate-900 mt-1.5">Flutter Mobile Developer</h3>
+                                <p class="text-xs text-slate-500 font-medium">Phòng Kỹ thuật & Công nghệ</p>
+                            </div>
+                            <span class="text-xs font-black text-blue-600">3 chỉ tiêu</span>
+                        </div>
+
+                        <div class="p-2.5 bg-slate-50 rounded-xl text-[11px] space-y-1 border border-slate-100">
+                            <div class="flex justify-between text-slate-500">
+                                <span>Khung lương:</span>
+                                <span class="font-bold text-slate-800">18 - 28 Triệu VNĐ</span>
+                            </div>
+                            <div class="flex justify-between text-slate-500">
+                                <span>Độ ưu tiên:</span>
+                                <span class="font-bold text-rose-600">Cao (Gấp)</span>
+                            </div>
+                            <div class="flex justify-between text-slate-500">
+                                <span>Hạn tuyển dụng:</span>
+                                <span class="font-bold text-slate-800">20/11/2026</span>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-2 pt-1">
+                            <button onclick="handleApprovalAction(2, 'Từ chối', 'Flutter Mobile Developer')" class="flex-1 py-2 bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-700 rounded-xl text-xs font-bold transition">
+                                Từ chối
+                            </button>
+                            <button onclick="handleApprovalAction(2, 'Duyệt', 'Flutter Mobile Developer')" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition shadow-2xs">
+                                Duyệt Đề Xuất
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================== -->
+                <!-- SCREEN 3: ỨNG VIÊN (CANDIDATES PIPELINE)       -->
+                <!-- ============================================== -->
+                <div id="screenCandidates" class="screen-view mobile-screen p-3.5 space-y-3">
+                    <!-- Search Input -->
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                        <input type="text" oninput="searchCandidates(this.value)" placeholder="Tìm ứng viên, vị trí, kỹ năng..." class="w-full pl-8 pr-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <!-- Stage Filter Pills -->
+                    <div class="flex gap-1.5 overflow-x-auto pb-0.5 text-xs">
+                        <button onclick="filterCandidatesByStage('all', this)" class="candidate-stage-btn px-3 py-1 bg-blue-600 text-white font-bold rounded-lg text-[11px] whitespace-nowrap">Tất cả (5)</button>
+                        <button onclick="filterCandidatesByStage('INTERVIEW', this)" class="candidate-stage-btn px-3 py-1 bg-white border border-slate-200 text-slate-600 font-bold rounded-lg text-[11px] whitespace-nowrap">Phỏng vấn</button>
+                        <button onclick="filterCandidatesByStage('ASSESSMENT', this)" class="candidate-stage-btn px-3 py-1 bg-white border border-slate-200 text-slate-600 font-bold rounded-lg text-[11px] whitespace-nowrap">Bài test</button>
+                        <button onclick="filterCandidatesByStage('OFFER', this)" class="candidate-stage-btn px-3 py-1 bg-white border border-slate-200 text-slate-600 font-bold rounded-lg text-[11px] whitespace-nowrap">Offer</button>
+                    </div>
+
+                    <!-- Candidate List -->
+                    <div class="space-y-2">
+                        <!-- Candidate 1 -->
+                        <div onclick="openCvModal('Nguyễn Văn An', 'Senior Java Backend', '4.5 năm', 'Java, Spring Boot, Microservices, Kafka, Docker', 95, 'ĐH Bách Khoa Hà Nội (CNTT)')" class="candidate-card bg-white rounded-2xl p-3 border border-slate-200 shadow-2xs hover:border-blue-400 transition cursor-pointer" data-stage="INTERVIEW" data-keywords="nguyen van an java backend">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="w-9 h-9 rounded-full object-cover border border-slate-200" alt="Avatar">
+                                    <div>
+                                        <div class="text-xs font-black text-slate-900">Nguyễn Văn An</div>
+                                        <div class="text-[11px] text-slate-500">Senior Java Backend</div>
+                                    </div>
+                                </div>
+                                <span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md text-[10px] font-black">95% Match</span>
+                            </div>
+                            <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-100 text-[10px] text-slate-500">
+                                <span>Vòng: <strong class="text-slate-800">PV Kỹ thuật</strong></span>
+                                <span class="font-bold text-slate-600">4.5 năm EXP</span>
+                            </div>
+                        </div>
+
+                        <!-- Candidate 2 -->
+                        <div onclick="openCvModal('Trần Thị Mai', 'Flutter Mobile Developer', '2.5 năm', 'Flutter, Dart, Bloc, REST API, Firebase', 90, 'ĐH Công nghệ - ĐHQGHN')" class="candidate-card bg-white rounded-2xl p-3 border border-slate-200 shadow-2xs hover:border-blue-400 transition cursor-pointer" data-stage="INTERVIEW" data-keywords="tran thi mai flutter mobile">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100" class="w-9 h-9 rounded-full object-cover border border-slate-200" alt="Avatar">
+                                    <div>
+                                        <div class="text-xs font-black text-slate-900">Trần Thị Mai</div>
+                                        <div class="text-[11px] text-slate-500">Flutter Mobile Developer</div>
+                                    </div>
+                                </div>
+                                <span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md text-[10px] font-black">90% Match</span>
+                            </div>
+                            <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-100 text-[10px] text-slate-500">
+                                <span>Vòng: <strong class="text-slate-800">PV Kỹ thuật</strong></span>
+                                <span class="font-bold text-slate-600">2.5 năm EXP</span>
+                            </div>
+                        </div>
+
+                        <!-- Candidate 3 -->
+                        <div onclick="openCvModal('Phạm Quốc Bảo', 'Senior Java Backend Engineer', '5 năm', 'Java, Spring Cloud, PostgreSQL, Kubernetes, AWS', 98, 'Học viện CNBCVT')" class="candidate-card bg-white rounded-2xl p-3 border border-slate-200 shadow-2xs hover:border-blue-400 transition cursor-pointer" data-stage="OFFER" data-keywords="pham quoc bao java backend offer">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100" class="w-9 h-9 rounded-full object-cover border border-slate-200" alt="Avatar">
+                                    <div>
+                                        <div class="text-xs font-black text-slate-900">Phạm Quốc Bảo</div>
+                                        <div class="text-[11px] text-slate-500">Senior Java Backend</div>
+                                    </div>
+                                </div>
+                                <span class="px-2 py-0.5 bg-amber-50 text-amber-700 rounded-md text-[10px] font-black">Offer 32M</span>
+                            </div>
+                            <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-100 text-[10px] text-slate-500">
+                                <span>Vòng: <strong class="text-slate-800">Chờ duyệt Offer</strong></span>
+                                <span class="font-bold text-slate-600">5 năm EXP</span>
+                            </div>
+                        </div>
+
+                        <!-- Candidate 4 -->
+                        <div onclick="openCvModal('Lê Hoàng Nam', 'UI/UX Product Designer', '3 năm', 'Figma, Design System, User Research, Prototyping', 88, 'ĐH Kiến Trúc TP.HCM')" class="candidate-card bg-white rounded-2xl p-3 border border-slate-200 shadow-2xs hover:border-blue-400 transition cursor-pointer" data-stage="INTERVIEW" data-keywords="le hoang nam ui ux designer">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" class="w-9 h-9 rounded-full object-cover border border-slate-200" alt="Avatar">
+                                    <div>
+                                        <div class="text-xs font-black text-slate-900">Lê Hoàng Nam</div>
+                                        <div class="text-[11px] text-slate-500">UI/UX Designer</div>
+                                    </div>
+                                </div>
+                                <span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md text-[10px] font-black">88% Match</span>
+                            </div>
+                            <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-100 text-[10px] text-slate-500">
+                                <span>Vòng: <strong class="text-slate-800">PV Văn hóa</strong></span>
+                                <span class="font-bold text-slate-600">3 năm EXP</span>
+                            </div>
+                        </div>
+
+                        <!-- Candidate 5 -->
+                        <div onclick="openCvModal('Vũ Đức Thắng', 'Thực tập sinh Web Frontend', 'Mới tốt nghiệp', 'Java, OOP, MySQL, HTML/CSS, Git', 82, 'ĐH Giao Thông Vận Tải')" class="candidate-card bg-white rounded-2xl p-3 border border-slate-200 shadow-2xs hover:border-blue-400 transition cursor-pointer" data-stage="ASSESSMENT" data-keywords="vu duc thang intern web">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <img src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100" class="w-9 h-9 rounded-full object-cover border border-slate-200" alt="Avatar">
+                                    <div>
+                                        <div class="text-xs font-black text-slate-900">Vũ Đức Thắng</div>
+                                        <div class="text-[11px] text-slate-500">Thực tập sinh Web</div>
+                                    </div>
+                                </div>
+                                <span class="px-2 py-0.5 bg-purple-50 text-purple-700 rounded-md text-[10px] font-black">Test: Đang làm</span>
+                            </div>
+                            <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-100 text-[10px] text-slate-500">
+                                <span>Vòng: <strong class="text-slate-800">Bài Test Năng Lực</strong></span>
+                                <span class="font-bold text-slate-600">Fresher</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================== -->
+                <!-- DRILL-DOWN: SCORECARD SCREEN                   -->
+                <!-- ============================================== -->
+                <div id="screenScorecard" class="screen-view mobile-screen p-3.5 space-y-3.5">
                     <div class="flex items-center gap-2 pb-2 border-b border-slate-200">
                         <button onclick="closeScorecard()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 transition">
                             <i class="fas fa-arrow-left text-xs"></i>
                         </button>
                         <div>
-                            <h2 class="text-sm font-extrabold text-slate-900">Phiếu Đánh Giá Chuyên Sâu</h2>
+                            <h2 class="text-xs font-black text-slate-900">Phiếu Đánh Giá Ứng Viên</h2>
                             <p id="scoreCandidateTitle" class="text-[11px] text-blue-600 font-bold">Nguyễn Văn An • Senior Java Backend</p>
                         </div>
                     </div>
 
                     <!-- GPA Overview Box -->
-                    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl p-4 shadow-md flex justify-between items-center">
+                    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl p-3.5 shadow-xs flex justify-between items-center">
                         <div>
-                            <div class="text-[11px] text-blue-200 uppercase font-bold tracking-wider">Điểm Trung Bình (GPA)</div>
-                            <div id="averageGpaText" class="text-3xl font-black mt-0.5">4.5 <span class="text-sm font-normal text-blue-200">/ 5.0</span></div>
+                            <div class="text-[10px] text-blue-200 uppercase font-black tracking-wider">Điểm Trung Bình (GPA)</div>
+                            <div id="averageGpaText" class="text-2xl font-black mt-0.5">4.5 <span class="text-xs font-normal text-blue-200">/ 5.0</span></div>
                         </div>
-                        <div class="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-xl font-bold">
+                        <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-lg">
                             <i class="fas fa-award text-amber-300"></i>
                         </div>
                     </div>
 
                     <!-- 4 Scoring Criteria -->
-                    <div class="space-y-3">
-                        <!-- Criteria 1 -->
-                        <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-1.5">
+                    <div class="space-y-2.5">
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-1">
                             <div class="flex justify-between text-xs font-bold text-slate-800">
                                 <span>1. Kỹ thuật chuyên môn</span>
-                                <span id="scoreVal1" class="text-blue-600">4.5</span>
+                                <span id="scoreVal1" class="text-blue-600 font-black">4.5</span>
                             </div>
                             <input type="range" min="1" max="5" step="0.5" value="4.5" oninput="updateScore(1, this.value)" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
-                            <div class="text-[10px] text-slate-400">Kiến trúc Microservices, Concurrency, Database Design</div>
                         </div>
 
-                        <!-- Criteria 2 -->
-                        <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-1.5">
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-1">
                             <div class="flex justify-between text-xs font-bold text-slate-800">
-                                <span>2. Tư duy giải thuật & Logic</span>
-                                <span id="scoreVal2" class="text-blue-600">4.5</span>
+                                <span>2. Tư duy giải quyết vấn đề</span>
+                                <span id="scoreVal2" class="text-blue-600 font-black">4.5</span>
                             </div>
                             <input type="range" min="1" max="5" step="0.5" value="4.5" oninput="updateScore(2, this.value)" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
-                            <div class="text-[10px] text-slate-400">Khả năng phân tích bài toán, xử lý case ngoại lệ</div>
                         </div>
 
-                        <!-- Criteria 3 -->
-                        <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-1.5">
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-1">
                             <div class="flex justify-between text-xs font-bold text-slate-800">
-                                <span>3. Kỹ năng giao tiếp & Teamwork</span>
-                                <span id="scoreVal3" class="text-blue-600">4.5</span>
+                                <span>3. Kỹ năng giao tiếp & phản biện</span>
+                                <span id="scoreVal3" class="text-blue-600 font-black">4.5</span>
                             </div>
                             <input type="range" min="1" max="5" step="0.5" value="4.5" oninput="updateScore(3, this.value)" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
-                            <div class="text-[10px] text-slate-400">Trình bày gãy gọn, lắng nghe và phản biện tích cực</div>
                         </div>
 
-                        <!-- Criteria 4 -->
-                        <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-1.5">
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-1">
                             <div class="flex justify-between text-xs font-bold text-slate-800">
-                                <span>4. Phù hợp văn hóa (Culture Fit)</span>
-                                <span id="scoreVal4" class="text-blue-600">4.5</span>
+                                <span>4. Phù hợp văn hóa đội ngũ</span>
+                                <span id="scoreVal4" class="text-blue-600 font-black">4.5</span>
                             </div>
                             <input type="range" min="1" max="5" step="0.5" value="4.5" oninput="updateScore(4, this.value)" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
-                            <div class="text-[10px] text-slate-400">Tinh thần chủ động, trách nhiệm và cam kết dự án</div>
                         </div>
                     </div>
 
                     <!-- Notes -->
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Nhận xét chi tiết sau phỏng vấn:</label>
-                        <textarea rows="3" class="w-full p-2.5 text-xs bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Nhập tóm tắt đánh giá...">Ứng viên nắm chắc kiến thức chuyên môn, giao tiếp tự tin và có tư duy thiết kế hệ thống phân tán rất vững vàng.</textarea>
+                        <label class="block text-[11px] font-bold text-slate-700 mb-1">Ghi chú nhận xét:</label>
+                        <textarea rows="2" class="w-full p-2.5 text-xs bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Nhập nhận xét phỏng vấn...">Kiến trúc Microservices vững, giao tiếp tự tin, tư duy thiết kế hệ thống tốt.</textarea>
                     </div>
 
-                    <!-- 1-Click Decision Rule BR-18 -->
-                    <div class="pt-1 space-y-2">
-                        <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wide">Quyết định 1 chạm (Rule BR-18):</div>
-                        <div class="flex gap-2">
-                            <button onclick="submitScorecard('PASS')" class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-extrabold shadow flex items-center justify-center gap-1.5 transition">
-                                <i class="fas fa-check-circle"></i> ĐỒNG Ý (PASS)
-                            </button>
-                            <button onclick="submitScorecard('DENY')" class="flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-extrabold shadow flex items-center justify-center gap-1.5 transition">
-                                <i class="fas fa-times-circle"></i> TỪ CHỐI (DENY)
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ============================================== -->
-                <!-- SCREEN 3: VIỆC LÀM (CANDIDATE VIEW)           -->
-                <!-- ============================================== -->
-                <div id="screenJobs" class="screen-view mobile-screen p-4 space-y-3.5">
-                    <div class="pb-2 border-b border-slate-200">
-                        <h2 class="text-base font-extrabold text-slate-900">Cơ Hội Nghề Nghiệp</h2>
-                        <p class="text-[11px] text-slate-500">Khám phá vị trí phù hợp với năng lực của bạn</p>
-                    </div>
-
-                    <!-- Search Input -->
-                    <div class="relative">
-                        <i class="fas fa-search absolute left-3 top-3 text-slate-400 text-xs"></i>
-                        <input type="text" placeholder="Tìm kiếm theo vị trí, kỹ năng..." class="w-full pl-8 pr-3 py-2 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-
-                    <!-- Category Pills -->
-                    <div class="flex gap-1.5 overflow-x-auto pb-1 text-xs">
-                        <button class="px-3 py-1 bg-blue-600 text-white font-bold rounded-full whitespace-nowrap text-[11px]">Tất Cả (6)</button>
-                        <button class="px-3 py-1 bg-white border border-slate-200 text-slate-600 font-semibold rounded-full whitespace-nowrap text-[11px]">Kỹ Thuật</button>
-                        <button class="px-3 py-1 bg-white border border-slate-200 text-slate-600 font-semibold rounded-full whitespace-nowrap text-[11px]">Sản Phẩm</button>
-                        <button class="px-3 py-1 bg-white border border-slate-200 text-slate-600 font-semibold rounded-full whitespace-nowrap text-[11px]">Thiết Kế</button>
-                    </div>
-
-                    <!-- Job Card 1 -->
-                    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-2.5">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <span class="px-2 py-0.5 bg-blue-50 text-blue-700 text-[10px] font-bold rounded-md">IT / Kỹ Thuật</span>
-                                <h3 class="text-sm font-extrabold text-slate-900 mt-1">Senior Java Backend Architect</h3>
-                            </div>
-                            <span class="text-xs font-black text-emerald-600">35 - 50 Triệu</span>
-                        </div>
-                        <div class="flex items-center gap-3 text-[11px] text-slate-500">
-                            <span><i class="fas fa-location-dot mr-1"></i> Q.1, TP. HCM</span>
-                            <span><i class="fas fa-briefcase mr-1"></i> Full-time</span>
-                            <span><i class="fas fa-user-clock mr-1"></i> 4+ Năm</span>
-                        </div>
-                        <div class="flex items-center gap-2 pt-2 border-t border-slate-100">
-                            <button onclick="alert('Đã mở form nộp CV nhanh trên Mobile!')" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition">
-                                Ứng Tuyển Nhanh
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Job Card 2 -->
-                    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-2.5">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <span class="px-2 py-0.5 bg-purple-50 text-purple-700 text-[10px] font-bold rounded-md">Sản Phẩm</span>
-                                <h3 class="text-sm font-extrabold text-slate-900 mt-1">Product Manager (Fintech Core)</h3>
-                            </div>
-                            <span class="text-xs font-black text-emerald-600">30 - 45 Triệu</span>
-                        </div>
-                        <div class="flex items-center gap-3 text-[11px] text-slate-500">
-                            <span><i class="fas fa-location-dot mr-1"></i> Q.3, TP. HCM</span>
-                            <span><i class="fas fa-briefcase mr-1"></i> Full-time</span>
-                            <span><i class="fas fa-user-clock mr-1"></i> 3+ Năm</span>
-                        </div>
-                        <div class="flex items-center gap-2 pt-2 border-t border-slate-100">
-                            <button onclick="alert('Đã mở form nộp CV nhanh trên Mobile!')" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition">
-                                Ứng Tuyển Nhanh
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ============================================== -->
-                <!-- SCREEN 4: TRA CỨU TIẾN ĐỘ HỒ SƠ (TRACKING)    -->
-                <!-- ============================================== -->
-                <div id="screenTrack" class="screen-view mobile-screen p-4 space-y-4">
-                    <div class="pb-2 border-b border-slate-200">
-                        <h2 class="text-base font-extrabold text-slate-900">Tra Cứu Hồ Sơ Tuyển Dụng</h2>
-                        <p class="text-[11px] text-slate-500">Theo dõi tiến trình xét duyệt trực tuyến minh bạch</p>
-                    </div>
-
-                    <!-- Search Input -->
-                    <div class="flex gap-2">
-                        <input id="mobileAppCodeInput" type="text" value="APP-2026-101" class="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono font-bold focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <button onclick="lookupMobileApp()" class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl shadow">
-                            Tra Cứu
+                    <!-- Action Buttons -->
+                    <div class="flex gap-2 pt-1">
+                        <button onclick="submitScorecard('FAIL')" class="flex-1 py-2.5 bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-600 rounded-xl text-xs font-bold transition">
+                            Từ chối (FAIL)
+                        </button>
+                        <button onclick="submitScorecard('PASS')" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition shadow-2xs">
+                            Đạt (PASS)
                         </button>
                     </div>
+                </div>
 
-                    <!-- Status Result -->
-                    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-4">
-                        <div class="flex justify-between items-start pb-3 border-b border-slate-100">
+                <!-- ============================================== -->
+                <!-- MODAL SHEET: XEM NHANH CV ỨNG VIÊN             -->
+                <!-- ============================================== -->
+                <div id="cvModalOverlay" class="absolute inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex flex-col justify-end">
+                    <div class="bg-white rounded-t-3xl p-4 sheet-up max-h-[85%] overflow-y-auto space-y-3.5 border-t border-slate-200">
+                        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
                             <div>
-                                <span class="text-[10px] font-bold text-slate-400 uppercase">Mã ứng tuyển:</span>
-                                <div class="font-mono font-black text-sm text-blue-600">APP-2026-101</div>
-                                <div class="text-xs font-bold text-slate-800 mt-1">Nguyễn Văn An</div>
-                                <div class="text-[11px] text-slate-500">Senior Java Backend Architect</div>
+                                <h3 id="modalCandidateName" class="text-sm font-black text-slate-900">Nguyễn Văn An</h3>
+                                <p id="modalCandidatePos" class="text-[11px] text-blue-600 font-bold">Senior Java Backend</p>
                             </div>
-                            <span class="px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full text-[10px] font-extrabold">
-                                Đang Phỏng Vấn
-                            </span>
+                            <button onclick="closeCvModal()" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 text-xs font-bold">
+                                <i class="fas fa-xmark"></i>
+                            </button>
                         </div>
 
-                        <!-- 6-Stage Stepper -->
-                        <div class="space-y-3 relative pl-4 border-l-2 border-blue-500 text-xs">
-                            <div class="relative">
-                                <div class="w-3 h-3 rounded-full bg-emerald-500 absolute -left-[23px] top-1"></div>
-                                <div class="font-bold text-slate-900">1. Nộp Hồ Sơ Thành Công</div>
-                                <div class="text-[11px] text-slate-400">15/10/2026 • Đã hoàn thành</div>
+                        <!-- Match & Experience -->
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div class="p-2.5 bg-blue-50/70 border border-blue-100 rounded-xl">
+                                <div class="text-[10px] text-slate-500 font-medium">Độ phù hợp JD (AI):</div>
+                                <div id="modalMatchRate" class="text-sm font-black text-blue-700 mt-0.5">95% Match</div>
                             </div>
-                            <div class="relative">
-                                <div class="w-3 h-3 rounded-full bg-emerald-500 absolute -left-[23px] top-1"></div>
-                                <div class="font-bold text-slate-900">2. Sơ Loại Hồ Sơ (Screening)</div>
-                                <div class="text-[11px] text-slate-400">17/10/2026 • Đạt 95% Matching JD</div>
+                            <div class="p-2.5 bg-slate-50 border border-slate-100 rounded-xl">
+                                <div class="text-[10px] text-slate-500 font-medium">Kinh nghiệm:</div>
+                                <div id="modalExp" class="text-sm font-black text-slate-800 mt-0.5">4.5 năm</div>
                             </div>
-                            <div class="relative">
-                                <div class="w-3 h-3 rounded-full bg-emerald-500 absolute -left-[23px] top-1"></div>
-                                <div class="font-bold text-slate-900">3. Bài Test Đánh Giá Năng Lực</div>
-                                <div class="text-[11px] text-slate-400">20/10/2026 • Điểm số: 92/100</div>
+                        </div>
+
+                        <!-- Education -->
+                        <div class="text-xs">
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Học vấn</div>
+                            <div id="modalEdu" class="font-bold text-slate-800 mt-0.5">ĐH Bách Khoa Hà Nội (CNTT)</div>
+                        </div>
+
+                        <!-- Skills -->
+                        <div class="text-xs space-y-1">
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Kỹ năng bóc tách</div>
+                            <div id="modalSkills" class="flex flex-wrap gap-1 pt-0.5">
+                                <span class="px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md text-[10px] font-bold">Java</span>
+                                <span class="px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md text-[10px] font-bold">Spring Boot</span>
+                                <span class="px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md text-[10px] font-bold">Kafka</span>
                             </div>
-                            <div class="relative">
-                                <div class="w-3 h-3 rounded-full bg-blue-600 ring-4 ring-blue-100 absolute -left-[23px] top-1 animate-pulse"></div>
-                                <div class="font-extrabold text-blue-600">4. Phỏng Vấn Kỹ Thuật (Tech Interview)</div>
-                                <div class="text-[11px] text-blue-500 font-semibold">27/10/2026 09:00 • Đang diễn ra</div>
-                            </div>
-                            <div class="relative opacity-40">
-                                <div class="w-3 h-3 rounded-full bg-slate-300 absolute -left-[23px] top-1"></div>
-                                <div class="font-bold text-slate-900">5. Thỏa Thuận Đãi Ngộ (Offer)</div>
-                                <div class="text-[11px] text-slate-400">Dự kiến sau khi có kết quả PV</div>
-                            </div>
-                            <div class="relative opacity-40">
-                                <div class="w-3 h-3 rounded-full bg-slate-300 absolute -left-[23px] top-1"></div>
-                                <div class="font-bold text-slate-900">6. Tiếp Nhận (Onboarding)</div>
-                            </div>
+                        </div>
+
+                        <!-- PDF Download Button -->
+                        <div class="pt-2">
+                            <button onclick="alert('Đã mở tệp CV gốc (PDF) trong trình đọc tài liệu')" class="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition">
+                                <i class="fas fa-file-pdf text-rose-400"></i> Mở File CV Gốc (PDF)
+                            </button>
                         </div>
                     </div>
                 </div>
 
             </div>
 
-            <!-- BOTTOM NAVIGATION BAR (Flutter NavigationBar) -->
-            <div class="h-16 bg-white border-t border-slate-200 px-6 flex justify-around items-center z-40 select-none">
+            <!-- BOTTOM NAVIGATION BAR (FLUTTER NAVIGATIONBAR) -->
+            <div class="h-15 bg-white border-t border-slate-200 px-4 flex justify-around items-center z-40 select-none">
                 <button onclick="switchMobileTab('screenSchedule', this)" class="nav-item flex flex-col items-center gap-1 text-blue-600 font-bold transition">
-                    <i class="fas fa-calendar-day text-base"></i>
+                    <i class="fas fa-calendar-check text-base"></i>
                     <span class="text-[10px]">Lịch PV</span>
                 </button>
-                <button onclick="switchMobileTab('screenJobs', this)" class="nav-item flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition">
-                    <i class="fas fa-briefcase text-base"></i>
-                    <span class="text-[10px]">Việc Làm</span>
+                <button onclick="switchMobileTab('screenApprovals', this)" class="nav-item relative flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition">
+                    <i class="fas fa-clipboard-check text-base"></i>
+                    <span class="text-[10px]">Phê duyệt</span>
+                    <span id="navApprovalBadge" class="absolute -top-1 right-2 px-1.5 py-0.2 bg-rose-500 text-white rounded-full text-[9px] font-black">2</span>
                 </button>
-                <button onclick="switchMobileTab('screenTrack', this)" class="nav-item flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition">
-                    <i class="fas fa-magnifying-glass text-base"></i>
-                    <span class="text-[10px]">Tra Cứu</span>
+                <button onclick="switchMobileTab('screenCandidates', this)" class="nav-item flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition">
+                    <i class="fas fa-user-group text-base"></i>
+                    <span class="text-[10px]">Ứng viên</span>
                 </button>
             </div>
 
             <!-- BOTTOM HOME INDICATOR BAR -->
-            <div class="h-5 bg-white flex justify-center items-center pb-1">
+            <div class="h-4 bg-white flex justify-center items-center pb-1">
                 <div class="w-32 h-1 bg-slate-800 rounded-full"></div>
             </div>
         </div>
 
-        <!-- RIGHT PANEL: GUIDANCE & LIVE CONTROLS -->
+        <!-- RIGHT PANEL: GUIDANCE & SHORTCUTS -->
         <div class="max-w-md w-full space-y-4">
             <!-- Feature Highlight Card -->
             <div class="bg-slate-800/80 border border-slate-700/80 backdrop-blur-md rounded-3xl p-6 shadow-xl space-y-4">
-                <h3 class="text-base font-black text-white flex items-center gap-2">
-                    <i class="fas fa-layer-group text-blue-400"></i> Các Phân Hệ Trên Ứng Dụng Mobile
-                </h3>
+                <div class="flex items-center justify-between">
+                    <h3 class="text-base font-black text-white flex items-center gap-2">
+                        <i class="fas fa-id-badge text-blue-400"></i> Phân Hệ Mobile Cho Ban Tuyển Dụng
+                    </h3>
+                    <span class="px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded-md text-[10px] font-mono font-bold">NỘI BỘ</span>
+                </div>
 
                 <div class="space-y-3 text-xs">
                     <div class="p-3 bg-slate-900/60 border border-slate-700 rounded-2xl flex items-start gap-3">
@@ -479,28 +619,28 @@
                             1
                         </div>
                         <div>
-                            <div class="font-bold text-white">Lịch Phỏng Vấn & Scorecard (Lead / HR)</div>
-                            <div class="text-slate-400 mt-0.5">Chấm 4 tiêu chí 1-5 sao, tính GPA thời gian thực, nút Pass/Deny 1 chạm (Rule BR-18).</div>
-                        </div>
-                    </div>
-
-                    <div class="p-3 bg-slate-900/60 border border-slate-700 rounded-2xl flex items-start gap-3">
-                        <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm shrink-0">
-                            2
-                        </div>
-                        <div>
-                            <div class="font-bold text-white">Khám Phá Việc Làm (Ứng Viên)</div>
-                            <div class="text-slate-400 mt-0.5">Tìm kiếm tin tuyển dụng, lọc phòng ban, xem JD và nộp hồ sơ trực tiếp từ điện thoại.</div>
+                            <div class="font-bold text-white">Lịch Phỏng Vấn & Scorecard Tức Thì</div>
+                            <div class="text-slate-400 mt-0.5">Theo dõi các ca phỏng vấn, xem nhanh CV ứng viên và chấm điểm trực tiếp 4 tiêu chí.</div>
                         </div>
                     </div>
 
                     <div class="p-3 bg-slate-900/60 border border-slate-700 rounded-2xl flex items-start gap-3">
                         <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-sm shrink-0">
+                            2
+                        </div>
+                        <div>
+                            <div class="font-bold text-white">Phê Duyệt Tuyển Dụng (Approvals)</div>
+                            <div class="text-slate-400 mt-0.5">Phê duyệt nhanh Thư mời nhận việc (Offer) và Yêu cầu mở tuyển (Requisitions) cho cấp quản lý.</div>
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-slate-900/60 border border-slate-700 rounded-2xl flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm shrink-0">
                             3
                         </div>
                         <div>
-                            <div class="font-bold text-white">Live Tracking 6 Giai Đoạn Hồ Sơ</div>
-                            <div class="text-slate-400 mt-0.5">Nhập mã APP-2026-101 để theo dõi trạng thái từ Sơ loại đến Nhận việc.</div>
+                            <div class="font-bold text-white">Kho Hồ Sơ Ứng Viên & Điểm AI Match</div>
+                            <div class="text-slate-400 mt-0.5">Tra cứu tiến trình từng ứng viên trong pipeline theo vòng tuyển dụng.</div>
                         </div>
                     </div>
                 </div>
@@ -508,16 +648,16 @@
 
             <!-- Fast Switch Tabs Controls -->
             <div class="bg-slate-800/80 border border-slate-700/80 backdrop-blur-md rounded-3xl p-5 shadow-xl space-y-3">
-                <div class="text-xs font-bold text-slate-300 uppercase tracking-wider">Phím Tắt Chuyển Màn Hình:</div>
+                <div class="text-xs font-bold text-slate-300 uppercase tracking-wider">Phím Tắt Điều Khiển:</div>
                 <div class="grid grid-cols-3 gap-2 text-xs font-bold">
-                    <button onclick="document.querySelectorAll('.nav-item')[0].click()" class="py-2.5 bg-blue-600/30 hover:bg-blue-600 text-blue-300 hover:text-white border border-blue-500/30 rounded-xl transition">
+                    <button onclick="document.querySelectorAll('.nav-item')[0].click()" class="py-2.5 bg-blue-600/30 hover:bg-blue-600 text-blue-300 hover:text-white border border-blue-500/30 rounded-xl transition text-center">
                         Lịch Phỏng Vấn
                     </button>
-                    <button onclick="document.querySelectorAll('.nav-item')[1].click()" class="py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl transition">
-                        Việc Làm
+                    <button onclick="document.querySelectorAll('.nav-item')[1].click()" class="py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl transition text-center">
+                        Phê Duyệt (2)
                     </button>
-                    <button onclick="document.querySelectorAll('.nav-item')[2].click()" class="py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl transition">
-                        Tra Cứu Hồ Sơ
+                    <button onclick="document.querySelectorAll('.nav-item')[2].click()" class="py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl transition text-center">
+                        Ứng Viên
                     </button>
                 </div>
             </div>
@@ -528,6 +668,7 @@
     <!-- JAVASCRIPT SIMULATION LOGIC -->
     <script>
         let scores = { 1: 4.5, 2: 4.5, 3: 4.5, 4: 4.5 };
+        let pendingApprovalsCount = 2;
 
         function switchMobileTab(screenId, btn) {
             document.querySelectorAll('.screen-view').forEach(s => s.classList.remove('active'));
@@ -559,30 +700,116 @@
             document.getElementById('scoreVal' + index).textContent = val;
             
             const avg = (scores[1] + scores[2] + scores[3] + scores[4]) / 4;
-            document.getElementById('averageGpaText').innerHTML = avg.toFixed(1) + ' <span class="text-sm font-normal text-blue-200">/ 5.0</span>';
+            document.getElementById('averageGpaText').innerHTML = avg.toFixed(1) + ' <span class="text-xs font-normal text-blue-200">/ 5.0</span>';
         }
 
         function submitScorecard(decision) {
             const isPass = decision === 'PASS';
             const msg = isPass 
-                ? 'Đã Chấp Thuận (PASS)!\n\nHệ thống đã lưu điểm GPA và tự động gửi email thông báo chúc mừng tới ứng viên và chuyển sang vòng tiếp theo.'
-                : 'Đã Từ Chối (DENY)!\n\nĐã ghi nhận kết quả và gửi email cảm ơn tới ứng viên.';
+                ? 'Đã xác nhận ĐẠT (PASS)!\n\nKết quả điểm GPA đã được đồng bộ lên Portal ATS.'
+                : 'Đã xác nhận TỪ CHỐI (FAIL)!\n\nKết quả đã được ghi nhận.';
             
             alert(msg);
             closeScorecard();
         }
 
-        function lookupMobileApp() {
-            const code = document.getElementById('mobileAppCodeInput').value.trim();
-            if (!code) {
-                alert('Vui lòng nhập mã hồ sơ!');
-                return;
-            }
-            alert('Đã tải dữ liệu tiến trình mới nhất cho mã ' + code);
+        function openCvModal(name, position, exp, skillsStr, matchRate, edu) {
+            document.getElementById('modalCandidateName').textContent = name;
+            document.getElementById('modalCandidatePos').textContent = position;
+            document.getElementById('modalMatchRate').textContent = matchRate + '% Match';
+            document.getElementById('modalExp').textContent = exp;
+            document.getElementById('modalEdu').textContent = edu;
+
+            const skillsContainer = document.getElementById('modalSkills');
+            skillsContainer.innerHTML = '';
+            skillsStr.split(',').forEach(s => {
+                const badge = document.createElement('span');
+                badge.className = 'px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md text-[10px] font-bold';
+                badge.textContent = s.trim();
+                skillsContainer.appendChild(badge);
+            });
+
+            document.getElementById('cvModalOverlay').classList.remove('hidden');
         }
 
-        function refreshSchedule() {
-            alert('Đã đồng bộ lịch phỏng vấn mới nhất từ Spring Boot Backend API (/recruitment/api/interviews)!');
+        function closeCvModal() {
+            document.getElementById('cvModalOverlay').classList.add('hidden');
+        }
+
+        function handleApprovalAction(id, action, name) {
+            alert(`Đã thực hiện: ${action} cho "${name}"`);
+            const card = document.getElementById('approval-card-' + id);
+            if (card) {
+                card.remove();
+                pendingApprovalsCount = Math.max(0, pendingApprovalsCount - 1);
+                const badge = document.getElementById('navApprovalBadge');
+                if (badge) {
+                    if (pendingApprovalsCount === 0) {
+                        badge.classList.add('hidden');
+                    } else {
+                        badge.textContent = pendingApprovalsCount;
+                    }
+                }
+            }
+        }
+
+        function filterApprovalCategory(category, btn) {
+            document.querySelectorAll('.approval-filter-btn').forEach(b => {
+                b.classList.remove('bg-white', 'text-blue-600', 'shadow-2xs');
+                b.classList.add('text-slate-600');
+            });
+            btn.classList.add('bg-white', 'text-blue-600', 'shadow-2xs');
+            btn.classList.remove('text-slate-600');
+
+            document.querySelectorAll('.approval-item').forEach(item => {
+                if (category === 'all' || item.dataset.category === category) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function filterSchedule(period, btn) {
+            document.querySelectorAll('.schedule-filter-btn').forEach(b => {
+                b.classList.remove('bg-white', 'text-blue-600', 'shadow-2xs');
+                b.classList.add('text-slate-600');
+            });
+            btn.classList.add('bg-white', 'text-blue-600', 'shadow-2xs');
+            btn.classList.remove('text-slate-600');
+        }
+
+        function filterCandidatesByStage(stage, btn) {
+            document.querySelectorAll('.candidate-stage-btn').forEach(b => {
+                b.classList.remove('bg-blue-600', 'text-white');
+                b.classList.add('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+            });
+            btn.classList.add('bg-blue-600', 'text-white');
+            btn.classList.remove('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+
+            document.querySelectorAll('.candidate-card').forEach(card => {
+                if (stage === 'all' || card.dataset.stage === stage) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function searchCandidates(query) {
+            const q = query.toLowerCase().trim();
+            document.querySelectorAll('.candidate-card').forEach(card => {
+                const text = (card.dataset.keywords || '') + ' ' + card.innerText.toLowerCase();
+                if (!q || text.includes(q)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function refreshData() {
+            alert('Đã đồng bộ dữ liệu mới nhất từ Spring Boot Backend API (/recruitment/api/...)');
         }
     </script>
 </body>
