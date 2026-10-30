@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../models/interview_schedule.dart';
 import '../services/api_service.dart';
 import 'scorecard_screen.dart';
@@ -197,19 +197,19 @@ class _InterviewScheduleScreenState extends State<InterviewScheduleScreen> {
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                     decoration: BoxDecoration(
-                                      color: isOnline ? Colors.emerald.shade50 : Colors.amber.shade50,
+                                      color: isOnline ? const Color(0xFFECFDF5) : Colors.amber.shade50,
                                       borderRadius: BorderRadius.circular(6),
                                       border: Border.all(
-                                        color: isOnline ? Colors.emerald.shade200 : Colors.amber.shade200,
+                                        color: isOnline ? const Color(0xFFA7F3D0) : Colors.amber.shade200,
                                       ),
                                     ),
                                     child: Row(
                                       children: [
-                                        Icon(isOnline ? Icons.videocam : Icons.business, size: 12, color: isOnline ? Colors.emerald.shade700 : Colors.amber.shade800),
+                                        Icon(isOnline ? Icons.videocam : Icons.business, size: 12, color: isOnline ? const Color(0xFF047857) : Colors.amber.shade800),
                                         const SizedBox(width: 4),
                                         Text(
                                           isOnline ? 'Google Meet' : 'Trực tiếp P.302',
-                                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: isOnline ? Colors.emerald.shade700 : Colors.amber.shade800),
+                                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: isOnline ? const Color(0xFF047857) : Colors.amber.shade800),
                                         ),
                                       ],
                                     ),

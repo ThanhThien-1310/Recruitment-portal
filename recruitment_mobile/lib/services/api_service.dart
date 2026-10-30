@@ -1,4 +1,4 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/job_posting.dart';
 import '../models/candidate.dart';
@@ -83,6 +83,11 @@ class ApiService {
       ).timeout(const Duration(seconds: 3));
 
       return response.statusCode == 200;
+    } catch (_) {
+      return true; // Simulate offline success
+    }
+  }
+
   // Lấy danh sách phê duyệt (Offer & Requisition)
   static Future<List<Map<String, dynamic>>> getApprovals() async {
     try {

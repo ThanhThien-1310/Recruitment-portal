@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 
 class ApprovalsScreen extends StatefulWidget {
@@ -80,7 +80,7 @@ class _ApprovalsScreenState extends State<ApprovalsScreen> {
 
           // Items List
           Expanded(
-            child: filtered.isEmpty
+            child: _isLoading ? const Center(child: CircularProgressIndicator()) : filtered.isEmpty
                 ? const Center(
                     child: Text('Không có yêu cầu chờ duyệt', style: TextStyle(color: Colors.grey)),
                   )
