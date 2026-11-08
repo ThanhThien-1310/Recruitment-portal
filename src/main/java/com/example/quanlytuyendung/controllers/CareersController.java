@@ -33,7 +33,7 @@ public class CareersController {
     }
 
     // Cổng thông tin tuyển dụng & việc làm công khai (Job Board)
-    @GetMapping({"", "/", "/jobs", "/track", "/exam", "/job/{id}", "/assessment/{token}"})
+    @GetMapping({"", "/", "/jobs", "/templates", "/builder", "/my-apps", "/track", "/exam", "/job/{id}", "/assessment/{token}"})
     public String publicJobBoard() {
         return "forward:/job_board.html";
     }

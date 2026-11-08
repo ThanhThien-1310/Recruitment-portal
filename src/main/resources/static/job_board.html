@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -27,18 +27,66 @@
         .stepper-line { position: absolute; top: 20px; left: 40px; right: 40px; height: 3px; background: #e2e8f0; z-index: 1; }
         .exam-timer { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+    
+        /* A4 CV Sheet styling */
+        .cv-a4-sheet {
+            width: 100%;
+            max-width: 210mm;
+            min-height: 297mm;
+            background: #ffffff;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05);
+            margin: 0 auto;
+            position: relative;
+            box-sizing: border-box;
+            font-size: 13px;
+            color: #1e293b;
+            line-height: 1.5;
+        }
+
+        /* Print optimization */
+        @media print {
+            header, footer, .view-content:not(#view-builder), #builder-editor-col, #builder-toolbar, .no-print {
+                display: none !important;
+            }
+            body, html {
+                background: #ffffff !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            #view-builder {
+                display: block !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            #builder-preview-col {
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            #cv-paper {
+                box-shadow: none !important;
+                border: none !important;
+                width: 100% !important;
+                max-width: 210mm !important;
+                min-height: 297mm !important;
+                margin: 0 !important;
+                page-break-after: avoid;
+            }
+        }
+
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased flex flex-col min-h-screen">
 
+        <!-- ======================================================== -->
+    <!-- NAVIGATION BAR (PUBLIC HEADER WITH CANDIDATE PORTAL)     -->
     <!-- ======================================================== -->
-    <!-- NAVIGATION BAR (PUBLIC HEADER)                           -->
-    <!-- ======================================================== -->
-    <header class="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 transition-all">
+    <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 transition-all shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             
             <!-- Logo Brand -->
-            <div class="flex items-center gap-3 cursor-pointer" onclick="switchMainView('jobs')">
+            <div class="flex items-center gap-3 cursor-pointer shrink-0" onclick="switchMainView('jobs')">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-blue-700 flex items-center justify-center text-white font-bold text-lg shadow-sm">
                     <i class="fas fa-layer-group"></i>
                 </div>
@@ -46,37 +94,57 @@
                     <div class="font-extrabold text-slate-900 text-lg leading-tight flex items-center gap-2">
                         TalentFlow <span class="text-[11px] px-2 py-0.5 bg-blue-50 text-blue-700 font-bold rounded-full border border-blue-200">Jobs</span>
                     </div>
-                    <div class="text-[11px] text-slate-400 font-medium">Cổng Tuyển Dụng & Cơ Hội Việc Làm</div>
+                    <div class="text-[11px] text-slate-400 font-medium">Cổng Tuyển Dụng & Tạo CV Chuẩn TopCV</div>
                 </div>
             </div>
 
             <!-- Navigation Links -->
-            <nav class="hidden md:flex items-center gap-1 text-sm font-semibold text-slate-600">
-                <button onclick="switchMainView('jobs')" id="nav-btn-jobs" class="nav-item px-3.5 py-2 rounded-xl text-blue-600 bg-blue-50/80 transition">
+            <nav class="hidden xl:flex items-center gap-1 text-xs font-semibold text-slate-600">
+                <button onclick="switchMainView('jobs')" id="nav-btn-jobs" class="nav-item px-3 py-2 rounded-xl text-blue-600 bg-blue-50/80 transition">
                     <i class="fas fa-briefcase mr-1.5 text-xs"></i> Việc làm
                 </button>
-                <button onclick="switchMainView('track')" id="nav-btn-track" class="nav-item px-3.5 py-2 rounded-xl hover:text-slate-900 hover:bg-slate-100 transition">
+                <button onclick="switchMainView('templates')" id="nav-btn-templates" class="nav-item px-3 py-2 rounded-xl hover:text-slate-900 hover:bg-slate-100 transition relative">
+                    <i class="fas fa-file-invoice mr-1.5 text-xs text-amber-500"></i> Mẫu CV
+                    <span class="ml-1 px-1.5 py-0.2 text-[9px] bg-amber-500 text-white font-bold rounded-full">TopCV</span>
+                </button>
+                <button onclick="switchMainView('builder')" id="nav-btn-builder" class="nav-item px-3 py-2 rounded-xl hover:text-slate-900 hover:bg-slate-100 transition">
+                    <i class="fas fa-wand-magic-sparkles mr-1.5 text-xs text-indigo-500"></i> Tạo CV online
+                </button>
+                <button onclick="switchMainView('my-apps')" id="nav-btn-my-apps" class="nav-item px-3 py-2 rounded-xl hover:text-slate-900 hover:bg-slate-100 transition relative">
+                    <i class="fas fa-user-check mr-1.5 text-xs text-emerald-500"></i> Hồ sơ của tôi
+                    <span id="nav-badge-apps" class="hidden ml-1 px-1.5 py-0.2 text-[9px] bg-emerald-600 text-white font-bold rounded-full">4</span>
+                </button>
+                <button onclick="switchMainView('track')" id="nav-btn-track" class="nav-item px-3 py-2 rounded-xl hover:text-slate-900 hover:bg-slate-100 transition">
                     <i class="fas fa-search-location mr-1.5 text-xs"></i> Tra cứu hồ sơ
                 </button>
-                <button onclick="switchMainView('exam')" id="nav-btn-exam" class="nav-item px-3.5 py-2 rounded-xl hover:text-slate-900 hover:bg-slate-100 transition">
+                <button onclick="switchMainView('exam')" id="nav-btn-exam" class="nav-item px-3 py-2 rounded-xl hover:text-slate-900 hover:bg-slate-100 transition">
                     <i class="fas fa-laptop-code mr-1.5 text-xs"></i> Phòng thi online
                 </button>
             </nav>
 
-            <!-- Actions / Switch Portal -->
-            <div class="flex items-center gap-2.5">
-                <a href="mobile_preview.html" target="_blank" class="px-3.5 py-2 bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition" title="Mô phỏng ứng dụng di động Flutter trên trình duyệt">
+            <!-- Actions / Auth Area -->
+            <div class="flex items-center gap-2">
+                <!-- Dynamic Candidate Auth Widget -->
+                <div id="nav-auth-container" class="flex items-center gap-1.5">
+                    <!-- Loaded dynamically via JS -->
+                    <button onclick="openCandidateAuthModal('login')" class="px-3 py-1.5 border border-slate-200 hover:border-blue-400 bg-white hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs">
+                        <i class="fas fa-right-to-bracket text-blue-600 text-xs"></i> Đăng nhập
+                    </button>
+                    <button onclick="openCandidateAuthModal('register')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs transition flex items-center gap-1.5">
+                        <i class="fas fa-user-plus text-xs"></i> Đăng ký
+                    </button>
+                </div>
+
+                <a href="mobile_preview.html" target="_blank" class="hidden sm:flex px-3 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-xl text-xs font-bold items-center gap-1.5 transition" title="Mô phỏng ứng dụng di động Flutter trên trình duyệt">
                     <i class="fas fa-mobile-screen-button text-purple-600"></i> App Mobile
                 </a>
-                <button onclick="openOpenApplyModal()" class="hidden sm:flex px-3.5 py-2 border border-blue-200 bg-blue-50/50 hover:bg-blue-100/50 text-blue-700 rounded-xl text-xs font-bold items-center gap-1.5 transition">
-                    <i class="fas fa-paper-plane text-xs"></i> Nộp CV mở
-                </button>
-                <a href="recruitment_prototype.html" target="_blank" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm transition" title="Mở trang Quản trị ATS dành cho Doanh nghiệp & HR">
-                    <i class="fas fa-shield-alt text-blue-400"></i> Cổng Quản Trị ATS <span class="text-[10px] bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded font-mono">↗</span>
+                <a href="recruitment_prototype.html" target="_blank" class="hidden md:flex px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold items-center gap-2 shadow-sm transition" title="Mở trang Quản trị ATS dành cho Doanh nghiệp & HR">
+                    <i class="fas fa-shield-alt text-blue-400"></i> Cổng ATS <span class="text-[10px] bg-slate-800 text-slate-300 px-1 py-0.2 rounded font-mono">↗</span>
                 </a>
             </div>
         </div>
     </header>
+
 
     <!-- ======================================================== -->
     <!-- VIEW 1: TRANG CHỦ TÌM KIẾM VIỆC LÀM (JOB BOARD)          -->
@@ -449,7 +517,595 @@
         </section>
     </div>
 
+    
     <!-- ======================================================== -->
+    <!-- VIEW: THƯ VIỆN MẪU CV TOPCV (CV TEMPLATES LIBRARY)        -->
+    <!-- ======================================================== -->
+    <div id="view-templates" class="view-content hidden flex-1 py-10 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Library Header -->
+            <div class="text-center max-w-3xl mx-auto mb-10">
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-bold mb-3 border border-amber-200">
+                    <i class="fas fa-crown text-amber-500"></i> Thư viện 16 Mẫu CV Chuẩn TopCV & ATS
+                </div>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
+                    Mẫu CV Chuyên Nghiệp Theo Chuyên Ngành & Cấp Bậc
+                </h1>
+                <p class="text-slate-600 text-sm md:text-base mt-2">
+                    Được thiết kế tinh gọn, chuẩn mực tuyển dụng quốc tế. Tùy biến nội dung tức thì, tải file PDF sắc nét hoặc nộp đơn trực tiếp chỉ với 1 cú nhấp chuột.
+                </p>
+
+                <!-- Search & Filters Bar -->
+                <div class="mt-8 bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between">
+                    <div class="relative w-full md:w-80">
+                        <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" id="templateSearchInput" oninput="filterTemplates()" placeholder="Tìm theo tên mẫu, kỹ năng, chức danh..." class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-blue-500 focus:bg-white transition">
+                    </div>
+                    <div class="flex items-center gap-2 w-full md:w-auto justify-end flex-wrap">
+                        <span class="text-xs text-slate-500 font-medium">Lọc cấp bậc:</span>
+                        <select id="templateLevelSelect" onchange="filterTemplates()" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500">
+                            <option value="">Tất cả cấp bậc</option>
+                            <option value="fresher">Thực tập / Fresher</option>
+                            <option value="mid">Junior / Mid-level</option>
+                            <option value="senior">Senior / Trưởng nhóm</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Industry Filter Tabs -->
+                <div class="mt-4 flex items-center justify-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+                    <button onclick="setIndustryFilter('all')" class="industry-tab px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap bg-blue-600 text-white shadow-xs" data-industry="all">
+                        Tất cả ngành nghề (16)
+                    </button>
+                    <button onclick="setIndustryFilter('it')" class="industry-tab px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap bg-white text-slate-600 border border-slate-200 hover:bg-slate-100" data-industry="it">
+                        <i class="fas fa-code text-blue-500 mr-1"></i> IT & Phần mềm (4)
+                    </button>
+                    <button onclick="setIndustryFilter('mkt')" class="industry-tab px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap bg-white text-slate-600 border border-slate-200 hover:bg-slate-100" data-industry="mkt">
+                        <i class="fas fa-chart-line text-amber-500 mr-1"></i> Kinh doanh & Marketing (4)
+                    </button>
+                    <button onclick="setIndustryFilter('dsg')" class="industry-tab px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap bg-white text-slate-600 border border-slate-200 hover:bg-slate-100" data-industry="dsg">
+                        <i class="fas fa-pen-nib text-purple-500 mr-1"></i> Thiết kế & UI/UX (4)
+                    </button>
+                    <button onclick="setIndustryFilter('hr')" class="industry-tab px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap bg-white text-slate-600 border border-slate-200 hover:bg-slate-100" data-industry="hr">
+                        <i class="fas fa-users-gear text-emerald-500 mr-1"></i> Nhân sự & Hành chính (4)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Templates Grid Container -->
+            <div id="templates-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Template cards dynamically generated or pre-populated via JS for full 16 templates -->
+            </div>
+
+            <!-- Bottom CTA banner -->
+            <div class="mt-14 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl p-8 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
+                <div>
+                    <h3 class="text-xl md:text-2xl font-extrabold mb-1">Chưa tìm thấy mẫu ưng ý?</h3>
+                    <p class="text-blue-100 text-xs md:text-sm">Bắt đầu ngay với trình tạo CV trực tuyến của chúng tôi với khả năng tùy chỉnh màu sắc, bố cục không giới hạn!</p>
+                </div>
+                <button onclick="switchMainView('builder')" class="px-6 py-3 bg-white text-blue-700 hover:bg-blue-50 rounded-2xl text-xs font-extrabold shadow transition shrink-0 flex items-center gap-2">
+                    <i class="fas fa-wand-magic-sparkles text-indigo-600"></i> Mở Trình Tạo CV Ngay
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ======================================================== -->
+    <!-- VIEW: TRÌNH TẠO CV ONLINE (INTERACTIVE CV BUILDER)       -->
+    <!-- ======================================================== -->
+    <div id="view-builder" class="view-content hidden flex-1 py-6 bg-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Top Builder Toolbar -->
+            <div id="builder-toolbar" class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-6 flex flex-wrap items-center justify-between gap-4 sticky top-20 z-30">
+                <!-- Left: Active Template info & quick switcher -->
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">
+                        <i class="fas fa-file-pen"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-400 font-medium">Mẫu đang thiết kế:</div>
+                        <div class="text-sm font-extrabold text-slate-800 flex items-center gap-2">
+                            <span id="active-template-title">Tech Stack Pro (IT/Phần mềm)</span>
+                            <button onclick="switchMainView('templates')" class="text-[11px] text-blue-600 hover:underline font-semibold">
+                                [Đổi mẫu khác]
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Center: Color Theme Palette & Actions -->
+                <div class="flex items-center gap-4 flex-wrap">
+                    <!-- Color Swatches -->
+                    <div class="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200">
+                        <span class="text-[11px] text-slate-500 font-bold mr-1">Màu chủ đạo:</span>
+                        <button onclick="setThemeColor('#2563eb')" class="w-5 h-5 rounded-full bg-blue-600 hover:scale-110 transition shadow-xs border border-white" title="Xanh Hiện Đại"></button>
+                        <button onclick="setThemeColor('#059669')" class="w-5 h-5 rounded-full bg-emerald-600 hover:scale-110 transition shadow-xs border border-white" title="Xanh Lá Tươi Sáng"></button>
+                        <button onclick="setThemeColor('#4f46e5')" class="w-5 h-5 rounded-full bg-indigo-600 hover:scale-110 transition shadow-xs border border-white" title="Tím Indigo Công Nghệ"></button>
+                        <button onclick="setThemeColor('#334155')" class="w-5 h-5 rounded-full bg-slate-700 hover:scale-110 transition shadow-xs border border-white" title="Xám Slate Thanh Lịch"></button>
+                        <button onclick="setThemeColor('#dc2626')" class="w-5 h-5 rounded-full bg-red-600 hover:scale-110 transition shadow-xs border border-white" title="Đỏ Đô Năng Động"></button>
+                        <button onclick="setThemeColor('#d97706')" class="w-5 h-5 rounded-full bg-amber-600 hover:scale-110 transition shadow-xs border border-white" title="Cam Hổ Phách"></button>
+                    </div>
+
+                    <!-- Auto Fill & Clear -->
+                    <div class="flex items-center gap-2">
+                        <button onclick="autoFillCurrentIndustry()" class="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-xl text-xs font-bold transition flex items-center gap-1.5" title="Tự động điền dữ liệu mẫu chuẩn ngành">
+                            <i class="fas fa-wand-magic-sparkles text-indigo-500"></i> Nạp dữ liệu mẫu
+                        </button>
+                        <button onclick="resetCvForm()" class="px-3 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-xl text-xs font-bold transition flex items-center gap-1" title="Xóa toàn bộ nội dung để viết từ đầu">
+                            <i class="fas fa-rotate-left text-xs"></i> Xóa trắng
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right: Export & Apply actions -->
+                <div class="flex items-center gap-2">
+                    <button onclick="printCv()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold shadow-xs transition flex items-center gap-1.5" title="In hoặc lưu file định dạng PDF chuẩn">
+                        <i class="fas fa-file-pdf text-red-400"></i> In / Tải PDF
+                    </button>
+                    <button onclick="saveCvToProfile()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs transition flex items-center gap-1.5" title="Lưu vào hồ sơ cá nhân">
+                        <i class="fas fa-cloud-arrow-up"></i> Lưu hồ sơ
+                    </button>
+                    <button onclick="openApplyWithCvModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center gap-1.5 animate-pulse" title="Sử dụng CV này để ứng tuyển ngay vào vị trí đang mở">
+                        <i class="fas fa-paper-plane text-xs"></i> Ứng tuyển với CV này
+                    </button>
+                </div>
+            </div>
+
+            <!-- Workspace: 2 Columns (Editor vs Live A4 Preview) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- LEFT COLUMN: Form Editor (5 cols) -->
+                <div id="builder-editor-col" class="lg:col-span-5 space-y-4 max-h-[calc(100vh-140px)] overflow-y-auto pr-1">
+                    
+                    <!-- Accordion 1: Thông tin cá nhân & Ảnh đại diện -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
+                        <div class="flex items-center justify-between font-bold text-slate-800 text-sm mb-3 pb-2 border-b border-slate-100">
+                            <span class="flex items-center gap-2">
+                                <i class="fas fa-id-card text-blue-600"></i> 1. Thông tin cá nhân & Ảnh
+                            </span>
+                        </div>
+                        
+                        <!-- Avatar Picker -->
+                        <div class="mb-4 flex items-center gap-3 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                            <img id="editorAvatarPreview" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Avatar" class="w-14 h-14 rounded-full object-cover border-2 border-blue-500 shrink-0">
+                            <div class="flex-1">
+                                <div class="text-[11px] font-bold text-slate-700 mb-1">Ảnh đại diện CV:</div>
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <label class="px-2.5 py-1 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg text-[11px] font-semibold cursor-pointer transition">
+                                        <i class="fas fa-upload text-blue-500 mr-1"></i> Tải ảnh lên
+                                        <input type="file" accept="image/*" class="hidden" onchange="handleAvatarUpload(event)">
+                                    </label>
+                                    <button onclick="selectPresetAvatar('male_tech')" class="px-2 py-1 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-[10px] font-medium text-slate-600">Nam Tech</button>
+                                    <button onclick="selectPresetAvatar('female_tech')" class="px-2 py-1 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-[10px] font-medium text-slate-600">Nữ Tech</button>
+                                    <button onclick="selectPresetAvatar('biz')" class="px-2 py-1 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-[10px] font-medium text-slate-600">Kinh doanh</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <div class="sm:col-span-2">
+                                <label class="block font-bold text-slate-700 mb-1">Họ và tên *</label>
+                                <input type="text" id="cv-input-fullname" oninput="updateCvLive()" placeholder="Nguyễn Minh Hùng" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 focus:outline-none transition font-semibold">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block font-bold text-slate-700 mb-1">Vị trí ứng tuyển mong muốn *</label>
+                                <input type="text" id="cv-input-title" oninput="updateCvLive()" placeholder="Kỹ sư Lập trình Java Fullstack" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">Email liên hệ *</label>
+                                <input type="email" id="cv-input-email" oninput="updateCvLive()" placeholder="hung.nguyen@example.com" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">Số điện thoại *</label>
+                                <input type="tel" id="cv-input-phone" oninput="updateCvLive()" placeholder="0901 234 567" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">Ngày sinh</label>
+                                <input type="text" id="cv-input-dob" oninput="updateCvLive()" placeholder="15/08/1998" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">Địa chỉ (Thành phố)</label>
+                                <input type="text" id="cv-input-address" oninput="updateCvLive()" placeholder="TP. Hồ Chí Minh" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 focus:outline-none transition">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block font-bold text-slate-700 mb-1">Website / LinkedIn / GitHub</label>
+                                <input type="text" id="cv-input-link" oninput="updateCvLive()" placeholder="github.com/minhhung | linkedin.com/in/minhhung" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 focus:outline-none transition">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Accordion 2: Mục tiêu nghề nghiệp -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
+                        <div class="flex items-center justify-between font-bold text-slate-800 text-sm mb-2 pb-2 border-b border-slate-100">
+                            <span class="flex items-center gap-2">
+                                <i class="fas fa-bullseye text-amber-500"></i> 2. Mục tiêu nghề nghiệp / Giới thiệu
+                            </span>
+                        </div>
+                        <textarea id="cv-input-summary" rows="3" oninput="updateCvLive()" placeholder="Tóm tắt ngắn gọn thế mạnh, số năm kinh nghiệm và mục tiêu đóng góp giá trị cho doanh nghiệp..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-blue-500 focus:outline-none transition"></textarea>
+                    </div>
+
+                    <!-- Accordion 3: Kinh nghiệm làm việc -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
+                        <div class="flex items-center justify-between font-bold text-slate-800 text-sm mb-3 pb-2 border-b border-slate-100">
+                            <span class="flex items-center gap-2">
+                                <i class="fas fa-briefcase text-indigo-500"></i> 3. Kinh nghiệm làm việc
+                            </span>
+                            <button onclick="addExperienceRow()" class="text-xs px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold rounded-lg transition flex items-center gap-1">
+                                <i class="fas fa-plus"></i> Thêm vị trí
+                            </button>
+                        </div>
+                        <div id="experience-items-container" class="space-y-3">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Accordion 4: Học vấn & Bằng cấp -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
+                        <div class="flex items-center justify-between font-bold text-slate-800 text-sm mb-3 pb-2 border-b border-slate-100">
+                            <span class="flex items-center gap-2">
+                                <i class="fas fa-graduation-cap text-emerald-500"></i> 4. Học vấn & Bằng cấp
+                            </span>
+                            <button onclick="addEducationRow()" class="text-xs px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-lg transition flex items-center gap-1">
+                                <i class="fas fa-plus"></i> Thêm trường
+                            </button>
+                        </div>
+                        <div id="education-items-container" class="space-y-3">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Accordion 5: Kỹ năng chuyên môn -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
+                        <div class="flex items-center justify-between font-bold text-slate-800 text-sm mb-2 pb-2 border-b border-slate-100">
+                            <span class="flex items-center gap-2">
+                                <i class="fas fa-screwdriver-wrench text-rose-500"></i> 5. Kỹ năng chuyên môn
+                            </span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mb-2">Nhập các kỹ năng phân cách bằng dấu phẩy (,):</p>
+                        <input type="text" id="cv-input-skills" oninput="updateCvLive()" placeholder="Java, Spring Boot, MySQL, Docker, Kafka, Git, REST API" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-blue-500 focus:outline-none transition">
+                    </div>
+
+                    <!-- Accordion 6: Dự án thực tế tiêu biểu -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
+                        <div class="flex items-center justify-between font-bold text-slate-800 text-sm mb-3 pb-2 border-b border-slate-100">
+                            <span class="flex items-center gap-2">
+                                <i class="fas fa-diagram-project text-purple-500"></i> 6. Dự án thực tế tiêu biểu
+                            </span>
+                            <button onclick="addProjectRow()" class="text-xs px-2.5 py-1 bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold rounded-lg transition flex items-center gap-1">
+                                <i class="fas fa-plus"></i> Thêm dự án
+                            </button>
+                        </div>
+                        <div id="project-items-container" class="space-y-3">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Accordion 7: Chứng chỉ & Ngoại ngữ -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
+                        <div class="flex items-center justify-between font-bold text-slate-800 text-sm mb-2 pb-2 border-b border-slate-100">
+                            <span class="flex items-center gap-2">
+                                <i class="fas fa-award text-amber-500"></i> 7. Chứng chỉ & Ngoại ngữ
+                            </span>
+                        </div>
+                        <textarea id="cv-input-certs" rows="2" oninput="updateCvLive()" placeholder="AWS Certified Solutions Architect (2024), IELTS 7.5 (2023), Oracle Certified Java SE 17" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-blue-500 focus:outline-none transition"></textarea>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT COLUMN: Live A4 Preview Sheet (7 cols) -->
+                <div id="builder-preview-col" class="lg:col-span-7 flex justify-center sticky top-20">
+                    
+                    <!-- Paper sheet wrapper -->
+                    <div id="cv-paper" class="cv-a4-sheet rounded-xl overflow-hidden shadow-2xl transition-all">
+                        
+                        <!-- RENDERED CV HTML (Generated live by JS) -->
+                        <div id="cv-rendered-content" class="h-full flex flex-col">
+                            <!-- Live DOM injected here -->
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ======================================================== -->
+    <!-- VIEW: HỒ SƠ & ĐƠN NỘP CỦA TÔI (CANDIDATE DASHBOARD)      -->
+    <!-- ======================================================== -->
+    <div id="view-my-apps" class="view-content hidden flex-1 py-10 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Candidate Profile Welcome Banner -->
+            <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-sm mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div class="flex items-center gap-4">
+                    <img id="candidateDashboardAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Avatar" class="w-16 h-16 rounded-2xl object-cover border-2 border-blue-500 shadow-sm">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h2 id="candidateDashboardName" class="text-xl md:text-2xl font-extrabold text-slate-900">Nguyễn Minh Hùng</h2>
+                            <span class="px-2.5 py-0.5 bg-blue-100 text-blue-800 text-[11px] font-bold rounded-full">Ứng viên đã xác thực</span>
+                        </div>
+                        <p id="candidateDashboardEmail" class="text-xs text-slate-500 font-medium mt-0.5">ungvien@gmail.com • 0901 234 567</p>
+                        <div class="flex items-center gap-3 mt-2 text-xs text-slate-600 font-semibold">
+                            <span class="text-emerald-600 flex items-center gap-1"><i class="fas fa-circle-check"></i> Hồ sơ hoàn thiện: 95%</span>
+                            <span>•</span>
+                            <span class="text-blue-600 flex items-center gap-1"><i class="fas fa-file-lines"></i> 2 Bản CV đang kích hoạt</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2.5">
+                    <button onclick="switchMainView('builder')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs transition flex items-center gap-1.5">
+                        <i class="fas fa-wand-magic-sparkles text-xs"></i> Chỉnh sửa CV
+                    </button>
+                    <button onclick="logoutCandidate()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+                        <i class="fas fa-arrow-right-from-bracket text-xs"></i> Đăng xuất
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl shrink-0 font-bold">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-extrabold text-slate-900" id="stat-total-applied">4</div>
+                        <div class="text-xs text-slate-500 font-medium">Đơn đã nộp</div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl shrink-0 font-bold">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-extrabold text-slate-900" id="stat-under-review">2</div>
+                        <div class="text-xs text-slate-500 font-medium">Đang xét duyệt</div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl shrink-0 font-bold">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-extrabold text-slate-900" id="stat-interviews">1</div>
+                        <div class="text-xs text-slate-500 font-medium">Lịch phỏng vấn</div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl shrink-0 font-bold">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-extrabold text-slate-900" id="stat-offers">1</div>
+                        <div class="text-xs text-slate-500 font-medium">Offer thư nhận việc</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content: Application Tracking Cards & Saved Jobs -->
+            <div class="space-y-8">
+                
+                <!-- Section 1: Tiến trình đơn ứng tuyển (Applications Pipeline) -->
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-extrabold text-lg text-slate-900 flex items-center gap-2">
+                            <i class="fas fa-list-check text-blue-600"></i> Tiến trình đơn ứng tuyển của tôi (Pipeline Tracking)
+                        </h3>
+                        <span class="text-xs text-slate-500">Cập nhật theo thời gian thực từ cơ sở dữ liệu ATS</span>
+                    </div>
+
+                    <div id="applications-list-container" class="space-y-4">
+                        <!-- Card 1: Java Senior (In Interview Round) -->
+                        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 transition hover:shadow-md">
+                            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                                <div>
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="px-2.5 py-0.5 bg-blue-50 text-blue-700 text-[11px] font-bold rounded-md border border-blue-200">Mã: APP-2026-101</span>
+                                        <span class="text-xs text-slate-400">Nộp ngày: 02/11/2026</span>
+                                    </div>
+                                    <h4 class="text-base font-extrabold text-slate-900">Kỹ sư Lập trình Java Backend (Senior)</h4>
+                                    <p class="text-xs text-slate-500 font-medium">TechCorp Enterprise • Phòng Phát Triển Nền Tảng Cloud • Lương: 35,000,000 - 45,000,000 VNĐ</p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="px-3 py-1 bg-purple-100 text-purple-700 font-extrabold text-xs rounded-full border border-purple-200 flex items-center gap-1.5">
+                                        <i class="fas fa-video text-xs"></i> Vòng 2: Phỏng vấn Kỹ thuật
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Stepper Tracker -->
+                            <div class="py-5">
+                                <div class="relative flex items-center justify-between max-w-3xl mx-auto px-4">
+                                    <div class="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-1 bg-slate-200 -z-0">
+                                        <div class="h-full bg-blue-600 w-3/5 transition-all"></div>
+                                    </div>
+                                    <div class="text-center z-10 bg-white px-2">
+                                        <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold mx-auto mb-1 shadow-sm">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                        <span class="text-[11px] font-bold text-slate-800">1. Đã nộp</span>
+                                    </div>
+                                    <div class="text-center z-10 bg-white px-2">
+                                        <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold mx-auto mb-1 shadow-sm">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                        <span class="text-[11px] font-bold text-slate-800">2. Sàng lọc</span>
+                                    </div>
+                                    <div class="text-center z-10 bg-white px-2">
+                                        <div class="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center text-xs font-bold mx-auto mb-1 ring-4 ring-purple-100 animate-pulse">
+                                            <i class="fas fa-comments"></i>
+                                        </div>
+                                        <span class="text-[11px] font-extrabold text-purple-700">3. Phỏng vấn</span>
+                                    </div>
+                                    <div class="text-center z-10 bg-white px-2">
+                                        <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center text-xs font-bold mx-auto mb-1">
+                                            4
+                                        </div>
+                                        <span class="text-[11px] font-medium text-slate-400">4. Đánh giá</span>
+                                    </div>
+                                    <div class="text-center z-10 bg-white px-2">
+                                        <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center text-xs font-bold mx-auto mb-1">
+                                            5
+                                        </div>
+                                        <span class="text-[11px] font-medium text-slate-400">5. Nhận Offer</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Interview Schedule Alert Box -->
+                            <div class="bg-purple-50 border border-purple-200 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center text-base shrink-0">
+                                        <i class="fas fa-calendar-day"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-extrabold text-purple-900">Lịch phỏng vấn đã được xác nhận:</div>
+                                        <div class="text-purple-700 font-medium">14:00 - Thứ Tư, 12/11/2026 • Trực tuyến qua Google Meet (Người phỏng vấn: Tech Lead & HR Manager)</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <a href="https://meet.google.com/abc-defg-hij" target="_blank" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition flex items-center gap-1 shadow-xs">
+                                        <i class="fas fa-video"></i> Vào phòng họp
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: UI/UX Designer (Offer Received!) -->
+                        <div class="bg-white rounded-3xl border border-emerald-200 shadow-sm p-6 transition hover:shadow-md bg-emerald-50/20">
+                            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-emerald-100">
+                                <div>
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[11px] font-bold rounded-md border border-emerald-200">Mã: APP-2026-102</span>
+                                        <span class="text-xs text-slate-400">Nộp ngày: 28/10/2026</span>
+                                    </div>
+                                    <h4 class="text-base font-extrabold text-slate-900">Chuyên viên Thiết kế Giao diện UI/UX</h4>
+                                    <p class="text-xs text-slate-500 font-medium">Digital Innovation Studio • Lương: 25,000,000 - 32,000,000 VNĐ</p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="px-3 py-1 bg-emerald-100 text-emerald-800 font-extrabold text-xs rounded-full border border-emerald-300 flex items-center gap-1.5 animate-bounce">
+                                        <i class="fas fa-gift text-emerald-600"></i> Đã nhận Offer chính thức!
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Offer Alert Box -->
+                            <div class="mt-4 bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-base shrink-0">
+                                        <i class="fas fa-award"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-extrabold text-emerald-900">Chúc mừng! Bạn đã nhận được Thư mời nhận việc (Offer Letter)</div>
+                                        <div class="text-emerald-700 font-medium">Mức lương đề xuất: 28,000,000 VNĐ Net • Ngày bắt đầu làm việc dự kiến: 15/11/2026</div>
+                                    </div>
+                                </div>
+                                <button onclick="openOfferLetterModal('APP-2026-102')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fas fa-file-contract"></i> Xem Thư Mời Nhận Việc
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Flutter Developer (Online Assessment) -->
+                        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 transition hover:shadow-md">
+                            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                                <div>
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="px-2.5 py-0.5 bg-blue-50 text-blue-700 text-[11px] font-bold rounded-md border border-blue-200">Mã: APP-2026-103</span>
+                                        <span class="text-xs text-slate-400">Nộp ngày: 06/11/2026</span>
+                                    </div>
+                                    <h4 class="text-base font-extrabold text-slate-900">Lập trình viên Flutter Mobile</h4>
+                                    <p class="text-xs text-slate-500 font-medium">FinTech Solutions Lab • Lương: 20,000,000 - 30,000,000 VNĐ</p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="px-3 py-1 bg-amber-100 text-amber-800 font-extrabold text-xs rounded-full border border-amber-300 flex items-center gap-1.5">
+                                        <i class="fas fa-laptop-code text-xs"></i> Đang làm bài Test năng lực
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center justify-between text-xs text-slate-600">
+                                <span class="flex items-center gap-1.5"><i class="fas fa-clock text-amber-500"></i> Thời hạn nộp bài test: Trước 23:59 ngày 10/11/2026</span>
+                                <button onclick="switchMainView('exam')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition flex items-center gap-1">
+                                    <i class="fas fa-arrow-right"></i> Vào phòng thi ngay
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Quản lý CV đã tạo của tôi (Saved CVs) -->
+                <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-extrabold text-lg text-slate-900 flex items-center gap-2">
+                            <i class="fas fa-file-invoice text-indigo-600"></i> Các bản CV đã tạo của tôi (2)
+                        </h3>
+                        <button onclick="switchMainView('templates')" class="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
+                            <i class="fas fa-plus"></i> Tạo thêm bản CV mới
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 rounded-2xl border border-slate-200 bg-slate-50/50 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl shrink-0">
+                                    <i class="fas fa-file-code"></i>
+                                </div>
+                                <div>
+                                    <div class="font-extrabold text-sm text-slate-800">CV Kỹ sư Phần mềm Java</div>
+                                    <div class="text-[11px] text-slate-400">Mẫu: Tech Stack Pro • Cập nhật hôm nay</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <button onclick="switchMainView('builder')" class="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-xs font-semibold text-slate-700 transition" title="Chỉnh sửa">
+                                    <i class="fas fa-pencil"></i>
+                                </button>
+                                <button onclick="printCv()" class="px-2.5 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-xs font-semibold transition" title="Tải PDF">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-2xl border border-slate-200 bg-slate-50/50 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl shrink-0">
+                                    <i class="fas fa-palette"></i>
+                                </div>
+                                <div>
+                                    <div class="font-extrabold text-sm text-slate-800">CV Thiết kế UI/UX & Sản phẩm</div>
+                                    <div class="text-[11px] text-slate-400">Mẫu: Product Design Leader • 28/10/2026</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <button onclick="switchMainView('builder')" class="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-xs font-semibold text-slate-700 transition" title="Chỉnh sửa">
+                                    <i class="fas fa-pencil"></i>
+                                </button>
+                                <button onclick="printCv()" class="px-2.5 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-xs font-semibold transition" title="Tải PDF">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+<!-- ======================================================== -->
     <!-- VIEW 2: TRA CỨU TIẾN TRÌNH HỒ SƠ ỨNG VIÊN                -->
     <!-- ======================================================== -->
     <div id="view-track" class="view-content hidden flex-1 py-12">
@@ -827,7 +1483,237 @@ public class ExamDocParserService {
         </div>
     </div>
 
+        <!-- ======================================================== -->
+    <!-- MODAL: ĐĂNG NHẬP / ĐĂNG KÝ ỨNG VIÊN (CANDIDATE AUTH)      -->
     <!-- ======================================================== -->
+    <div id="candidateAuthModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-md w-full p-6 md:p-8 relative">
+            <button onclick="closeCandidateAuthModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center font-bold">
+                &times;
+            </button>
+
+            <!-- Auth Tabs -->
+            <div class="flex items-center gap-2 border-b border-slate-100 pb-4 mb-5">
+                <button id="auth-tab-btn-login" onclick="switchAuthTab('login')" class="flex-1 pb-2 font-extrabold text-sm text-blue-600 border-b-2 border-blue-600 transition">
+                    Đăng nhập ứng viên
+                </button>
+                <button id="auth-tab-btn-register" onclick="switchAuthTab('register')" class="flex-1 pb-2 font-bold text-sm text-slate-400 hover:text-slate-600 border-b-2 border-transparent transition">
+                    Đăng ký tài khoản
+                </button>
+            </div>
+
+            <!-- Fast Sample Account Banner -->
+            <div class="mb-5 bg-blue-50 border border-blue-200 rounded-2xl p-3 flex items-center justify-between text-xs text-blue-900">
+                <div>
+                    <span class="font-bold flex items-center gap-1"><i class="fas fa-lightbulb text-amber-500"></i> Tài khoản thử nghiệm:</span>
+                    <span class="text-[11px] text-blue-700">ungvien@gmail.com / 123456</span>
+                </div>
+                <button onclick="quickFillCandidateTestAccount()" class="px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-[10px] transition shrink-0">
+                    Điền nhanh
+                </button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="candidateLoginForm" onsubmit="handleCandidateLogin(event)" class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Email ứng viên *</label>
+                    <input type="email" id="loginEmail" required placeholder="ungvien@gmail.com" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 focus:outline-none transition">
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block font-bold text-slate-700">Mật khẩu *</label>
+                        <a href="javascript:void(0)" onclick="alert('Vui lòng sử dụng mật khẩu mẫu 123456')" class="text-[11px] text-blue-600 hover:underline">Quên mật khẩu?</a>
+                    </div>
+                    <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 focus:outline-none transition">
+                </div>
+                <div class="flex items-center gap-2 text-slate-600">
+                    <input type="checkbox" id="loginRemember" checked class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                    <label for="loginRemember">Ghi nhớ đăng nhập cho phiên sau</label>
+                </div>
+                <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-xl shadow transition flex items-center justify-center gap-2 text-xs">
+                    <i class="fas fa-right-to-bracket"></i> Đăng nhập vào cổng ứng viên
+                </button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="candidateRegisterForm" onsubmit="handleCandidateRegister(event)" class="space-y-3.5 text-xs hidden">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Họ và tên *</label>
+                    <input type="text" id="regFullName" required placeholder="Nguyễn Minh Hùng" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 focus:outline-none transition">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Email *</label>
+                    <input type="email" id="regEmail" required placeholder="hung.nguyen@gmail.com" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 focus:outline-none transition">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Số điện thoại *</label>
+                    <input type="tel" id="regPhone" required placeholder="0901 234 567" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 focus:outline-none transition">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Chuyên ngành chính</label>
+                    <select id="regIndustry" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 focus:outline-none transition">
+                        <option value="it">Công nghệ thông tin (IT / Software)</option>
+                        <option value="mkt">Kinh doanh & Marketing</option>
+                        <option value="dsg">Thiết kế & Sáng tạo (UI/UX)</option>
+                        <option value="hr">Nhân sự & Hành chính</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Mật khẩu *</label>
+                    <input type="password" id="regPassword" required placeholder="Ít nhất 6 ký tự" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 focus:outline-none transition">
+                </div>
+                <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl shadow transition flex items-center justify-center gap-2 text-xs">
+                    <i class="fas fa-user-plus"></i> Đăng ký tài khoản ngay
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- MODAL: XEM THƯ MỜI NHẬN VIỆC CHÍNH THỨC (OFFER LETTER)     -->
+    <!-- ======================================================== -->
+    <div id="offerLetterModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 relative">
+            <button onclick="closeOfferLetterModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center font-bold">
+                &times;
+            </button>
+
+            <!-- Offer Document Header -->
+            <div class="border-b border-slate-200 pb-5 mb-6">
+                <div class="flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-2xl font-bold shadow-md">
+                            <i class="fas fa-file-contract"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-extrabold text-slate-900">THƯ MỜI NHẬN VIỆC (JOB OFFER)</h3>
+                            <p class="text-xs text-slate-500">Mã văn bản: OFF-2026-88 • Ngày phát hành: 05/11/2026</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-extrabold rounded-full border border-emerald-300">
+                        OFFICIAL OFFER
+                    </span>
+                </div>
+            </div>
+
+            <!-- Letter Body -->
+            <div class="space-y-4 text-xs text-slate-700 leading-relaxed">
+                <p>Kính gửi: <strong class="text-slate-900" id="offerRecipientName">Nguyễn Minh Hùng</strong>,</p>
+                <p>Hội đồng Tuyển dụng TechCorp xin trân trọng thông báo bạn đã xuất sắc vượt qua các vòng đánh giá năng lực và phỏng vấn chuyên môn. Chúng tôi rất vinh dự được gửi lời mời bạn gia nhập đội ngũ với các điều khoản như sau:</p>
+
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2.5">
+                    <div class="flex justify-between py-1 border-b border-slate-200/60">
+                        <span class="text-slate-500 font-medium">Vị trí đảm nhận:</span>
+                        <strong class="text-slate-900" id="offerJobTitle">Chuyên viên Thiết kế Giao diện UI/UX</strong>
+                    </div>
+                    <div class="flex justify-between py-1 border-b border-slate-200/60">
+                        <span class="text-slate-500 font-medium">Phòng ban:</span>
+                        <strong class="text-slate-900">Digital Innovation & Product Studio</strong>
+                    </div>
+                    <div class="flex justify-between py-1 border-b border-slate-200/60">
+                        <span class="text-slate-500 font-medium">Mức lương khởi điểm (Gross):</span>
+                        <strong class="text-emerald-700 font-extrabold text-sm" id="offerSalaryText">28,000,000 VNĐ / tháng</strong>
+                    </div>
+                    <div class="flex justify-between py-1 border-b border-slate-200/60">
+                        <span class="text-slate-500 font-medium">Ngày bắt đầu làm việc:</span>
+                        <strong class="text-slate-900" id="offerStartDate">15/11/2026 (08:30 Sáng)</strong>
+                    </div>
+                    <div class="flex justify-between py-1">
+                        <span class="text-slate-500 font-medium">Trang thiết bị cung cấp:</span>
+                        <strong class="text-slate-900">MacBook Pro M3 Max + Màn hình Dell UltraSharp 27"</strong>
+                    </div>
+                </div>
+
+                <div>
+                    <h5 class="font-bold text-slate-900 mb-1">Chế độ đãi ngộ & Phúc lợi:</h5>
+                    <ul class="list-disc list-inside space-y-1 text-slate-600 text-[11px]">
+                        <li>Thưởng lương tháng 13 cam kết + Thưởng hiệu quả kinh doanh hàng năm (1 - 3 tháng lương).</li>
+                        <li>Gói bảo hiểm sức khỏe cao cấp PVI Care toàn diện cho cá nhân và người thân.</li>
+                        <li>15 ngày phép năm hưởng nguyên lương + 3 ngày nghỉ du lịch công ty.</li>
+                        <li>Hỗ trợ 2 ngày/tuần làm việc linh hoạt từ xa (Hybrid Work).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Offer Actions -->
+            <div class="mt-8 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <a href="/recruitment/api/offers/1/pdf" target="_blank" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 w-full sm:w-auto justify-center">
+                    <i class="fas fa-file-pdf text-red-500"></i> Tải Thư Mời PDF Gốc
+                </a>
+                <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                    <button onclick="closeOfferLetterModal()" class="px-4 py-2.5 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-xl text-xs font-bold transition">
+                        Để tôi suy nghĩ
+                    </button>
+                    <button onclick="acceptOffer('APP-2026-102')" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-extrabold shadow-sm transition flex items-center gap-1.5">
+                        <i class="fas fa-circle-check"></i> Chấp thuận Thư mời
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- MODAL: ỨNG TUYỂN NHANH VỚI BẢN CV VỪA TẠO                 -->
+    <!-- ======================================================== -->
+    <div id="applyWithCvModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 md:p-8 relative">
+            <button onclick="closeApplyWithCvModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center font-bold">
+                &times;
+            </button>
+
+            <div class="flex items-center gap-3 mb-5 pb-3 border-b border-slate-100">
+                <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-lg font-bold">
+                    <i class="fas fa-paper-plane"></i>
+                </div>
+                <div>
+                    <h3 class="font-extrabold text-slate-900 text-base">Nộp CV vào vị trí tuyển dụng</h3>
+                    <p class="text-xs text-slate-500">Bản CV hiện tại của bạn sẽ được chuyển thẳng tới HR</p>
+                </div>
+            </div>
+
+            <form onsubmit="handleApplyWithCvSubmit(event)" class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Chọn vị trí công việc muốn ứng tuyển *</label>
+                    <select id="applyTargetJobSelect" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 focus:outline-none transition font-semibold">
+                        <option value="1">Kỹ sư Lập trình Java Backend (Senior) - 35 - 45M</option>
+                        <option value="2">Kỹ sư Lập trình Frontend (ReactJS / VueJS) - 25 - 35M</option>
+                        <option value="3">Lập trình viên Flutter Mobile - 20 - 30M</option>
+                        <option value="4">Chuyên viên Thiết kế Giao diện UI/UX - 25 - 32M</option>
+                        <option value="5">Chuyên viên Performance Marketing - 18 - 28M</option>
+                        <option value="6">Trưởng nhóm Tuyển dụng IT (IT Talent Acquisition) - 25 - 35M</option>
+                    </select>
+                </div>
+
+                <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-red-500 font-bold text-lg">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-bold text-slate-800" id="applyPreviewCvName">Bản CV chuẩn bị nộp</div>
+                        <div class="text-[11px] text-slate-400">Định dạng HTML/PDF tối ưu tuyển dụng ATS</div>
+                    </div>
+                    <span class="text-emerald-600 font-bold text-xs"><i class="fas fa-check-circle"></i> Sẵn sàng</span>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Lời nhắn gửi nhà tuyển dụng</label>
+                    <textarea id="applyMessage" rows="2" placeholder="Kính gửi quý công ty, tôi xin gửi hồ sơ ứng tuyển..." class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 focus:outline-none transition"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeApplyWithCvModal()" class="px-4 py-2 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-xl font-bold transition">
+                        Hủy
+                    </button>
+                    <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-xl shadow transition flex items-center gap-1.5">
+                        <i class="fas fa-paper-plane"></i> Xác nhận nộp hồ sơ
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+<!-- ======================================================== -->
     <!-- FOOTER                                                   -->
     <!-- ======================================================== -->
     <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
@@ -978,6 +1864,1205 @@ public class ExamDocParserService {
             alert('NỘP BÀI THI THÀNH CÔNG!\n\nBài thi của bạn đã được mã hóa bảo mật và gửi trực tiếp đến Hội đồng tuyển dụng TechCorp lúc ' + new Date().toLocaleTimeString('vi-VN') + '.\n\nKết quả sẽ được cập nhật trên cổng Tra Cứu Hồ Sơ trong vòng 48h làm việc!');
             switchMainView('track');
         }
+    
+        // ========================================================
+        // CANDIDATE PORTAL & CV BUILDER LOGIC
+        // ========================================================
+
+        // 16 TopCV-Style Templates Catalog
+        const TEMPLATES_CATALOG = [
+            // IT & Software (4 templates)
+            {
+                id: 'tpl-it-1',
+                name: 'Tech Stack Pro',
+                industry: 'it',
+                level: 'senior',
+                industryLabel: 'Công nghệ thông tin',
+                levelLabel: 'Senior / Trưởng nhóm',
+                badge: 'Phổ biến nhất',
+                themeColor: '#2563eb',
+                layout: 'sidebar-left',
+                description: 'Bố cục 2 cột tiêu chuẩn dành cho Kỹ sư phần mềm cao cấp, nổi bật kỹ năng Cloud, Microservices và dự án lớn.',
+                defaultRole: 'Kỹ sư Phần mềm Cao cấp (Senior Backend Engineer)',
+                skills: 'Java 21, Spring Boot 3, PostgreSQL, Docker, Kubernetes, Apache Kafka, Redis, Microservices, CI/CD, AWS'
+            },
+            {
+                id: 'tpl-it-2',
+                name: 'Clean Code Minimalist',
+                industry: 'it',
+                level: 'mid',
+                industryLabel: 'Công nghệ thông tin',
+                levelLabel: 'Junior / Mid-level',
+                badge: 'Tối giản',
+                themeColor: '#0f766e',
+                layout: 'top-banner',
+                description: 'Phong cách tối giản hiện đại, chú trọng trải nghiệm đọc của Tech Lead, phù hợp lập trình viên Frontend & Fullstack.',
+                defaultRole: 'Lập trình viên Frontend (ReactJS / TypeScript)',
+                skills: 'ReactJS, TypeScript, Next.js, TailwindCSS, Redux Toolkit, RESTful API, Webpack, Jest, Git'
+            },
+            {
+                id: 'tpl-it-3',
+                name: 'Cloud & DevOps Architect',
+                industry: 'it',
+                level: 'senior',
+                industryLabel: 'Công nghệ thông tin',
+                levelLabel: 'Senior / Quản lý',
+                badge: 'Chuyên sâu',
+                themeColor: '#4338ca',
+                layout: 'sidebar-left',
+                description: 'Nhấn mạnh năng lực tự động hóa hạ tầng, bảo mật đám mây và tối ưu hóa chi phí vận hành hệ thống.',
+                defaultRole: 'Kỹ sư DevOps & Điện toán Đám mây',
+                skills: 'AWS Solutions, Terraform, Docker, Kubernetes, CI/CD Pipeline, Ansible, Linux, Prometheus, Grafana'
+            },
+            {
+                id: 'tpl-it-4',
+                name: 'Mobile Crafter',
+                industry: 'it',
+                level: 'fresher',
+                industryLabel: 'Công nghệ thông tin',
+                levelLabel: 'Thực tập / Fresher',
+                badge: 'Trẻ trung',
+                themeColor: '#0284c7',
+                layout: 'sidebar-left',
+                description: 'Bố cục năng động, nêu bật sản phẩm di động thực tế đã xuất bản lên Google Play hoặc App Store.',
+                defaultRole: 'Lập trình viên Flutter & Mobile App',
+                skills: 'Flutter, Dart, Provider/Bloc, SQLite, Firebase, REST API, App Store Deployment, Clean Architecture'
+            },
+
+            // Business & Marketing (4 templates)
+            {
+                id: 'tpl-mkt-1',
+                name: 'Growth Hacker Pro',
+                industry: 'mkt',
+                level: 'senior',
+                industryLabel: 'Kinh doanh & Marketing',
+                levelLabel: 'Senior / Trưởng nhóm',
+                badge: 'Tăng trưởng',
+                themeColor: '#ea580c',
+                layout: 'sidebar-left',
+                description: 'Bố cục chú trọng số liệu tăng trưởng (CAC, LTV, ROAS, MQL), phù hợp chuyên gia Marketing dữ liệu.',
+                defaultRole: 'Chuyên gia Tăng trưởng & Performance Marketing',
+                skills: 'Performance Ads, Google Ads, Meta Ads, SEO/SEM, Google Analytics 4, HubSpot, Looker Studio, Funnel Optimization'
+            },
+            {
+                id: 'tpl-mkt-2',
+                name: 'B2B Sales Executive',
+                industry: 'mkt',
+                level: 'mid',
+                industryLabel: 'Kinh doanh & Marketing',
+                levelLabel: 'Junior / Mid-level',
+                badge: 'Thuyết phục',
+                themeColor: '#15803d',
+                layout: 'top-banner',
+                description: 'Thanh lịch và tự tin, làm nổi bật doanh số thực đạt, kỹ năng đàm phán hợp đồng lớn và chăm sóc khách hàng VIP.',
+                defaultRole: 'Chuyên viên Phát triển Khách hàng Doanh nghiệp (B2B)',
+                skills: 'B2B Sales, CRM (Salesforce), Kỹ năng Đàm phán, Quản lý Khách hàng Doanh nghiệp, Cold Calling, Pipeline Tracking'
+            },
+            {
+                id: 'tpl-mkt-3',
+                name: 'Creative Brand Storyteller',
+                industry: 'mkt',
+                level: 'mid',
+                industryLabel: 'Kinh doanh & Marketing',
+                levelLabel: 'Junior / Mid-level',
+                badge: 'Sáng tạo',
+                themeColor: '#7c3aed',
+                layout: 'sidebar-left',
+                description: 'Nổi bật thông điệp truyền thông, quản lý nội dung đa nền tảng và nhận diện thương hiệu cảm xúc.',
+                defaultRole: 'Chuyên viên Quản trị Thương hiệu (Brand Specialist)',
+                skills: 'Brand Strategy, Content Creation, PR & Truyền thông, Copywriting, Tổ chức Sự kiện, Social Media Campaign'
+            },
+            {
+                id: 'tpl-mkt-4',
+                name: 'Omnichannel E-Commerce Master',
+                industry: 'mkt',
+                level: 'fresher',
+                industryLabel: 'Kinh doanh & Marketing',
+                levelLabel: 'Thực tập / Fresher',
+                badge: 'Thương mại số',
+                themeColor: '#be185d',
+                layout: 'top-banner',
+                description: 'Tập trung vào kỹ năng vận hành sàn Shopee, TikTok Shop, quản trị gian hàng và tối ưu tỷ lệ chuyển đổi.',
+                defaultRole: 'Chuyên viên Vận hành Sàn TMĐT & Livestream',
+                skills: 'Shopee Shop, TikTok Shop Ops, Livestream Ads, Tối ưu GMV, Chăm sóc Khách hàng, Excel / Data Report'
+            },
+
+            // Design & UI/UX (4 templates)
+            {
+                id: 'tpl-dsg-1',
+                name: 'Product Design Leader',
+                industry: 'dsg',
+                level: 'senior',
+                industryLabel: 'Thiết kế & UI/UX',
+                levelLabel: 'Senior / Trưởng nhóm',
+                badge: 'Sản phẩm cao cấp',
+                themeColor: '#3b82f6',
+                layout: 'sidebar-left',
+                description: 'Tập trung vào Design System, tư duy lấy người dùng làm trung tâm, số liệu UX và Case Study trực quan.',
+                defaultRole: 'Senior Product Designer (UI/UX)',
+                skills: 'Figma, Design System, UX Research, Wireframing, Prototyping, Usability Testing, Micro-interactions, Mobile UI'
+            },
+            {
+                id: 'tpl-dsg-2',
+                name: 'Visual Art Portfolio',
+                industry: 'dsg',
+                level: 'mid',
+                industryLabel: 'Thiết kế & UI/UX',
+                levelLabel: 'Junior / Mid-level',
+                badge: 'Nghệ thuật',
+                themeColor: '#9333ea',
+                layout: 'top-banner',
+                description: 'Bố cục mỹ thuật cao, phù hợp Graphic Designer, Illustrator, làm nổi bật phong cách thiết kế và gu màu.',
+                defaultRole: 'Chuyên viên Thiết kế Đồ họa (Graphic Designer)',
+                skills: 'Adobe Photoshop, Illustrator, InDesign, Typography, Color Theory, Layout Grid, Key Visual, In ấn'
+            },
+            {
+                id: 'tpl-dsg-3',
+                name: 'Wireframe & Interaction Pro',
+                industry: 'dsg',
+                level: 'fresher',
+                industryLabel: 'Thiết kế & UI/UX',
+                levelLabel: 'Thực tập / Fresher',
+                badge: 'Khoa học',
+                themeColor: '#0d9488',
+                layout: 'sidebar-left',
+                description: 'Dành cho các bạn trẻ mới vào nghề UX, tập trung vào User Journey Map, Wireframe và Prototype kiểm thử.',
+                defaultRole: 'Junior UI/UX Designer',
+                skills: 'Figma, Whimsical, User Flow, Wireframe, Responsive Layout, Heuristic Evaluation, Auto-layout'
+            },
+            {
+                id: 'tpl-dsg-4',
+                name: 'Corporate Brand Identity',
+                industry: 'dsg',
+                level: 'senior',
+                industryLabel: 'Thiết kế & UI/UX',
+                levelLabel: 'Senior / Quản lý',
+                badge: 'Chuẩn mực',
+                themeColor: '#b45309',
+                layout: 'sidebar-left',
+                description: 'Thiết kế chuẩn mực dành cho chuyên gia thiết kế bộ nhận diện thương hiệu doanh nghiệp đa quốc gia.',
+                defaultRole: 'Brand Identity Art Director',
+                skills: 'Brand Identity System, Logo Design, Packaging, Guidelines Book, Motion Graphic, 3D Mockup'
+            },
+
+            // HR & Administration (4 templates)
+            {
+                id: 'tpl-hr-1',
+                name: 'People & Culture Generalist',
+                industry: 'hr',
+                level: 'senior',
+                industryLabel: 'Nhân sự & Hành chính',
+                levelLabel: 'Senior / Quản lý',
+                badge: 'Toàn diện',
+                themeColor: '#059669',
+                layout: 'sidebar-left',
+                description: 'Cân bằng giữa tuyển dụng nhân tài, xây dựng văn hóa gắn kết và đào tạo phát triển nội bộ.',
+                defaultRole: 'Trưởng phòng Nhân sự & Văn hóa Doanh nghiệp',
+                skills: 'Tuyển dụng, Đào tạo L&D, Văn hóa Doanh nghiệp, Luật Lao động, Employee Engagement, OKRs / KPIs'
+            },
+            {
+                id: 'tpl-hr-2',
+                name: 'Tech Talent Acquisition Lead',
+                industry: 'hr',
+                level: 'senior',
+                industryLabel: 'Nhân sự & Hành chính',
+                levelLabel: 'Senior / Trưởng nhóm',
+                badge: 'Săn nhân tài',
+                themeColor: '#1d4ed8',
+                layout: 'sidebar-left',
+                description: 'Dành cho Chuyên gia tuyển dụng IT, Headhunter với mạng lưới quan hệ sâu rộng và kỹ năng phỏng vấn chuyên sâu.',
+                defaultRole: 'Trưởng nhóm Tuyển dụng IT (IT Talent Acquisition)',
+                skills: 'IT Sourcing, LinkedIn Recruiter, Phỏng vấn Hành vi STAR, Employer Branding, Offer Negotiation, ATS Management'
+            },
+            {
+                id: 'tpl-hr-3',
+                name: 'Total Rewards & C&B Specialist',
+                industry: 'hr',
+                level: 'mid',
+                industryLabel: 'Nhân sự & Hành chính',
+                levelLabel: 'Junior / Mid-level',
+                badge: 'Chính xác',
+                themeColor: '#475569',
+                layout: 'top-banner',
+                description: 'Bố cục chi tiết, khoa học, thể hiện thế mạnh quản trị lương thưởng, bảo hiểm, thuế TNCN và ngân sách nhân sự.',
+                defaultRole: 'Chuyên viên Tiền lương & Phúc lợi (C&B Specialist)',
+                skills: 'Tính lương Payroll, BHXH & Thuế TNCN, Quản trị Ngân sách, Excel nâng cao, Phần mềm HRM, Xây dựng Thang bảng lương'
+            },
+            {
+                id: 'tpl-hr-4',
+                name: 'Executive Office Assistant',
+                industry: 'hr',
+                level: 'fresher',
+                industryLabel: 'Nhân sự & Hành chính',
+                levelLabel: 'Thực tập / Fresher',
+                badge: 'Chu đáo',
+                themeColor: '#047857',
+                layout: 'sidebar-left',
+                description: 'Thanh lịch, cẩn trọng, làm nổi bật kỹ năng điều phối lịch họp ban giám đốc, soạn thảo văn bản và lễ tân đối ngoại.',
+                defaultRole: 'Trợ lý Giám đốc & Hành chính Văn phòng',
+                skills: 'Quản lý Lịch trình, Soạn thảo Công văn, Lễ tân & Đối ngoại, Tổ chức Hội thảo, Tiếng Anh Giao tiếp, MS Office'
+            }
+        ];
+
+        // Active State
+        let currentFilterIndustry = 'all';
+        let activeTemplateId = 'tpl-it-1';
+        let currentThemeColor = '#2563eb';
+
+        // Candidate Profile & CV State
+        let currentCvData = {
+            fullName: 'Nguyễn Minh Hùng',
+            title: 'Kỹ sư Lập trình Java Fullstack (Senior)',
+            email: 'hung.nguyen@example.com',
+            phone: '0901 234 567',
+            dob: '15/08/1998',
+            address: 'TP. Hồ Chí Minh',
+            links: 'github.com/minhhung | linkedin.com/in/minhhung',
+            avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80',
+            summary: 'Kỹ sư phần mềm với hơn 4 năm kinh nghiệm chuyên sâu về kiến trúc Microservices, Java 21, Spring Boot 3 và các hệ thống phân tán xử lý lưu lượng lớn. Đam mê tối ưu hóa hiệu năng, Clean Architecture và xây dựng giải pháp công nghệ đáng tin cậy.',
+            skills: 'Java 21, Spring Boot 3, PostgreSQL, Docker, Kubernetes, Apache Kafka, Redis, Microservices, CI/CD, Flutter',
+            certs: 'AWS Certified Solutions Architect - Associate (2024)\nOracle Certified Professional: Java SE 17 Developer\nIELTS 7.5 Academic (2023)',
+            experiences: [
+                {
+                    role: 'Senior Software Engineer',
+                    company: 'TechCorp High-Tech Enterprise',
+                    period: '03/2023 - Hiện tại',
+                    desc: '• Thiết kế và vận hành cụm microservices phân tán phục vụ hơn 500,000 người dùng hàng ngày với SLA 99.98%.\n• Tối ưu hóa câu truy vấn cơ sở dữ liệu PostgreSQL và tích hợp đa tầng cache Redis, giảm 45% thời gian phản hồi API (Latency).\n• Thiết lập pipeline CI/CD tự động kiểm thử và triển khai ứng dụng lên Kubernetes (EKS).'
+                },
+                {
+                    role: 'Fullstack Software Engineer',
+                    company: 'NextGen Solutions Lab',
+                    period: '06/2021 - 02/2023',
+                    desc: '• Phát triển cổng thanh toán tích hợp ngân hàng và các ví điện tử, xử lý bảo mật giao dịch theo chuẩn PCI-DSS.\n• Xây dựng giao diện ứng dụng quản trị bằng ReactJS và ứng dụng di động Flutter dành cho người dùng cuối.'
+                }
+            ],
+            educations: [
+                {
+                    school: 'Trường Đại học Bách Khoa TP.HCM',
+                    major: 'Kỹ thuật Phần mềm (Software Engineering)',
+                    period: '2016 - 2021',
+                    details: 'Tốt nghiệp loại Giỏi • Điểm trung bình: 3.62 / 4.0'
+                }
+            ],
+            projects: [
+                {
+                    name: 'TalentFlow ATS & Cổng Tuyển Dụng Thông Minh',
+                    role: 'Tech Lead / Lead Backend',
+                    tech: 'Java 21, Spring Boot 3, MySQL JPA, TailwindCSS, Flutter',
+                    desc: 'Hệ thống quản lý tuyển dụng toàn diện tích hợp kiểm tra sàng lọc Knock-out, tự động xuất thư mời nhận việc PDF và đồng bộ lịch phỏng vấn.'
+                }
+            ]
+        };
+
+        // Render Templates Grid
+        function renderTemplatesGrid() {
+            const container = document.getElementById('templates-grid');
+            if (!container) return;
+
+            const searchVal = (document.getElementById('templateSearchInput')?.value || '').toLowerCase().trim();
+            const levelVal = document.getElementById('templateLevelSelect')?.value || '';
+
+            const filtered = TEMPLATES_CATALOG.filter(tpl => {
+                const matchInd = currentFilterIndustry === 'all' || tpl.industry === currentFilterIndustry;
+                const matchLvl = !levelVal || tpl.level === levelVal;
+                const matchSearch = !searchVal || 
+                    tpl.name.toLowerCase().includes(searchVal) || 
+                    tpl.description.toLowerCase().includes(searchVal) || 
+                    tpl.skills.toLowerCase().includes(searchVal) ||
+                    tpl.defaultRole.toLowerCase().includes(searchVal);
+                return matchInd && matchLvl && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full py-12 text-center text-slate-400">
+                        <i class="fas fa-folder-open text-4xl mb-3"></i>
+                        <p class="text-sm font-semibold">Không tìm thấy mẫu CV phù hợp với bộ lọc hiện tại.</p>
+                        <button onclick="resetTemplateFilters()" class="mt-3 px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold">Đặt lại bộ lọc</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map(tpl => `
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col group border-hover">
+                    <!-- Miniature Preview Layout Card -->
+                    <div class="relative bg-slate-100 p-4 pt-5 pb-3 border-b border-slate-100 flex items-center justify-center overflow-hidden cursor-pointer" onclick="selectTemplate('${tpl.id}')">
+                        <div class="w-full max-w-[210px] h-[260px] bg-white rounded-lg shadow-md border border-slate-200/80 p-3 flex flex-col text-[7px] leading-tight select-none pointer-events-none transform group-hover:scale-105 transition-transform duration-300">
+                            <!-- Mock mini CV header -->
+                            <div class="flex items-center gap-2 pb-2 border-b border-slate-100" style="border-top: 3px solid ${tpl.themeColor}">
+                                <div class="w-6 h-6 rounded-full bg-slate-200 shrink-0"></div>
+                                <div class="flex-1">
+                                    <div class="font-bold text-slate-800 text-[8px] truncate">Họ và Tên Ứng Viên</div>
+                                    <div class="text-[6.5px] truncate font-medium" style="color: ${tpl.themeColor}">${tpl.defaultRole}</div>
+                                </div>
+                            </div>
+                            <!-- Mock 2-col body -->
+                            <div class="flex-1 grid grid-cols-3 gap-1.5 pt-2">
+                                <div class="col-span-1 space-y-1.5 bg-slate-50 p-1 rounded">
+                                    <div class="h-1.5 bg-slate-200 rounded w-full"></div>
+                                    <div class="h-1 bg-slate-200 rounded w-4/5"></div>
+                                    <div class="h-1 bg-slate-200 rounded w-2/3"></div>
+                                    <div class="pt-1">
+                                        <div class="h-1 rounded w-3/4 mb-1" style="background-color: ${tpl.themeColor}"></div>
+                                        <div class="h-1 bg-slate-200 rounded w-full mb-0.5"></div>
+                                        <div class="h-1 bg-slate-200 rounded w-5/6"></div>
+                                    </div>
+                                </div>
+                                <div class="col-span-2 space-y-2 p-1">
+                                    <div>
+                                        <div class="h-1.5 rounded w-1/2 mb-1" style="background-color: ${tpl.themeColor}"></div>
+                                        <div class="h-1 bg-slate-200 rounded w-full mb-0.5"></div>
+                                        <div class="h-1 bg-slate-200 rounded w-5/6"></div>
+                                    </div>
+                                    <div>
+                                        <div class="h-1.5 rounded w-2/3 mb-1" style="background-color: ${tpl.themeColor}"></div>
+                                        <div class="h-1 bg-slate-200 rounded w-full mb-0.5"></div>
+                                        <div class="h-1 bg-slate-200 rounded w-4/5"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Top badge -->
+                        <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[10px] font-bold text-white shadow-xs" style="background-color: ${tpl.themeColor}">
+                            ${tpl.badge}
+                        </span>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-1.5 mb-1.5 flex-wrap">
+                                <span class="px-2 py-0.5 bg-slate-100 text-slate-700 text-[10px] font-bold rounded-md">${tpl.industryLabel}</span>
+                                <span class="px-2 py-0.5 bg-blue-50 text-blue-700 text-[10px] font-semibold rounded-md">${tpl.levelLabel}</span>
+                            </div>
+                            <h4 class="font-extrabold text-slate-900 text-sm group-hover:text-blue-600 transition">${tpl.name}</h4>
+                            <p class="text-xs text-slate-500 line-clamp-2 mt-1 leading-relaxed">${tpl.description}</p>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center gap-2">
+                            <button onclick="selectTemplate('${tpl.id}')" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs transition flex items-center justify-center gap-1.5">
+                                <i class="fas fa-wand-magic-sparkles text-[10px]"></i> Dùng mẫu này
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setIndustryFilter(industry) {
+            currentFilterIndustry = industry;
+            document.querySelectorAll('.industry-tab').forEach(btn => {
+                if (btn.getAttribute('data-industry') === industry) {
+                    btn.classList.add('bg-blue-600', 'text-white', 'shadow-xs');
+                    btn.classList.remove('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+                } else {
+                    btn.classList.remove('bg-blue-600', 'text-white', 'shadow-xs');
+                    btn.classList.add('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+                }
+            });
+            renderTemplatesGrid();
+        }
+
+        function filterTemplates() {
+            renderTemplatesGrid();
+        }
+
+        function resetTemplateFilters() {
+            const search = document.getElementById('templateSearchInput');
+            const level = document.getElementById('templateLevelSelect');
+            if (search) search.value = '';
+            if (level) level.value = '';
+            setIndustryFilter('all');
+        }
+
+        // Template Selection -> Switch to Builder
+        function selectTemplate(tplId) {
+            const tpl = TEMPLATES_CATALOG.find(t => t.id === tplId);
+            if (!tpl) return;
+
+            activeTemplateId = tpl.id;
+            currentThemeColor = tpl.themeColor;
+
+            // Update title
+            const activeTitleEl = document.getElementById('active-template-title');
+            if (activeTitleEl) activeTitleEl.innerText = `${tpl.name} (${tpl.industryLabel})`;
+
+            // Load Industry sample data into CV if title or industry changed
+            loadIndustrySampleContent(tpl.industry, tpl.defaultRole, tpl.skills);
+
+            // Populate form inputs
+            syncStateToForm();
+
+            // Render Preview
+            renderCvPreview();
+
+            // Switch to builder view
+            switchMainView('builder');
+        }
+
+        function loadIndustrySampleContent(industry, defaultRole, skills) {
+            currentCvData.title = defaultRole;
+            currentCvData.skills = skills;
+
+            if (industry === 'it') {
+                currentCvData.summary = 'Kỹ sư phần mềm với hơn 4 năm kinh nghiệm chuyên sâu về kiến trúc Microservices, Java 21, Spring Boot 3 và hệ thống phân tán. Đam mê tối ưu hóa hiệu năng, Clean Architecture và phát triển hệ thống ổn định chịu tải cao.';
+                currentCvData.experiences = [
+                    {
+                        role: defaultRole,
+                        company: 'TechCorp High-Tech Enterprise',
+                        period: '03/2023 - Hiện tại',
+                        desc: '• Thiết kế và vận hành cụm microservices phân tán phục vụ hơn 500,000 người dùng hàng ngày với SLA 99.98%.\n• Tối ưu hóa truy vấn cơ sở dữ liệu PostgreSQL và tích hợp Redis cache, giảm 45% thời gian phản hồi API (Latency).\n• Thiết lập CI/CD pipeline tự động kiểm thử và triển khai ứng dụng lên Kubernetes (EKS).'
+                    },
+                    {
+                        role: 'Software Developer',
+                        company: 'NextGen Solutions Lab',
+                        period: '06/2021 - 02/2023',
+                        desc: '• Xây dựng cổng tích hợp thanh toán ngân hàng trực tuyến và ví điện tử, xử lý chuẩn bảo mật PCI-DSS.\n• Viết các RESTful API hiệu năng cao cho ứng dụng di động Flutter và Web Portal.'
+                    }
+                ];
+                currentCvData.projects = [
+                    {
+                        name: 'TalentFlow ATS & Cổng Tuyển Dụng Doanh Nghiệp',
+                        role: 'Lead Backend Developer',
+                        tech: 'Java 21, Spring Boot 3, MySQL, Redis, TailwindCSS',
+                        desc: 'Xây dựng giải pháp ATS kết nối trực tiếp với ứng dụng mobile, hỗ trợ sàng lọc tự động và tạo thư mời nhận việc chuẩn PDF.'
+                    }
+                ];
+            } else if (industry === 'mkt') {
+                currentCvData.summary = 'Chuyên viên Marketing & Phát triển kinh doanh với năng lực phân tích số liệu mạnh mẽ, quản lý ngân sách quảng cáo hơn 500 triệu/tháng và mang lại mức tăng trưởng doanh số vượt kỳ vọng 160%.';
+                currentCvData.experiences = [
+                    {
+                        role: defaultRole,
+                        company: 'Global Retail & Growth Media',
+                        period: '01/2023 - Hiện tại',
+                        desc: '• Quản trị và tối ưu chiến dịch đa kênh (Google Search, Meta Ads, TikTok Shop), đạt chỉ số ROAS trung bình 4.5x.\n• Xây dựng phễu chuyển đổi khách hàng tiềm năng B2B, tăng trưởng 140% số lượng cuộc hẹn tư vấn chất lượng cao (SQL).\n• Phân tích dữ liệu hành vi khách hàng qua GA4 & Looker Studio để tối ưu hóa ngân sách theo tuần.'
+                    }
+                ];
+                currentCvData.projects = [
+                    {
+                        name: 'Chiến dịch Ra mắt Sản phẩm Mới Q3/2026',
+                        role: 'Campaign Lead',
+                        tech: 'Meta Ads, Google Performance Max, HubSpot, Looker Studio',
+                        desc: 'Đạt mốc 10,000 khách hàng đăng ký trước và 2.5 tỷ VNĐ doanh thu trong 30 ngày đầu mở bán.'
+                    }
+                ];
+            } else if (industry === 'dsg') {
+                currentCvData.summary = 'Chuyên gia Thiết kế Sản phẩm số (Product Designer) am hiểu sâu sắc hành vi người dùng, thành thạo xây dựng Design System và phối hợp nhịp nhàng với đội ngũ kỹ thuật để hiện thực hóa trải nghiệm tinh tế.';
+                currentCvData.experiences = [
+                    {
+                        role: defaultRole,
+                        company: 'Creative Digital Studio',
+                        period: '04/2023 - Hiện tại',
+                        desc: '• Thiết kế lại toàn bộ luồng Onboarding & Thanh toán của ứng dụng di động, nâng cao tỷ lệ hoàn thành từ 64% lên 88%.\n• Xây dựng và duy trì Design System bao gồm hơn 350+ components trên Figma dùng chung cho 4 sản phẩm.\n• Thực hiện các phiên Usability Testing và phỏng vấn người dùng định kỳ để cải tiến tính năng.'
+                    }
+                ];
+                currentCvData.projects = [
+                    {
+                        name: 'Hệ sinh thái Ứng dụng Tài chính Cá nhân FinSmart',
+                        role: 'Lead UI/UX Designer',
+                        tech: 'Figma, Design Tokens, Protopie, User Journey Map',
+                        desc: 'Được trao giải Thiết kế Trải nghiệm Người dùng Xuất sắc 2025 với hơn 200,000 người dùng hoạt động hàng tháng.'
+                    }
+                ];
+            } else if (industry === 'hr') {
+                currentCvData.summary = 'Chuyên gia Nhân sự & Thu hút Nhân tài với kinh nghiệm tuyển dụng hơn 150+ nhân sự công nghệ chất lượng cao, tối ưu hóa quy trình Onboarding và xây dựng môi trường văn hóa tích cực, gắn bó.';
+                currentCvData.experiences = [
+                    {
+                        role: defaultRole,
+                        company: 'Enterprise HR Corporation',
+                        period: '02/2023 - Hiện tại',
+                        desc: '• Dẫn dắt quy trình tuyển dụng trọn vòng đời (Full-lifecycle Recruitment), giảm thời gian tuyển dụng (Time-to-Hire) từ 42 ngày xuống 21 ngày.\n• Tổ chức các sự kiện Ngày hội việc làm (Tech Career Day) và mở rộng thương hiệu nhà tuyển dụng thu hút 3,000+ hồ sơ ứng tuyển.\n• Phối hợp với Ban Giám đốc thiết kế chính sách đãi ngộ, đánh giá KPI và tỷ lệ giữ chân nhân sự đạt 93%.'
+                    }
+                ];
+                currentCvData.projects = [
+                    {
+                        name: 'Dự án Chuẩn hóa Khung Năng lực & Đánh giá Nhân sự',
+                        role: 'Project Leader',
+                        tech: 'Khai thác ATS, Khung năng lực ASK, Phần mềm HRM',
+                        desc: 'Triển khai thành công cho toàn bộ 450 cán bộ nhân viên công ty.'
+                    }
+                ];
+            }
+        }
+
+        // Sync State to Form Inputs
+        function syncStateToForm() {
+            const setVal = (id, val) => {
+                const el = document.getElementById(id);
+                if (el) el.value = val || '';
+            };
+
+            setVal('cv-input-fullname', currentCvData.fullName);
+            setVal('cv-input-title', currentCvData.title);
+            setVal('cv-input-email', currentCvData.email);
+            setVal('cv-input-phone', currentCvData.phone);
+            setVal('cv-input-dob', currentCvData.dob);
+            setVal('cv-input-address', currentCvData.address);
+            setVal('cv-input-link', currentCvData.links);
+            setVal('cv-input-summary', currentCvData.summary);
+            setVal('cv-input-skills', currentCvData.skills);
+            setVal('cv-input-certs', currentCvData.certs);
+
+            const avatarPreview = document.getElementById('editorAvatarPreview');
+            if (avatarPreview && currentCvData.avatar) avatarPreview.src = currentCvData.avatar;
+
+            // Render Dynamic items
+            renderExperienceInputs();
+            renderEducationInputs();
+            renderProjectInputs();
+        }
+
+        function renderExperienceInputs() {
+            const container = document.getElementById('experience-items-container');
+            if (!container) return;
+
+            container.innerHTML = currentCvData.experiences.map((exp, idx) => `
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 relative text-xs space-y-2">
+                    <button type="button" onclick="removeExperienceRow(${idx})" class="absolute top-2 right-2 text-slate-400 hover:text-red-500 font-bold p-1">
+                        <i class="fas fa-trash-can"></i>
+                    </button>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div>
+                            <label class="block font-semibold text-slate-600 mb-0.5">Chức danh / Vị trí *</label>
+                            <input type="text" value="${exp.role}" oninput="updateExperienceField(${idx}, 'role', this.value)" class="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-600 mb-0.5">Tên công ty *</label>
+                            <input type="text" value="${exp.company}" oninput="updateExperienceField(${idx}, 'company', this.value)" class="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-600 mb-0.5">Thời gian làm việc (Từ - Đến)</label>
+                        <input type="text" value="${exp.period}" oninput="updateExperienceField(${idx}, 'period', this.value)" placeholder="03/2023 - Hiện tại" class="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-600 mb-0.5">Mô tả công việc & Thành tựu nổi bật</label>
+                        <textarea rows="3" oninput="updateExperienceField(${idx}, 'desc', this.value)" class="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500">${exp.desc}</textarea>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateExperienceField(idx, field, value) {
+            if (currentCvData.experiences[idx]) {
+                currentCvData.experiences[idx][field] = value;
+                renderCvPreview();
+            }
+        }
+
+        function addExperienceRow() {
+            currentCvData.experiences.push({
+                role: 'Chuyên viên',
+                company: 'Tên Công ty Mới',
+                period: '2024 - Hiện tại',
+                desc: '• Mô tả trách nhiệm chính và kết quả nổi bật...'
+            });
+            renderExperienceInputs();
+            renderCvPreview();
+        }
+
+        function removeExperienceRow(idx) {
+            currentCvData.experiences.splice(idx, 1);
+            renderExperienceInputs();
+            renderCvPreview();
+        }
+
+        function renderEducationInputs() {
+            const container = document.getElementById('education-items-container');
+            if (!container) return;
+
+            container.innerHTML = currentCvData.educations.map((edu, idx) => `
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 relative text-xs space-y-2">
+                    <button type="button" onclick="removeEducationRow(${idx})" class="absolute top-2 right-2 text-slate-400 hover:text-red-500 font-bold p-1">
+                        <i class="fas fa-trash-can"></i>
+                    </button>
+                    <div>
+                        <label class="block font-semibold text-slate-600 mb-0.5">Trường đại học / Cao đẳng *</label>
+                        <input type="text" value="${edu.school}" oninput="updateEducationField(${idx}, 'school', this.value)" class="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div>
+                            <label class="block font-semibold text-slate-600 mb-0.5">Chuyên ngành *</label>
+                            <input type="text" value="${edu.major}" oninput="updateEducationField(${idx}, 'major', this.value)" class="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-600 mb-0.5">Niên khóa</label>
+                            <input type="text" value="${edu.period}" oninput="updateEducationField(${idx}, 'period', this.value)" placeholder="2018 - 2022" class="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-600 mb-0.5">Xếp loại / Điểm trung bình</label>
+                        <input type="text" value="${edu.details}" oninput="updateEducationField(${idx}, 'details', this.value)" class="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateEducationField(idx, field, value) {
+            if (currentCvData.educations[idx]) {
+                currentCvData.educations[idx][field] = value;
+                renderCvPreview();
+            }
+        }
+
+        function addEducationRow() {
+            currentCvData.educations.push({
+                school: 'Trường Đại học',
+                major: 'Chuyên ngành học',
+                period: '2020 - 2024',
+                details: 'Tốt nghiệp loại Giỏi'
+            });
+            renderEducationInputs();
+            renderCvPreview();
+        }
+
+        function removeEducationRow(idx) {
+            currentCvData.educations.splice(idx, 1);
+            renderEducationInputs();
+            renderCvPreview();
+        }
+
+        function renderProjectInputs() {
+            const container = document.getElementById('project-items-container');
+            if (!container) return;
+
+            container.innerHTML = currentCvData.projects.map((proj, idx) => `
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 relative text-xs space-y-2">
+                    <button type="button" onclick="removeProjectRow(${idx})" class="absolute top-2 right-2 text-slate-400 hover:text-red-500 font-bold p-1">
+                        <i class="fas fa-trash-can"></i>
+                    </button>
+                    <div>
+                        <label class="block font-semibold text-slate-600 mb-0.5">Tên dự án *</label>
+                        <input type="text" value="${proj.name}" oninput="updateProjectField(${idx}, 'name', this.value)" class="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div>
+                            <label class="block font-semibold text-slate-600 mb-0.5">Vai trò trong dự án</label>
+                            <input type="text" value="${proj.role}" oninput="updateProjectField(${idx}, 'role', this.value)" class="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-600 mb-0.5">Công nghệ / Kỹ năng sử dụng</label>
+                            <input type="text" value="${proj.tech}" oninput="updateProjectField(${idx}, 'tech', this.value)" class="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-600 mb-0.5">Mô tả kết quả đạt được</label>
+                        <textarea rows="2" oninput="updateProjectField(${idx}, 'desc', this.value)" class="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500">${proj.desc}</textarea>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateProjectField(idx, field, value) {
+            if (currentCvData.projects[idx]) {
+                currentCvData.projects[idx][field] = value;
+                renderCvPreview();
+            }
+        }
+
+        function addProjectRow() {
+            currentCvData.projects.push({
+                name: 'Tên Dự Án Tiêu Biểu',
+                role: 'Trưởng nhóm / Phụ trách chính',
+                tech: 'Công nghệ, Công cụ',
+                desc: 'Mô tả giá trị mang lại cho người dùng và khách hàng...'
+            });
+            renderProjectInputs();
+            renderCvPreview();
+        }
+
+        function removeProjectRow(idx) {
+            currentCvData.projects.splice(idx, 1);
+            renderProjectInputs();
+            renderCvPreview();
+        }
+
+        // Live CV Update from Main inputs
+        function updateCvLive() {
+            currentCvData.fullName = document.getElementById('cv-input-fullname')?.value || '';
+            currentCvData.title = document.getElementById('cv-input-title')?.value || '';
+            currentCvData.email = document.getElementById('cv-input-email')?.value || '';
+            currentCvData.phone = document.getElementById('cv-input-phone')?.value || '';
+            currentCvData.dob = document.getElementById('cv-input-dob')?.value || '';
+            currentCvData.address = document.getElementById('cv-input-address')?.value || '';
+            currentCvData.links = document.getElementById('cv-input-link')?.value || '';
+            currentCvData.summary = document.getElementById('cv-input-summary')?.value || '';
+            currentCvData.skills = document.getElementById('cv-input-skills')?.value || '';
+            currentCvData.certs = document.getElementById('cv-input-certs')?.value || '';
+
+            renderCvPreview();
+        }
+
+        // Set Color Palette
+        function setThemeColor(color) {
+            currentThemeColor = color;
+            renderCvPreview();
+        }
+
+        // Avatar selector
+        function handleAvatarUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    currentCvData.avatar = evt.target.result;
+                    const preview = document.getElementById('editorAvatarPreview');
+                    if (preview) preview.src = evt.target.result;
+                    renderCvPreview();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function selectPresetAvatar(type) {
+            const avatars = {
+                male_tech: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80',
+                female_tech: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&auto=format&fit=crop&q=80',
+                biz: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80'
+            };
+            if (avatars[type]) {
+                currentCvData.avatar = avatars[type];
+                const preview = document.getElementById('editorAvatarPreview');
+                if (preview) preview.src = avatars[type];
+                renderCvPreview();
+            }
+        }
+
+        // Auto-fill current industry
+        function autoFillCurrentIndustry() {
+            const tpl = TEMPLATES_CATALOG.find(t => t.id === activeTemplateId) || TEMPLATES_CATALOG[0];
+            loadIndustrySampleContent(tpl.industry, tpl.defaultRole, tpl.skills);
+            syncStateToForm();
+            renderCvPreview();
+        }
+
+        function resetCvForm() {
+            if (confirm('Bạn có chắc chắn muốn xóa trắng dữ liệu để nhập lại từ đầu?')) {
+                currentCvData.fullName = '';
+                currentCvData.title = '';
+                currentCvData.email = '';
+                currentCvData.phone = '';
+                currentCvData.dob = '';
+                currentCvData.address = '';
+                currentCvData.links = '';
+                currentCvData.summary = '';
+                currentCvData.skills = '';
+                currentCvData.certs = '';
+                currentCvData.experiences = [];
+                currentCvData.educations = [];
+                currentCvData.projects = [];
+                syncStateToForm();
+                renderCvPreview();
+            }
+        }
+
+        // Render Live A4 Preview
+        function renderCvPreview() {
+            const previewContainer = document.getElementById('cv-rendered-content');
+            if (!previewContainer) return;
+
+            const skillsArray = currentCvData.skills ? currentCvData.skills.split(',').map(s => s.trim()).filter(Boolean) : [];
+            const certsArray = currentCvData.certs ? currentCvData.certs.split('\n').map(c => c.trim()).filter(Boolean) : [];
+
+            // A4 Layout Style: 2-column sidebar layout
+            previewContainer.innerHTML = `
+                <div class="flex flex-row h-full min-h-[297mm] text-slate-800 bg-white">
+                    
+                    <!-- Left Sidebar (35% width) -->
+                    <div class="w-[35%] bg-slate-50 p-6 flex flex-col justify-between border-r border-slate-200/80">
+                        <div>
+                            <!-- Avatar -->
+                            <div class="text-center mb-6">
+                                <img src="${currentCvData.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80'}" alt="Avatar" class="w-28 h-28 rounded-full object-cover mx-auto shadow-md border-4" style="border-color: ${currentThemeColor}">
+                            </div>
+
+                            <!-- Contact Info Section -->
+                            <div class="mb-6">
+                                <h4 class="font-extrabold uppercase text-[11px] tracking-wider mb-3 pb-1 border-b" style="border-color: ${currentThemeColor}; color: ${currentThemeColor}">
+                                    <i class="fas fa-address-book mr-1.5"></i> Thông Tin Liên Hệ
+                                </h4>
+                                <ul class="space-y-2 text-[11px] text-slate-600">
+                                    <li class="flex items-start gap-2 break-all">
+                                        <i class="fas fa-envelope text-[10px] mt-1 shrink-0" style="color: ${currentThemeColor}"></i>
+                                        <span>${currentCvData.email || 'email@example.com'}</span>
+                                    </li>
+                                    <li class="flex items-center gap-2">
+                                        <i class="fas fa-phone text-[10px] shrink-0" style="color: ${currentThemeColor}"></i>
+                                        <span>${currentCvData.phone || '0901 234 567'}</span>
+                                    </li>
+                                    ${currentCvData.dob ? `
+                                    <li class="flex items-center gap-2">
+                                        <i class="fas fa-calendar-days text-[10px] shrink-0" style="color: ${currentThemeColor}"></i>
+                                        <span>${currentCvData.dob}</span>
+                                    </li>` : ''}
+                                    ${currentCvData.address ? `
+                                    <li class="flex items-start gap-2">
+                                        <i class="fas fa-location-dot text-[10px] mt-1 shrink-0" style="color: ${currentThemeColor}"></i>
+                                        <span>${currentCvData.address}</span>
+                                    </li>` : ''}
+                                    ${currentCvData.links ? `
+                                    <li class="flex items-start gap-2 break-all">
+                                        <i class="fas fa-globe text-[10px] mt-1 shrink-0" style="color: ${currentThemeColor}"></i>
+                                        <span>${currentCvData.links}</span>
+                                    </li>` : ''}
+                                </ul>
+                            </div>
+
+                            <!-- Core Skills Section -->
+                            <div class="mb-6">
+                                <h4 class="font-extrabold uppercase text-[11px] tracking-wider mb-3 pb-1 border-b" style="border-color: ${currentThemeColor}; color: ${currentThemeColor}">
+                                    <i class="fas fa-screwdriver-wrench mr-1.5"></i> Kỹ Năng Chuyên Môn
+                                </h4>
+                                <div class="flex flex-wrap gap-1.5">
+                                    ${skillsArray.length > 0 ? skillsArray.map(s => `
+                                        <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-white border border-slate-200 shadow-2xs text-slate-700">
+                                            ${s}
+                                        </span>
+                                    `).join('') : '<span class="text-slate-400 italic text-[11px]">Chưa nhập kỹ năng</span>'}
+                                </div>
+                            </div>
+
+                            <!-- Certifications Section -->
+                            ${certsArray.length > 0 ? `
+                            <div class="mb-6">
+                                <h4 class="font-extrabold uppercase text-[11px] tracking-wider mb-3 pb-1 border-b" style="border-color: ${currentThemeColor}; color: ${currentThemeColor}">
+                                    <i class="fas fa-award mr-1.5"></i> Chứng Chỉ & Ngoại Ngữ
+                                </h4>
+                                <ul class="space-y-1.5 text-[11px] text-slate-600">
+                                    ${certsArray.map(c => `
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fas fa-circle-check text-[10px] mt-0.5 shrink-0" style="color: ${currentThemeColor}"></i>
+                                            <span>${c}</span>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>` : ''}
+                        </div>
+
+                        <!-- Brand signature badge in footer of CV -->
+                        <div class="pt-4 border-t border-slate-200 text-center text-[9px] text-slate-400 font-medium">
+                            Tạo bởi TalentFlow CV Builder • Chuẩn ATS
+                        </div>
+                    </div>
+
+                    <!-- Right Main Content (65% width) -->
+                    <div class="w-[65%] p-7 flex flex-col justify-between">
+                        <div>
+                            <!-- Header: Name & Title -->
+                            <div class="pb-4 mb-5 border-b-2" style="border-color: ${currentThemeColor}">
+                                <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight leading-none uppercase">
+                                    ${currentCvData.fullName || 'Họ Và Tên Ứng Viên'}
+                                </h1>
+                                <div class="text-xs font-bold uppercase tracking-wider mt-1.5" style="color: ${currentThemeColor}">
+                                    ${currentCvData.title || 'Vị Trí Ứng Tuyển'}
+                                </div>
+                            </div>
+
+                            <!-- Summary / Objective -->
+                            ${currentCvData.summary ? `
+                            <div class="mb-5">
+                                <h3 class="font-extrabold text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5 text-slate-900">
+                                    <span class="w-2 h-2 rounded-full" style="background-color: ${currentThemeColor}"></span>
+                                    Mục Tiêu Nghề Nghiệp & Tóm Tắt
+                                </h3>
+                                <p class="text-xs text-slate-600 leading-relaxed text-justify">
+                                    ${currentCvData.summary}
+                                </p>
+                            </div>` : ''}
+
+                            <!-- Work Experience Timeline -->
+                            <div class="mb-5">
+                                <h3 class="font-extrabold text-xs uppercase tracking-wider mb-3 flex items-center gap-1.5 text-slate-900">
+                                    <span class="w-2 h-2 rounded-full" style="background-color: ${currentThemeColor}"></span>
+                                    Kinh Nghiệm Làm Việc
+                                </h3>
+                                <div class="space-y-4">
+                                    ${currentCvData.experiences.length > 0 ? currentCvData.experiences.map(exp => `
+                                        <div class="relative pl-3 border-l-2" style="border-color: ${currentThemeColor}">
+                                            <div class="flex justify-between items-start text-xs mb-0.5">
+                                                <strong class="text-slate-900 font-extrabold">${exp.role}</strong>
+                                                <span class="text-[10px] font-bold text-slate-400">${exp.period}</span>
+                                            </div>
+                                            <div class="text-[11px] font-bold mb-1" style="color: ${currentThemeColor}">${exp.company}</div>
+                                            <div class="text-[11px] text-slate-600 whitespace-pre-line leading-relaxed">
+                                                ${exp.desc}
+                                            </div>
+                                        </div>
+                                    `).join('') : '<p class="text-xs text-slate-400 italic">Chưa có kinh nghiệm</p>'}
+                                </div>
+                            </div>
+
+                            <!-- Featured Projects -->
+                            ${currentCvData.projects.length > 0 ? `
+                            <div class="mb-5">
+                                <h3 class="font-extrabold text-xs uppercase tracking-wider mb-3 flex items-center gap-1.5 text-slate-900">
+                                    <span class="w-2 h-2 rounded-full" style="background-color: ${currentThemeColor}"></span>
+                                    Dự Án Tiêu Biểu
+                                </h3>
+                                <div class="space-y-3">
+                                    ${currentCvData.projects.map(proj => `
+                                        <div class="bg-slate-50/60 p-2.5 rounded-lg border border-slate-100 text-xs">
+                                            <div class="flex justify-between items-center mb-0.5">
+                                                <strong class="text-slate-900 font-bold">${proj.name}</strong>
+                                                <span class="text-[10px] font-semibold text-slate-500">${proj.role}</span>
+                                            </div>
+                                            ${proj.tech ? `<div class="text-[10px] font-semibold mb-1" style="color: ${currentThemeColor}">Công nghệ: ${proj.tech}</div>` : ''}
+                                            <div class="text-[11px] text-slate-600 leading-relaxed">${proj.desc}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>` : ''}
+
+                            <!-- Education -->
+                            <div class="mb-4">
+                                <h3 class="font-extrabold text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5 text-slate-900">
+                                    <span class="w-2 h-2 rounded-full" style="background-color: ${currentThemeColor}"></span>
+                                    Học Vấn & Bằng Cấp
+                                </h3>
+                                <div class="space-y-2">
+                                    ${currentCvData.educations.length > 0 ? currentCvData.educations.map(edu => `
+                                        <div class="text-xs">
+                                            <div class="flex justify-between items-baseline font-bold text-slate-900">
+                                                <span>${edu.school}</span>
+                                                <span class="text-[10px] text-slate-400">${edu.period}</span>
+                                            </div>
+                                            <div class="text-[11px] font-semibold" style="color: ${currentThemeColor}">${edu.major}</div>
+                                            ${edu.details ? `<div class="text-[10px] text-slate-500">${edu.details}</div>` : ''}
+                                        </div>
+                                    `).join('') : '<p class="text-xs text-slate-400 italic">Chưa có thông tin học vấn</p>'}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            `;
+        }
+
+        // Print CV
+        function printCv() {
+            window.print();
+        }
+
+        // Save CV to Profile
+        function saveCvToProfile() {
+            try {
+                localStorage.setItem('talentflow_saved_cv', JSON.stringify(currentCvData));
+                alert('ĐÃ LƯU CV VÀO HỒ SƠ THÀNH CÔNG!\n\nBản CV "' + (currentCvData.title || 'Kỹ sư Phần mềm') + '" đã được lưu trữ an toàn. Bạn có thể mở lại để chỉnh sửa hoặc nộp hồ sơ bất cứ lúc nào trong mục "Hồ sơ của tôi".');
+            } catch (e) {
+                alert('Lưu CV thành công!');
+            }
+        }
+
+        // Apply with this CV
+        function openApplyWithCvModal() {
+            const previewName = document.getElementById('applyPreviewCvName');
+            if (previewName) {
+                previewName.innerText = `CV: ${currentCvData.fullName || 'Ứng viên'} - ${currentCvData.title || 'Vị trí'}`;
+            }
+            document.getElementById('applyWithCvModal').classList.remove('hidden');
+        }
+
+        function closeApplyWithCvModal() {
+            document.getElementById('applyWithCvModal').classList.add('hidden');
+        }
+
+        function handleApplyWithCvSubmit(e) {
+            e.preventDefault();
+            const jobSelect = document.getElementById('applyTargetJobSelect');
+            const jobTitle = jobSelect ? jobSelect.options[jobSelect.selectedIndex].text : 'Vị trí công nghệ';
+            const code = 'APP-2026-' + Math.floor(100 + Math.random() * 900);
+
+            alert('NỘP HỒ SƠ ỨNG TUYỂN THÀNH CÔNG!\n\n' +
+                  'Vị trí ứng tuyển: ' + jobTitle + '\n' +
+                  'Mã hồ sơ: ' + code + '\n\n' +
+                  'Hệ thống ATS đã tự động tiếp nhận bản CV bạn vừa thiết kế. Bạn có thể theo dõi tiến trình đơn trong mục "Hồ sơ của tôi"!');
+            closeApplyWithCvModal();
+            switchMainView('my-apps');
+        }
+
+        // ========================================================
+        // CANDIDATE AUTHENTICATION & SESSION
+        // ========================================================
+        function getCandidateSession() {
+            const session = localStorage.getItem('talentflow_candidate');
+            if (session) {
+                try { return JSON.parse(session); } catch (e) { return null; }
+            }
+            return {
+                name: 'Nguyễn Minh Hùng',
+                email: 'ungvien@gmail.com',
+                phone: '0901 234 567',
+                isLoggedIn: true
+            };
+        }
+
+        function updateNavAuthUI() {
+            const candidate = getCandidateSession();
+            const container = document.getElementById('nav-auth-container');
+            const badge = document.getElementById('nav-badge-apps');
+
+            if (!container) return;
+
+            if (candidate && candidate.isLoggedIn) {
+                if (badge) badge.classList.remove('hidden');
+                container.innerHTML = `
+                    <div class="relative group">
+                        <button class="flex items-center gap-2 pl-2 pr-3 py-1 bg-slate-100 hover:bg-slate-200/80 rounded-xl transition text-xs font-bold text-slate-800">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" class="w-6 h-6 rounded-full object-cover border border-blue-500">
+                            <span class="max-w-[120px] truncate">${candidate.name || 'Nguyễn Minh Hùng'}</span>
+                            <i class="fas fa-chevron-down text-[10px] text-slate-400"></i>
+                        </button>
+                        <!-- Dropdown Menu -->
+                        <div class="absolute right-0 top-full mt-1.5 w-52 bg-white rounded-2xl shadow-xl border border-slate-200 py-1.5 hidden group-hover:block z-50">
+                            <div class="px-3.5 py-2 border-b border-slate-100">
+                                <div class="font-extrabold text-xs text-slate-900">${candidate.name}</div>
+                                <div class="text-[10px] text-slate-400 truncate">${candidate.email}</div>
+                            </div>
+                            <button onclick="switchMainView('my-apps')" class="w-full px-3.5 py-2 text-left text-xs font-semibold text-slate-700 hover:bg-slate-50 flex items-center gap-2">
+                                <i class="fas fa-user-check text-emerald-500 w-4"></i> Hồ sơ & Đơn nộp (4)
+                            </button>
+                            <button onclick="switchMainView('builder')" class="w-full px-3.5 py-2 text-left text-xs font-semibold text-slate-700 hover:bg-slate-50 flex items-center gap-2">
+                                <i class="fas fa-file-pen text-blue-500 w-4"></i> CV đang thiết kế
+                            </button>
+                            <div class="border-t border-slate-100 my-1"></div>
+                            <button onclick="logoutCandidate()" class="w-full px-3.5 py-2 text-left text-xs font-semibold text-red-600 hover:bg-red-50 flex items-center gap-2">
+                                <i class="fas fa-right-from-bracket text-red-500 w-4"></i> Đăng xuất
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                if (badge) badge.classList.add('hidden');
+                container.innerHTML = `
+                    <button onclick="openCandidateAuthModal('login')" class="px-3 py-1.5 border border-slate-200 hover:border-blue-400 bg-white hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs">
+                        <i class="fas fa-right-to-bracket text-blue-600 text-xs"></i> Đăng nhập
+                    </button>
+                    <button onclick="openCandidateAuthModal('register')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs transition flex items-center gap-1.5">
+                        <i class="fas fa-user-plus text-xs"></i> Đăng ký
+                    </button>
+                `;
+            }
+        }
+
+        function openCandidateAuthModal(mode) {
+            switchAuthTab(mode || 'login');
+            document.getElementById('candidateAuthModal').classList.remove('hidden');
+        }
+
+        function closeCandidateAuthModal() {
+            document.getElementById('candidateAuthModal').classList.add('hidden');
+        }
+
+        function switchAuthTab(mode) {
+            const loginForm = document.getElementById('candidateLoginForm');
+            const regForm = document.getElementById('candidateRegisterForm');
+            const loginTab = document.getElementById('auth-tab-btn-login');
+            const regTab = document.getElementById('auth-tab-btn-register');
+
+            if (mode === 'login') {
+                if (loginForm) loginForm.classList.remove('hidden');
+                if (regForm) regForm.classList.add('hidden');
+                if (loginTab) {
+                    loginTab.classList.add('text-blue-600', 'border-blue-600');
+                    loginTab.classList.remove('text-slate-400', 'border-transparent');
+                }
+                if (regTab) {
+                    regTab.classList.remove('text-blue-600', 'border-blue-600');
+                    regTab.classList.add('text-slate-400', 'border-transparent');
+                }
+            } else {
+                if (loginForm) loginForm.classList.add('hidden');
+                if (regForm) regForm.classList.remove('hidden');
+                if (regTab) {
+                    regTab.classList.add('text-blue-600', 'border-blue-600');
+                    regTab.classList.remove('text-slate-400', 'border-transparent');
+                }
+                if (loginTab) {
+                    loginTab.classList.remove('text-blue-600', 'border-blue-600');
+                    loginTab.classList.add('text-slate-400', 'border-transparent');
+                }
+            }
+        }
+
+        function quickFillCandidateTestAccount() {
+            const emailInput = document.getElementById('loginEmail');
+            const passInput = document.getElementById('loginPassword');
+            if (emailInput) emailInput.value = 'ungvien@gmail.com';
+            if (passInput) passInput.value = '123456';
+        }
+
+        function handleCandidateLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail')?.value || 'ungvien@gmail.com';
+            const userObj = {
+                name: 'Nguyễn Minh Hùng',
+                email: email,
+                phone: '0901 234 567',
+                isLoggedIn: true
+            };
+            localStorage.setItem('talentflow_candidate', JSON.stringify(userObj));
+            closeCandidateAuthModal();
+            updateNavAuthUI();
+            alert('ĐĂNG NHẬP THÀNH CÔNG!\n\nChào mừng ' + userObj.name + ' quay trở lại với TalentFlow!');
+            switchMainView('my-apps');
+        }
+
+        function handleCandidateRegister(e) {
+            e.preventDefault();
+            const fullName = document.getElementById('regFullName')?.value || 'Ứng viên Mới';
+            const email = document.getElementById('regEmail')?.value || 'user@example.com';
+            const phone = document.getElementById('regPhone')?.value || '0900000000';
+            const userObj = {
+                name: fullName,
+                email: email,
+                phone: phone,
+                isLoggedIn: true
+            };
+            localStorage.setItem('talentflow_candidate', JSON.stringify(userObj));
+            closeCandidateAuthModal();
+            updateNavAuthUI();
+            alert('ĐĂNG KÝ TÀI KHOẢN THÀNH CÔNG!\n\nChào mừng bạn đến với TalentFlow! Bây giờ bạn có thể tạo CV và ứng tuyển ngay.');
+            switchMainView('templates');
+        }
+
+        function logoutCandidate() {
+            if (confirm('Bạn có chắc chắn muốn đăng xuất khỏi tài khoản ứng viên?')) {
+                localStorage.removeItem('talentflow_candidate');
+                updateNavAuthUI();
+                alert('Đã đăng xuất thành công.');
+                switchMainView('jobs');
+            }
+        }
+
+        // ========================================================
+        // OFFER LETTER MODAL
+        // ========================================================
+        function openOfferLetterModal(appId) {
+            document.getElementById('offerLetterModal').classList.remove('hidden');
+        }
+
+        function closeOfferLetterModal() {
+            document.getElementById('offerLetterModal').classList.add('hidden');
+        }
+
+        function acceptOffer(appId) {
+            alert('CHẤP THUẬN THƯ MỜI NHẬN VIỆC THÀNH CÔNG!\n\nBộ phận Nhân sự TechCorp đã nhận được phản hồi đồng ý của bạn. HR sẽ liên hệ qua điện thoại & gửi bộ hồ sơ Onboarding trước ngày làm việc 15/11/2026!');
+            closeOfferLetterModal();
+        }
+
+        // Initialize on DOM ready
+        window.addEventListener('DOMContentLoaded', () => {
+            renderTemplatesGrid();
+            syncStateToForm();
+            renderCvPreview();
+            updateNavAuthUI();
+        });
+
     </script>
 </body>
 </html>
