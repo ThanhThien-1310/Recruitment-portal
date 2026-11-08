@@ -1,453 +1,367 @@
 package com.example.quanlytuyendung.controllers;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
+import com.example.quanlytuyendung.entities.*;
+import com.example.quanlytuyendung.repositories.*;
+import com.example.quanlytuyendung.services.EmailNotificationService;
+import com.example.quanlytuyendung.services.PdfOfferService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Controller
 public class RecruitmentController {
 
-    // ================= DATA STRUCTURES =================
-    public record Requisition(
-            Long id,
-            String code, // RQ-2026-001
-            String title,
-            String department,
-            int currentHired,
-            int totalTarget,
-            String priority, // Cao, Trung bình, Thấp
-            String priorityBadgeClass, // badge-danger, badge-warning, badge-info
-            String status, // Đang tuyển, Chờ duyệt, Nháp, Đã đóng
-            String statusBadgeClass,
-            String recruiter,
-            String deadline,
-            String salaryRange
-    ) {
-        public String progressText() { return currentHired + " / " + totalTarget; }
-        public int progressPercent() { return totalTarget > 0 ? (int)((currentHired * 100.0) / totalTarget) : 0; }
+    private final JobPostingRepository jobPostingRepository;
+    private final CandidateRepository candidateRepository;
+    private final InterviewRepository interviewRepository;
+    private final OfferRepository offerRepository;
+    private final OnboardingRepository onboardingRepository;
+    private final UserRepository userRepository;
+    private final AuditLogRepository auditLogRepository;
+    private final PdfOfferService pdfOfferService;
+    private final EmailNotificationService emailNotificationService;
+
+    public RecruitmentController(JobPostingRepository jobPostingRepository,
+                                 CandidateRepository candidateRepository,
+                                 InterviewRepository interviewRepository,
+                                 OfferRepository offerRepository,
+                                 OnboardingRepository onboardingRepository,
+                                 UserRepository userRepository,
+                                 AuditLogRepository auditLogRepository,
+                                 PdfOfferService pdfOfferService,
+                                 EmailNotificationService emailNotificationService) {
+        this.jobPostingRepository = jobPostingRepository;
+        this.candidateRepository = candidateRepository;
+        this.interviewRepository = interviewRepository;
+        this.offerRepository = offerRepository;
+        this.onboardingRepository = onboardingRepository;
+        this.userRepository = userRepository;
+        this.auditLogRepository = auditLogRepository;
+        this.pdfOfferService = pdfOfferService;
+        this.emailNotificationService = emailNotificationService;
     }
 
-    public record JobPosting(
-            Long id,
-            String title,
-            String department,
-            String location,
-            String type, // Toàn thời gian, Bán thời gian, Thực tập
-            String salary,
-            int quantity,
-            String deadline,
-            String status, // Đang tuyển, Tạm dừng, Đã đóng
-            int applicantCount,
-            String description,
-            String requirements,
-            String benefits
-    ) {}
-
-    public record Candidate(
-            Long id,
-            String applicationCode, // APP-2026-101
-            String fullName,
-            String email,
-            String phone,
-            String appliedJobTitle,
-            Long jobId,
-            String stage, // NEW, SCREENING, ASSESSMENT, TECH_INTERVIEW, HR_INTERVIEW, OFFER, HIRED, REJECTED
-            String experience,
-            String education,
-            List<String> skills,
-            double rating,
-            String source, // TopCV, LinkedIn, ITviec, Nội bộ, Website
-            String applyDate,
-            String avatarUrl,
-            String interviewTime,
-            String interviewer,
-            String notes,
-            String testScore, // e.g. "85/100"
-            String testStatus // CHƯA_GIAO, ĐÃ_GIAO, ĐÃ_NỘP_WEB, ĐÃ_NỘP_EMAIL, ĐÃ_CHẤM
-    ) {
-        public String getStageText() {
-            return switch (stage) {
-                case "NEW" -> "Mới ứng tuyển";
-                case "SCREENING" -> "Đang sơ loại CV";
-                case "ASSESSMENT" -> "Đang làm bài test";
-                case "TECH_INTERVIEW" -> "Phỏng vấn Kỹ thuật";
-                case "HR_INTERVIEW" -> "Phỏng vấn HR";
-                case "OFFER" -> "Thư mời nhận việc (Offer)";
-                case "HIRED" -> "Đã nhận việc (Onboarding)";
-                case "REJECTED" -> "Chưa phù hợp";
-                default -> stage;
-            };
-        }
-
-        public String getStageBadgeClass() {
-            return switch (stage) {
-                case "NEW" -> "badge-info";
-                case "SCREENING" -> "badge-warning";
-                case "ASSESSMENT" -> "badge-purple";
-                case "TECH_INTERVIEW", "HR_INTERVIEW" -> "badge-primary";
-                case "OFFER" -> "badge-warning";
-                case "HIRED" -> "badge-success";
-                case "REJECTED" -> "badge-danger";
-                default -> "badge-secondary";
-            };
-        }
-
-        // Aliases for template bindings
-        public String name() { return fullName; }
-        public String position() { return appliedJobTitle; }
-        public String status() { return getStageText(); }
-        public String statusBadgeClass() { return getStageBadgeClass(); }
-    }
-
-    public record InterviewSchedule(
-            Long id,
-            String candidateName,
-            String jobTitle,
-            String date,
-            String time,
-            String round, // Phỏng vấn Kỹ thuật, Phỏng vấn HR, Test năng lực
-            String interviewer,
-            String format, // Trực tiếp (P.302), Online (Google Meet)
-            String meetingLink,
-            String status, // Sắp diễn ra, Hoàn thành, Đã hủy
-            double technicalScore,
-            double problemSolvingScore,
-            double communicationScore,
-            double culturalFitScore,
-            String decision // PASS, CONSIDER, FAIL
-    ) {}
-
-    public record AssessmentTest(
-            Long id,
-            String title,
-            String jobCategory,
-            int durationMinutes,
-            int totalQuestions,
-            String level, // Fresher, Junior, Senior
-            String description
-    ) {}
-
-    public record OfferRecord(
-            Long id,
-            String candidateName,
-            String jobTitle,
-            String salaryGross,
-            String bonusInfo,
-            String startDate,
-            String deadlineResponse,
-            String approvalStatus, // DRAFT, PENDING_APPROVAL, APPROVED, REJECTED
-            String candidateResponse, // SENT, ACCEPTED, DECLINED
-            String approvedBy
-    ) {}
-
-    public record OnboardingTask(
-            Long id,
-            String candidateName,
-            String jobTitle,
-            String startDate,
-            String mentor,
-            int progressPercent,
-            List<String> completedTasks,
-            List<String> pendingTasks,
-            String status // ĐANG_TIẾP_NHẬN, HOÀN_TẤT
-    ) {}
-
-    public record AuditLog(
-            Long id,
-            String timestamp,
-            String actorName,
-            String actorRole,
-            String action,
-            String detail
-    ) {}
-
-    public record ApprovalItem(
-            Long id,
-            String category, // offer, requisition
-            String title,
-            String subtitle,
-            String tag,
-            String highlight,
-            Map<String, String> details,
-            String actionTitle,
-            String status
-    ) {}
-
-    // ================= MOCK DATA GENERATORS =================
-    public List<Requisition> getMockRequisitions() {
-        return List.of(
-            new Requisition(1L, "RQ-2026-001", "Senior Java Backend Engineer", "Phòng Kỹ thuật & Công nghệ", 0, 2, "Cao", "badge-danger", "Đang tuyển", "badge-success", "Lan (Recruiter)", "15/11/2026", "25 - 35 Triệu"),
-            new Requisition(2L, "RQ-2026-002", "Flutter Mobile Developer", "Phòng Kỹ thuật & Công nghệ", 1, 3, "Cao", "badge-danger", "Đang tuyển", "badge-success", "Minh Hưng (HR Lead)", "20/11/2026", "18 - 28 Triệu"),
-            new Requisition(3L, "RQ-2026-003", "UI/UX Product Designer", "Phòng Sản phẩm & Thiết kế", 0, 1, "Trung bình", "badge-warning", "Đang tuyển", "badge-success", "Thái Tuấn (Interviewer Lead)", "10/11/2026", "16 - 24 Triệu"),
-            new Requisition(4L, "RQ-2026-004", "Chuyên viên Tuyển dụng & Đào tạo", "Phòng Nhân sự", 1, 1, "Trung bình", "badge-warning", "Đã tuyển đủ", "badge-info", "Nguyễn Thu Hà (HR Manager)", "05/11/2026", "12 - 18 Triệu"),
-            new Requisition(5L, "RQ-2026-005", "Thực tập sinh Lập trình Web", "Phòng Kỹ thuật & Công nghệ", 2, 5, "Thấp", "badge-info", "Đang tuyển", "badge-success", "Thảo (Recruiter)", "30/11/2026", "4 - 6 Triệu")
-        );
-    }
-
-    public List<JobPosting> getMockJobs() {
-        return List.of(
-            new JobPosting(
-                1L, "Senior Java Backend Engineer", "Phòng Kỹ thuật & Công nghệ",
-                "Hà Nội / Hybrid", "Toàn thời gian", "25 - 35 Triệu VNĐ", 2, "15/11/2026", "Đang tuyển", 28,
-                "Phát triển hệ thống microservices backend hiệu năng cao, tối ưu hóa cơ sở dữ liệu lớn và thiết kế kiến trúc hệ thống.",
-                "Tối thiểu 3 năm kinh nghiệm với Java, Spring Boot, MySQL/PostgreSQL, Redis, Kafka, Docker.",
-                "Thưởng tháng 13 + KPIs, bảo hiểm sức khỏe quốc tế, cấp Macbook Pro M3."
-            ),
-            new JobPosting(
-                2L, "Flutter Mobile Developer", "Phòng Kỹ thuật & Công nghệ",
-                "Hà Nội / Remote", "Toàn thời gian", "18 - 28 Triệu VNĐ", 3, "20/11/2026", "Đang tuyển", 35,
-                "Xây dựng ứng dụng mobile đa nền tảng (iOS & Android) phục vụ hàng trăm nghìn người dùng, tích hợp REST API.",
-                "Tối thiểu 2 năm kinh nghiệm Flutter/Dart, hiểu sâu về State Management (Bloc/Provider).",
-                "Môi trường Agile năng động, phụ cấp cơm trưa + gửi xe, đào tạo nâng cao chuyên môn."
-            ),
-            new JobPosting(
-                3L, "UI/UX Product Designer", "Phòng Sản phẩm & Thiết kế",
-                "TP. Hồ Chí Minh", "Toàn thời gian", "16 - 24 Triệu VNĐ", 1, "10/11/2026", "Đang tuyển", 19,
-                "Thiết kế Design System, User Journey và Wireframe/Prototype trực quan cho Web và Mobile.",
-                "Sử dụng thành thạo Figma, tư duy User-Centric, có portfolio dự án ấn tượng.",
-                "Màn hình 4K, khám sức khỏe định kỳ, thưởng các dịp lễ tết."
-            ),
-            new JobPosting(
-                4L, "Chuyên viên Tuyển dụng & Đào tạo (HR Recruiter)", "Phòng Nhân sự",
-                "Hà Nội", "Toàn thời gian", "12 - 18 Triệu VNĐ", 1, "05/11/2026", "Đang tuyển", 14,
-                "Chịu trách nhiệm toàn bộ quy trình sourcing, săn đón nhân tài công nghệ và phỏng vấn sơ loại.",
-                "Tối thiểu 1 năm kinh nghiệm IT Recruitment, mạng lưới ứng viên công nghệ tốt.",
-                "Hoa hồng tuyển dụng hấp dẫn, làm việc từ thứ 2 đến thứ 6, du lịch hàng năm."
-            ),
-            new JobPosting(
-                5L, "Thực tập sinh Lập trình Web (Spring Boot & Vue/React)", "Phòng Kỹ thuật & Công nghệ",
-                "Hà Nội", "Thực tập", "4 - 6 Triệu VNĐ", 5, "30/11/2026", "Đang tuyển", 52,
-                "Tham gia trực tiếp vào các module thực tế của dự án, được Mentor 1-1 chỉ dẫn chi tiết.",
-                "Sinh viên năm 3, 4 hoặc mới tốt nghiệp CNTT, nắm vững căn bản OOP, Java Core, SQL.",
-                "Hỗ trợ dấu thực tập và đồ án tốt nghiệp, phụ cấp ăn trưa."
-            )
-        );
-    }
-
-    public List<Candidate> getMockCandidates() {
-        return List.of(
-            new Candidate(
-                101L, "APP-2026-101", "Nguyễn Văn An", "an.nguyen@gmail.com", "0912 345 678",
-                "Senior Java Backend Engineer", 1L, "TECH_INTERVIEW",
-                "4.5 năm kinh nghiệm", "ĐH Bách Khoa Hà Nội (CNTT)",
-                List.of("Java", "Spring Boot", "Microservices", "Kafka", "Docker"),
-                4.8, "TopCV", "24/10/2026", "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
-                "26/10/2026 09:30", "Anh Tuấn (Tech Lead)",
-                "Ứng viên có kiến thức hệ thống phân tán và tối ưu database rất vững. Thái độ tích cực.",
-                "92/100 (Bài test Java)", "ĐÃ_CHẤM"
-            ),
-            new Candidate(
-                102L, "APP-2026-102", "Trần Thị Mai", "mai.tran@outlook.com", "0987 654 321",
-                "Flutter Mobile Developer", 2L, "TECH_INTERVIEW",
-                "2.5 năm kinh nghiệm", "ĐH Công nghệ - ĐHQGHN",
-                List.of("Flutter", "Dart", "Bloc", "RESTful API", "Firebase"),
-                4.5, "LinkedIn", "23/10/2026", "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150",
-                "26/10/2026 14:00", "Chị Linh (HR) & Anh Hưng (Mobile Lead)",
-                "UI làm việc rất cẩn thận, hiểu sâu Bloc Pattern, đã từng phát hành 2 app lên Play Store.",
-                "88/100 (Bài test Flutter)", "ĐÃ_CHẤM"
-            ),
-            new Candidate(
-                103L, "APP-2026-103", "Lê Hoàng Nam", "nam.lehoang@gmail.com", "0905 112 233",
-                "UI/UX Product Designer", 3L, "HR_INTERVIEW",
-                "3 năm kinh nghiệm", "ĐH Kiến Trúc TP.HCM",
-                List.of("Figma", "Design System", "User Research", "Prototyping"),
-                4.7, "ITviec", "21/10/2026", "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
-                "26/10/2026 15:30", "Anh Nam (Product Manager)",
-                "Portfolio rất thẩm mỹ, tư duy sản phẩm định hướng người dùng rõ ràng.",
-                "Nộp bài qua Email Reply", "ĐÃ_NỘP_EMAIL"
-            ),
-            new Candidate(
-                104L, "APP-2026-104", "Phạm Quốc Bảo", "bao.pham@gmail.com", "0934 998 877",
-                "Senior Java Backend Engineer", 1L, "OFFER",
-                "5 năm kinh nghiệm", "Học viện CNBCVT",
-                List.of("Java", "Spring Cloud", "PostgreSQL", "Kubernetes", "AWS"),
-                4.9, "Nội bộ giới thiệu", "18/10/2026", "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
-                "Đã phỏng vấn xong", "HĐ Tuyển dụng",
-                "Đã gửi offer mức 32M, ứng viên đang xem xét phản hồi trước ngày 28/10.",
-                "95/100", "ĐÃ_CHẤM"
-            ),
-            new Candidate(
-                105L, "APP-2026-105", "Đỗ Hải Yến", "haiyen.do@gmail.com", "0978 221 144",
-                "Chuyên viên Tuyển dụng & Đào tạo", 4L, "HIRED",
-                "2 năm kinh nghiệm", "ĐH Kinh Tế Quốc Dân",
-                List.of("IT Sourcing", "Interviewing", "Headhunting", "English"),
-                4.6, "LinkedIn", "15/10/2026", "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150",
-                "Đã nhận việc", "Trưởng phòng HR",
-                "Đã hoàn thành thủ tục Onboarding. Bắt đầu làm việc từ ngày 01/11/2026.",
-                "85/100", "ĐÃ_CHẤM"
-            ),
-            new Candidate(
-                106L, "APP-2026-106", "Vũ Đức Thắng", "thang.vu@gmail.com", "0918 887 766",
-                "Thực tập sinh Lập trình Web", 5L, "ASSESSMENT",
-                "Mới tốt nghiệp", "ĐH Giao Thông Vận Tải",
-                List.of("Java", "OOP", "MySQL", "HTML/CSS", "Git"),
-                4.0, "TopCV", "25/10/2026", "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=150",
-                "Chờ kết quả test", "Chị Thảo (HR)",
-                "GPA 3.4/4.0, đã gửi link làm bài test thuật toán trực tuyến hạn 27/10.",
-                "Đang làm bài", "ĐÃ_GIAO"
-            ),
-            new Candidate(
-                107L, "APP-2026-107", "Bùi Minh Trang", "trang.bui@gmail.com", "0945 667 788",
-                "Flutter Mobile Developer", 2L, "NEW",
-                "1.5 năm kinh nghiệm", "ĐH Bách Khoa Đà Nẵng",
-                List.of("Flutter", "Dart", "Provider", "REST API"),
-                3.8, "Website công ty", "26/10/2026", "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
-                "Chưa liên hệ", "HR Tuyển dụng",
-                "Hồ sơ mới nộp sáng nay qua cổng tuyển dụng Careers Portal.",
-                "Chưa giao", "CHƯA_GIAO"
-            )
-        );
-    }
-
-    public List<InterviewSchedule> getMockInterviews() {
-        return List.of(
-            new InterviewSchedule(
-                1L, "Nguyễn Văn An", "Senior Java Backend Engineer",
-                "Hôm nay (26/10/2026)", "09:30 - 10:30",
-                "Phỏng vấn Kỹ thuật (Vòng 2)", "Anh Tuấn (Tech Lead), Anh Minh (Senior Dev)",
-                "Online (Google Meet)", "https://meet.google.com/abc-xyz-ats", "Sắp diễn ra",
-                4.8, 4.9, 4.5, 4.8, "PASS"
-            ),
-            new InterviewSchedule(
-                2L, "Trần Thị Mai", "Flutter Mobile Developer",
-                "Hôm nay (26/10/2026)", "14:00 - 15:00",
-                "Phỏng vấn Kỹ thuật & Live Coding", "Chị Linh (HR) & Anh Hưng (Mobile Lead)",
-                "Trực tiếp tại Phòng họp 302", "-", "Sắp diễn ra",
-                4.6, 4.4, 4.7, 4.5, "PASS"
-            ),
-            new InterviewSchedule(
-                3L, "Lê Hoàng Nam", "UI/UX Product Designer",
-                "Hôm nay (26/10/2026)", "15:30 - 16:30",
-                "Phỏng vấn Portfolio & Văn hóa", "Anh Nam (Product Manager)",
-                "Online (Google Meet)", "https://meet.google.com/des-room-ats", "Sắp diễn ra",
-                4.7, 4.8, 4.6, 4.7, "PASS"
-            )
-        );
-    }
-
-    public List<AssessmentTest> getMockAssessments() {
-        return List.of(
-            new AssessmentTest(1L, "Bài Test Năng Lực Java Core & Spring Boot", "Phòng Kỹ thuật & Công nghệ", 60, 25, "Senior", "Đánh giá kiến thức OOP, Multithreading, Spring Core, JPA, Microservices và SQL Tuning."),
-            new AssessmentTest(2L, "Bài Test Lập Trình Mobile Flutter & Dart", "Phòng Kỹ thuật & Công nghệ", 45, 20, "Junior / Mid", "Đánh giá hiểu biết State Management (Bloc/Provider), Widget Lifecycle, REST API."),
-            new AssessmentTest(3L, "Đánh Giá Tư Duy Sản Phẩm & UI/UX Design System", "Phòng Sản phẩm", 60, 15, "Mid", "Thiết kế component trên Figma, phân tích luồng trải nghiệm người dùng User Journey."),
-            new AssessmentTest(4L, "Kiểm Tra Tiếng Anh Chuyên Ngành IT & Giao Tiếp", "Chung", 30, 30, "Mọi cấp bậc", "Trắc nghiệm ngữ pháp, từ vựng kỹ thuật và đọc hiểu tài liệu phần mềm.")
-        );
-    }
-
-    public List<OfferRecord> getMockOffers() {
-        return List.of(
-            new OfferRecord(1L, "Phạm Quốc Bảo", "Senior Java Backend Engineer", "32.000.000 VNĐ", "Thưởng KPIs + Thưởng gia nhập 10M", "01/11/2026", "28/10/2026", "APPROVED", "SENT", "Lê Văn Thành (Giám đốc Khối CN)"),
-            new OfferRecord(2L, "Lê Hoàng Nam", "UI/UX Product Designer", "22.000.000 VNĐ", "Thưởng tháng 13 + Cấp Macbook", "05/11/2026", "30/10/2026", "PENDING_APPROVAL", "Chờ duyệt", "Chờ Giám đốc phê duyệt"),
-            new OfferRecord(3L, "Đỗ Hải Yến", "Chuyên viên Tuyển dụng & Đào tạo", "16.000.000 VNĐ", "Hoa hồng tuyển dụng theo quý", "01/11/2026", "20/10/2026", "APPROVED", "ACCEPTED", "Nguyễn Thu Hà (HR Director)")
-        );
-    }
-
-    public List<OnboardingTask> getMockOnboarding() {
-        return List.of(
-            new OnboardingTask(
-                1L, "Đỗ Hải Yến", "Chuyên viên Tuyển dụng & Đào tạo", "01/11/2026", "Chị Thu Hà (HR Manager)", 75,
-                List.of("Ký hợp đồng lao động & hồ sơ nhân sự", "Tạo email công ty @techcorp.vn", "Cấp thẻ nhân viên & bàn làm việc"),
-                List.of("Cấp quyền truy cập hệ thống TalentFlow ATS", "Buổi Orientation văn hóa công ty vào ngày 01/11"),
-                "ĐANG_TIẾP_NHẬN"
-            ),
-            new OnboardingTask(
-                2L, "Phạm Quốc Bảo", "Senior Java Backend Engineer", "01/11/2026", "Anh Tuấn (Tech Lead)", 40,
-                List.of("Ký hợp đồng thử việc", "Chuẩn bị Macbook Pro M3"),
-                List.of("Cấp tài khoản GitHub Enterprise, Jira, Slack", "Bàn giao tài liệu kiến trúc hệ thống", "Tham gia buổi Kickoff Sprint"),
-                "ĐANG_TIẾP_NHẬN"
-            )
-        );
-    }
-
-    public List<AuditLog> getMockAuditLogs() {
-        return List.of(
-            new AuditLog(1L, "26/10/2026 10:45", "Anh Tuấn", "Tech Lead", "Đánh giá Scorecard", "Chấm điểm vòng PV Kỹ thuật cho ứng viên Nguyễn Văn An (Điểm 4.8/5)"),
-            new AuditLog(2L, "26/10/2026 09:15", "Chị Thảo", "Recruiter", "Giao bài Test năng lực", "Tạo và gửi link làm bài test bảo mật cho Vũ Đức Thắng (Hạn 27/10)"),
-            new AuditLog(3L, "25/10/2026 16:30", "Minh Hưng", "HR Lead", "Phê duyệt Thư mời Offer", "Duyệt bản thảo Offer 32M cho ứng viên Phạm Quốc Bảo"),
-            new AuditLog(4L, "25/10/2026 14:00", "Hệ thống Webhook", "System", "Nhận bài Test qua Email", "Inbound Webhook tự động ghi nhận bài làm từ nam.lehoang@gmail.com"),
-            new AuditLog(5L, "24/10/2026 11:20", "Chị Linh", "Recruiter", "Chuyển vòng Pipeline", "Duyệt sơ loại hồ sơ Nguyễn Văn An, chuyển sang PV Kỹ thuật")
-        );
-    }
-
-    public List<ApprovalItem> getMockApprovals() {
-        return List.of(
-            new ApprovalItem(
-                1L, "offer", "Phạm Quốc Bảo", "Senior Java Backend Engineer",
-                "Thư mời nhận việc", "32M VNĐ",
-                Map.of(
-                    "Thưởng gia nhập:", "10.000.000 VNĐ",
-                    "Ngày nhận việc:", "01/11/2026",
-                    "Người tạo đề xuất:", "Thu Hà (HR Manager)"
-                ),
-                "Duyệt Offer", "PENDING"
-            ),
-            new ApprovalItem(
-                2L, "requisition", "Flutter Mobile Developer", "Phòng Kỹ thuật & Công nghệ",
-                "Đề xuất tuyển dụng", "3 chỉ tiêu",
-                Map.of(
-                    "Khung lương:", "18 - 28 Triệu VNĐ",
-                    "Độ ưu tiên:", "Cao (Gấp)",
-                    "Hạn tuyển dụng:", "20/11/2026"
-                ),
-                "Duyệt Đề Xuất", "PENDING"
-            )
-        );
-    }
-
-    // ==========================================
-    // CONTROLLER ENDPOINTS (PORTAL ROUTING)
-    // ==========================================
-
-    // Trang chủ root (http://localhost:8080/): Mở Cổng Tìm Việc Công Khai (Job Board)
-    @GetMapping({"", "/"})
-    public String home() {
-        return "forward:/job_board.html";
-    }
-
-    // Cổng Quản Trị Tuyển Dụng ATS (http://localhost:8080/recruitment hoặc /admin)
-    @GetMapping({
-        "/recruitment", "/recruitment/", "/recruitment/dashboard",
-        "/admin", "/admin/", "/dashboard",
-        "/recruitment/requisitions",
-        "/recruitment/jobs",
-        "/recruitment/pipeline",
-        "/recruitment/candidates",
-        "/recruitment/candidate/{id}",
-        "/recruitment/interviews",
-        "/recruitment/assessments",
-        "/recruitment/offers",
-        "/recruitment/onboarding",
-        "/recruitment/reports",
-        "/recruitment/settings",
-        "/recruitment/requirements"
-    })
-    public String adminPortal() {
+    // Trang chủ quản trị ATS Portal
+    @GetMapping({"", "/", "/recruitment", "/recruitment/**"})
+    public String recruitmentPortal() {
         return "forward:/recruitment_prototype.html";
     }
 
-    // Trình Xem Trước Mô Phỏng Ứng Dụng Mobile Flutter (http://localhost:8080/mobile)
-    @GetMapping({"/mobile", "/mobile/", "/mobile-preview"})
-    public String mobilePortal() {
+    // Trang mô phỏng Mobile ATS App trên khung iPhone
+    @GetMapping("/mobile")
+    public String mobilePreview() {
         return "forward:/mobile_preview.html";
     }
 
-    // Export Excel / CSV Download
-    @GetMapping("/recruitment/export-excel")
+    // ================= AUTH & RBAC APIS =================
+    @ResponseBody
+    @PostMapping("/api/auth/login")
+    public Map<String, Object> login(@RequestBody Map<String, String> creds) {
+        String username = creds.get("username");
+        String password = creds.get("password");
+
+        Map<String, Object> res = new HashMap<>();
+        Optional<UserEntity> userOpt = userRepository.findByUsername(username);
+
+        if (userOpt.isPresent() && userOpt.get().getPassword().equals(password)) {
+            UserEntity user = userOpt.get();
+            res.put("status", "SUCCESS");
+            res.put("userId", user.getId());
+            res.put("username", user.getUsername());
+            res.put("fullName", user.getFullName());
+            res.put("role", user.getRole()); // HR_MANAGER, RECRUITER, INTERVIEWER
+            res.put("department", user.getDepartment());
+            res.put("email", user.getEmail());
+
+            auditLogRepository.save(new AuditLogEntity(user.getUsername(), user.getRole(), "USER_LOGIN", "Auth", "127.0.0.1", "Đăng nhập hệ thống thành công"));
+            return res;
+        }
+
+        res.put("status", "ERROR");
+        res.put("message", "Tên đăng nhập hoặc mật khẩu không chính xác!");
+        return res;
+    }
+
+    @ResponseBody
+    @GetMapping("/api/auth/users")
+    public List<UserEntity> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    // ================= REST APIS DÀNH CHO WEB VÀ MOBILE =================
+
+    // 1. Danh sách tin tuyển dụng từ Database
+    @ResponseBody
+    @GetMapping("/recruitment/api/jobs")
+    public List<JobPostingEntity> apiGetJobs() {
+        return jobPostingRepository.findAll();
+    }
+
+    // 2. Chi tiết tin tuyển dụng
+    @ResponseBody
+    @GetMapping("/recruitment/api/jobs/{id}")
+    public ResponseEntity<JobPostingEntity> apiGetJobDetail(@PathVariable Long id) {
+        return jobPostingRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // 3. Danh sách ứng viên theo vị trí hoặc toàn bộ từ Database
+    @ResponseBody
+    @GetMapping("/recruitment/api/candidates")
+    public List<CandidateEntity> apiGetCandidates(@RequestParam(required = false) Long jobId) {
+        if (jobId != null) {
+            return candidateRepository.findByJobId(jobId);
+        }
+        return candidateRepository.findAll();
+    }
+
+    // 4. Chi tiết một ứng viên
+    @ResponseBody
+    @GetMapping("/recruitment/api/candidates/{id}")
+    public ResponseEntity<CandidateEntity> apiGetCandidateDetail(@PathVariable Long id) {
+        return candidateRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // 5. Cập nhật bước tuyển dụng (Kanban Stage Transition)
+    @ResponseBody
+    @PutMapping("/recruitment/api/candidates/{id}/stage")
+    public Map<String, Object> apiUpdateCandidateStage(@PathVariable Long id, @RequestBody Map<String, String> payload) {
+        String newStage = payload.get("stage");
+        Map<String, Object> res = new HashMap<>();
+
+        Optional<CandidateEntity> candOpt = candidateRepository.findById(id);
+        if (candOpt.isPresent()) {
+            CandidateEntity cand = candOpt.get();
+            String oldStage = cand.getStage();
+            cand.setStage(newStage);
+            candidateRepository.save(cand);
+
+            auditLogRepository.save(new AuditLogEntity("HR Recruiter", "RECRUITER", "STAGE_CHANGE", "Candidate #" + id, "127.0.0.1", "Chuyển bước từ " + oldStage + " sang " + newStage));
+
+            res.put("status", "SUCCESS");
+            res.put("candidateId", id);
+            res.put("newStage", newStage);
+            res.put("message", "Đã cập nhật trạng thái ứng viên thành công!");
+            return res;
+        }
+
+        res.put("status", "NOT_FOUND");
+        return res;
+    }
+
+    // 6. Lịch phỏng vấn từ Database
+    @ResponseBody
+    @GetMapping("/recruitment/api/interviews")
+    public List<InterviewEntity> apiGetInterviews() {
+        return interviewRepository.findAll();
+    }
+
+    // 7. Tạo lịch phỏng vấn mới & gửi Email mời phỏng vấn tự động kèm file .ics
+    @ResponseBody
+    @PostMapping("/recruitment/api/interviews")
+    public Map<String, Object> apiCreateInterview(@RequestBody Map<String, Object> payload) {
+        Long candidateId = payload.get("candidateId") != null ? Long.valueOf(payload.get("candidateId").toString()) : 1L;
+        String candidateName = (String) payload.getOrDefault("candidateName", "Ứng viên");
+        String candidateEmail = (String) payload.getOrDefault("candidateEmail", "candidate@gmail.com");
+        String jobTitle = (String) payload.getOrDefault("jobTitle", "Vị trí tuyển dụng");
+        String date = (String) payload.getOrDefault("date", "Hôm nay");
+        String time = (String) payload.getOrDefault("time", "14:00 - 15:00");
+        String round = (String) payload.getOrDefault("round", "Phỏng vấn Kỹ thuật");
+        String interviewer = (String) payload.getOrDefault("interviewer", "Ban Phỏng vấn");
+        String format = (String) payload.getOrDefault("format", "Trực tuyến (Google Meet)");
+        String meetingLink = (String) payload.getOrDefault("meetingLink", "https://meet.google.com/talentflow-interview");
+
+        InterviewEntity interview = new InterviewEntity(candidateId, candidateName, jobTitle, date, time, round, interviewer, format, meetingLink, "Sắp diễn ra");
+        interviewRepository.save(interview);
+
+        // Gửi email tự động
+        emailNotificationService.sendInterviewInvitation(candidateEmail, candidateName, jobTitle, date, time, format, meetingLink);
+
+        // Ghi nhận Audit Log
+        auditLogRepository.save(new AuditLogEntity("Recruiter", "RECRUITER", "SCHEDULE_INTERVIEW", candidateName, "127.0.0.1", "Lên lịch phỏng vấn vòng " + round + " lúc " + time + " ngày " + date));
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("status", "SUCCESS");
+        res.put("interviewId", interview.getId());
+        res.put("message", "Lên lịch phỏng vấn thành công và đã gửi thư mời kèm lịch .ics đến email ứng viên!");
+        return res;
+    }
+
+    // 8. Chấm điểm Scorecard phỏng vấn (1-Click PASS/FAIL & điểm 4 tiêu chí)
+    @ResponseBody
+    @PostMapping({"/recruitment/api/candidates/{id}/evaluate", "/recruitment/api/interviews/{id}/evaluate"})
+    public Map<String, Object> apiSubmitEvaluation(@PathVariable Long id, @RequestBody(required = false) Map<String, Object> payload) {
+        Double tech = payload != null && payload.containsKey("technicalScore") ? Double.valueOf(payload.get("technicalScore").toString()) : 4.5;
+        Double problem = payload != null && payload.containsKey("problemSolvingScore") ? Double.valueOf(payload.get("problemSolvingScore").toString()) : 4.0;
+        Double comm = payload != null && payload.containsKey("communicationScore") ? Double.valueOf(payload.get("communicationScore").toString()) : 4.5;
+        Double culture = payload != null && payload.containsKey("culturalFitScore") ? Double.valueOf(payload.get("culturalFitScore").toString()) : 4.5;
+        String decision = payload != null && payload.containsKey("decision") ? (String) payload.get("decision") : "PASS";
+        String notes = payload != null && payload.containsKey("notes") ? (String) payload.get("notes") : "Đánh giá tốt";
+
+        Optional<InterviewEntity> ivOpt = interviewRepository.findById(id);
+        if (ivOpt.isPresent()) {
+            InterviewEntity iv = ivOpt.get();
+            iv.setTechnicalScore(tech);
+            iv.setProblemSolvingScore(problem);
+            iv.setCommunicationScore(comm);
+            iv.setCulturalFitScore(culture);
+            iv.setDecision(decision);
+            iv.setNotes(notes);
+            iv.setStatus("Hoàn thành");
+            interviewRepository.save(iv);
+
+            // Cập nhật rating và stage cho candidate
+            Optional<CandidateEntity> candOpt = candidateRepository.findById(iv.getCandidateId());
+            if (candOpt.isPresent()) {
+                CandidateEntity c = candOpt.get();
+                double gpa = (tech + problem + comm + culture) / 4.0;
+                c.setRating(Math.round(gpa * 10.0) / 10.0);
+                if ("PASS".equalsIgnoreCase(decision)) {
+                    c.setStage("OFFER");
+                }
+                candidateRepository.save(c);
+            }
+        }
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("status", "SUCCESS");
+        res.put("interviewId", id);
+        res.put("decision", decision);
+        res.put("message", "Đã lưu phiếu đánh giá Scorecard vào cơ sở dữ liệu!");
+        return res;
+    }
+
+    // 9. Danh sách phê duyệt yêu cầu (Approvals)
+    @ResponseBody
+    @GetMapping("/recruitment/api/approvals")
+    public List<Map<String, Object>> apiGetApprovals() {
+        List<Map<String, Object>> list = new ArrayList<>();
+        List<OfferEntity> offers = offerRepository.findByStatus("PENDING");
+        for (OfferEntity off : offers) {
+            Map<String, Object> item = new HashMap<>();
+            item.put("id", off.getId());
+            item.put("category", "offer");
+            item.put("title", off.getCandidateName());
+            item.put("subtitle", off.getJobTitle());
+            item.put("tag", "Thư mời nhận việc");
+            item.put("highlight", off.getBaseSalary());
+
+            Map<String, String> details = new HashMap<>();
+            details.put("Thưởng gia nhập:", off.getSignOnBonus() != null ? off.getSignOnBonus() : "Theo quy chế");
+            details.put("Ngày nhận việc:", off.getStartDate() != null ? off.getStartDate() : "Theo thỏa thuận");
+            details.put("Phòng ban:", off.getDepartment());
+            item.put("details", details);
+            item.put("actionTitle", "Duyệt Offer");
+            list.add(item);
+        }
+        return list;
+    }
+
+    // 10. Thao tác phê duyệt Offer (Tự động sinh PDF Offer Letter & Gửi Email)
+    @ResponseBody
+    @PostMapping("/recruitment/api/approvals/{id}/action")
+    public Map<String, Object> apiHandleApprovalAction(@PathVariable Long id, @RequestBody(required = false) Map<String, String> payload) {
+        String action = payload != null && payload.containsKey("action") ? payload.get("action") : "APPROVE";
+        Map<String, Object> res = new HashMap<>();
+
+        Optional<OfferEntity> offOpt = offerRepository.findById(id);
+        if (offOpt.isPresent()) {
+            OfferEntity off = offOpt.get();
+            if ("APPROVE".equalsIgnoreCase(action)) {
+                off.setStatus("APPROVED");
+
+                // Sinh file PDF Offer chính thức bằng Apache PDFBox
+                try {
+                    String pdfPath = pdfOfferService.saveOfferPdfToFile(off.getId(), off.getCandidateName(), off.getJobTitle(), off.getDepartment(), off.getBaseSalary(), off.getSignOnBonus(), off.getStartDate());
+                    off.setPdfFilePath(pdfPath);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                // Gửi email thông báo trúng tuyển
+                emailNotificationService.sendOfferNotification(off.getCandidateEmail(), off.getCandidateName(), off.getJobTitle(), off.getBaseSalary(), off.getStartDate());
+
+                // Chuyển candidate sang HIRED / ONBOARDING
+                Optional<CandidateEntity> candOpt = candidateRepository.findById(off.getCandidateId());
+                if (candOpt.isPresent()) {
+                    CandidateEntity c = candOpt.get();
+                    c.setStage("HIRED");
+                    candidateRepository.save(c);
+
+                    // Tự động tạo onboarding tasks
+                    onboardingRepository.save(new OnboardingEntity(c.getId(), c.getFullName(), "Tạo tài khoản email & thiết bị", "IT Support", "Admin", off.getStartDate(), "CHƯA_LÀM"));
+                    onboardingRepository.save(new OnboardingEntity(c.getId(), c.getFullName(), "Ký hợp đồng lao động & đóng bảo hiểm", "Nhân sự", "Thu Hà", off.getStartDate(), "CHƯA_LÀM"));
+                }
+            } else {
+                off.setStatus("REJECTED");
+            }
+            offerRepository.save(off);
+
+            auditLogRepository.save(new AuditLogEntity("HR Manager", "HR_MANAGER", "OFFER_" + action, off.getCandidateName(), "127.0.0.1", "Phê duyệt Thư mời nhận việc: " + action));
+
+            res.put("status", "SUCCESS");
+            res.put("offerId", id);
+            res.put("action", action);
+            res.put("pdfUrl", off.getPdfFilePath());
+            res.put("message", "Thao tác " + action + " cho Offer #" + id + " đã được xử lý và xuất PDF Offer Letter thành công!");
+            return res;
+        }
+
+        res.put("status", "NOT_FOUND");
+        return res;
+    }
+
+    // 11. Tải file PDF Offer Letter chính thức
+    @GetMapping("/recruitment/api/offers/{id}/pdf")
+    public ResponseEntity<byte[]> downloadOfferPdf(@PathVariable Long id) {
+        Optional<OfferEntity> offOpt = offerRepository.findById(id);
+        if (offOpt.isPresent()) {
+            OfferEntity off = offOpt.get();
+            try {
+                byte[] pdfBytes = pdfOfferService.generateOfferLetterBytes(
+                        off.getCandidateName(), off.getJobTitle(), off.getDepartment(),
+                        off.getBaseSalary(), off.getSignOnBonus(), off.getStartDate()
+                );
+
+                String filename = "Offer_Letter_" + off.getCandidateName().replaceAll("\\s+", "_") + ".pdf";
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                        .contentType(MediaType.APPLICATION_PDF)
+                        .body(pdfBytes);
+            } catch (IOException e) {
+                return ResponseEntity.internalServerError().build();
+            }
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    // 12. Xuất báo cáo tuyển dụng ra file CSV / Excel
+    @GetMapping("/recruitment/api/export-excel")
     public ResponseEntity<byte[]> exportExcel() {
         StringBuilder csv = new StringBuilder();
-        csv.append("\uFEFF"); // BOM for Excel UTF-8
-        csv.append("Mã hồ sơ,Họ và tên,Email,Số điện thoại,Vị trí ứng tuyển,Kinh nghiệm,Trạng thái vòng,Điểm đánh giá,Nguồn ứng viên,Ngày nộp\n");
-        for (Candidate c : getMockCandidates()) {
-            csv.append(String.format("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%.1f\",\"%s\",\"%s\"\n",
-                    c.applicationCode(), c.fullName(), c.email(), c.phone(), c.appliedJobTitle(),
-                    c.experience(), c.stage(), c.rating(), c.source(), c.applyDate()));
+        csv.append("\uFEFF"); // UTF-8 BOM
+        csv.append("Mã Ứng Viên,Họ và Tên,Vị Trí Tuyển Dụng,Giai Đoạn,Điểm Đánh Giá,Kết Quả Sàng Lọc,Ngày Nộp Đơn\n");
+
+        List<CandidateEntity> candidates = candidateRepository.findAll();
+        for (CandidateEntity c : candidates) {
+            csv.append("APP-2026-").append(c.getId()).append(",")
+               .append("\"").append(c.getFullName()).append("\",")
+               .append("\"").append(c.getAppliedJobTitle()).append("\",")
+               .append(c.getStage()).append(",")
+               .append(c.getRating()).append(",")
+               .append(c.getScreeningStatus()).append(",")
+               .append(c.getAppliedAt()).append("\n");
         }
+
         byte[] bytes = csv.toString().getBytes(StandardCharsets.UTF_8);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Bao_Cao_Tuyen_Dung_2026.csv")
@@ -455,94 +369,29 @@ public class RecruitmentController {
                 .body(bytes);
     }
 
-    // Inbound Webhook mô phỏng nhận bài test tự động qua Email reply
+    // 13. Audit Log gần nhất
     @ResponseBody
-    @PostMapping("/recruitment/api/webhook/email-reply")
-    public Map<String, Object> emailReplyWebhook(@RequestBody(required = false) Map<String, Object> payload) {
-        Map<String, Object> res = new HashMap<>();
-        res.put("status", "SUCCESS");
-        res.put("message", "Inbound Webhook đã phân tích email reply thành công và tự động đính kèm bài test vào hồ sơ ứng viên.");
-        res.put("receivedAt", new Date().toString());
-        return res;
+    @GetMapping("/recruitment/api/audit-logs")
+    public List<AuditLogEntity> getAuditLogs() {
+        return auditLogRepository.findTop50ByOrderByTimestampDesc();
     }
 
-    // REST API endpoints for Flutter & AJAX
-    @ResponseBody
-    @GetMapping("/recruitment/api/jobs")
-    public List<JobPosting> apiGetJobs() {
-        return getMockJobs();
-    }
-
-    @ResponseBody
-    @GetMapping("/recruitment/api/candidates")
-    public List<Candidate> apiGetCandidates(@RequestParam(required = false) Long jobId) {
-        if (jobId != null) {
-            return getMockCandidates().stream().filter(c -> c.jobId().equals(jobId)).toList();
-        }
-        return getMockCandidates();
-    }
-
-    @ResponseBody
-    @GetMapping("/recruitment/api/interviews")
-    public List<InterviewSchedule> apiGetInterviews() {
-        return getMockInterviews();
-    }
-
-    // API Phê duyệt yêu cầu (Offer & Requisition) dành cho Mobile ATS & Web
-    @ResponseBody
-    @GetMapping("/recruitment/api/approvals")
-    public List<ApprovalItem> apiGetApprovals() {
-        return getMockApprovals();
-    }
-
-    @ResponseBody
-    @PostMapping("/recruitment/api/approvals/{id}/action")
-    public Map<String, Object> apiHandleApprovalAction(@PathVariable Long id, @RequestBody(required = false) Map<String, String> payload) {
-        String action = payload != null && payload.containsKey("action") ? payload.get("action") : "APPROVE";
-        Map<String, Object> res = new HashMap<>();
-        res.put("status", "SUCCESS");
-        res.put("approvalId", id);
-        res.put("action", action);
-        res.put("message", "Thao tác " + action + " cho yêu cầu #" + id + " đã được ghi nhận vào hệ thống TalentFlow ATS.");
-        res.put("timestamp", new Date().toString());
-        return res;
-    }
-
-    // API Chấm điểm Scorecard phỏng vấn (1-Click PASS/FAIL & điểm tiêu chí)
-    @ResponseBody
-    @PostMapping({"/recruitment/api/candidates/{id}/evaluate", "/recruitment/api/interviews/{id}/evaluate"})
-    public Map<String, Object> apiSubmitEvaluation(@PathVariable Long id, @RequestBody(required = false) Map<String, Object> payload) {
-        Map<String, Object> res = new HashMap<>();
-        res.put("status", "SUCCESS");
-        res.put("interviewId", id);
-        res.put("message", "Điểm đánh giá Scorecard đã được đồng bộ lên TalentFlow Portal.");
-        if (payload != null) {
-            res.put("evaluatedScores", payload);
-        }
-        res.put("recordedAt", new Date().toString());
-        return res;
-    }
-
-    // API Lấy nhanh tóm tắt hồ sơ CV ứng viên phục vụ Mobile Bottom Sheet
+    // 14. Lấy nhanh tóm tắt hồ sơ CV ứng viên phục vụ Mobile Bottom Sheet
     @ResponseBody
     @GetMapping("/recruitment/api/candidates/{id}/cv-summary")
-    public Map<String, Object> apiGetCandidateCvSummary(@PathVariable Long id) {
-        Candidate candidate = getMockCandidates().stream()
-                .filter(c -> c.id().equals(id))
-                .findFirst()
-                .orElse(getMockCandidates().get(0));
-
-        Map<String, Object> res = new HashMap<>();
-        res.put("candidateId", candidate.id());
-        res.put("fullName", candidate.fullName());
-        res.put("appliedJobTitle", candidate.appliedJobTitle());
-        res.put("experience", candidate.experience());
-        res.put("education", candidate.education());
-        res.put("skills", candidate.skills());
-        res.put("matchRate", (int)(candidate.rating() * 20));
-        res.put("stage", candidate.stage());
-        res.put("notes", candidate.notes());
-        res.put("pdfUrl", "/files/cv/CV_" + candidate.fullName().replaceAll(" ", "_") + ".pdf");
-        return res;
+    public ResponseEntity<Map<String, Object>> apiGetCandidateCvSummary(@PathVariable Long id) {
+        return candidateRepository.findById(id).map(cand -> {
+            Map<String, Object> res = new HashMap<>();
+            res.put("candidateId", cand.getId());
+            res.put("fullName", cand.getFullName());
+            res.put("appliedJobTitle", cand.getAppliedJobTitle());
+            res.put("experience", cand.getExperienceYears() + " năm kinh nghiệm");
+            res.put("skills", cand.getParsedSkills());
+            res.put("matchRate", (int)(cand.getRating() * 20));
+            res.put("stage", cand.getStage());
+            res.put("notes", cand.getNotes());
+            res.put("pdfUrl", cand.getResumeUrl());
+            return ResponseEntity.ok(res);
+        }).orElse(ResponseEntity.notFound().build());
     }
 }
