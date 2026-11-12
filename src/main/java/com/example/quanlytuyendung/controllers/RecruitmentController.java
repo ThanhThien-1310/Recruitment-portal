@@ -1,5 +1,7 @@
 package com.example.quanlytuyendung.controllers;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import com.example.quanlytuyendung.entities.*;
 import com.example.quanlytuyendung.repositories.*;
 import com.example.quanlytuyendung.services.EmailNotificationService;
@@ -26,6 +28,7 @@ public class RecruitmentController {
     private final AuditLogRepository auditLogRepository;
     private final PdfOfferService pdfOfferService;
     private final EmailNotificationService emailNotificationService;
+    private final PasswordEncoder passwordEncoder;
 
     public RecruitmentController(JobPostingRepository jobPostingRepository,
                                  CandidateRepository candidateRepository,
@@ -35,7 +38,8 @@ public class RecruitmentController {
                                  UserRepository userRepository,
                                  AuditLogRepository auditLogRepository,
                                  PdfOfferService pdfOfferService,
-                                 EmailNotificationService emailNotificationService) {
+                                 EmailNotificationService emailNotificationService,
+                                 PasswordEncoder passwordEncoder) {
         this.jobPostingRepository = jobPostingRepository;
         this.candidateRepository = candidateRepository;
         this.interviewRepository = interviewRepository;
@@ -45,6 +49,7 @@ public class RecruitmentController {
         this.auditLogRepository = auditLogRepository;
         this.pdfOfferService = pdfOfferService;
         this.emailNotificationService = emailNotificationService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // Trang chủ quản trị ATS Portal
@@ -69,18 +74,30 @@ public class RecruitmentController {
         Map<String, Object> res = new HashMap<>();
         Optional<UserEntity> userOpt = userRepository.findByUsername(username);
 
-        if (userOpt.isPresent() && userOpt.get().getPassword().equals(password)) {
+        if (userOpt.isPresent()) {
             UserEntity user = userOpt.get();
-            res.put("status", "SUCCESS");
-            res.put("userId", user.getId());
-            res.put("username", user.getUsername());
-            res.put("fullName", user.getFullName());
-            res.put("role", user.getRole()); // HR_MANAGER, RECRUITER, INTERVIEWER
-            res.put("department", user.getDepartment());
-            res.put("email", user.getEmail());
+            boolean match = false;
 
-            auditLogRepository.save(new AuditLogEntity(user.getUsername(), user.getRole(), "USER_LOGIN", "Auth", "127.0.0.1", "Đăng nhập hệ thống thành công"));
-            return res;
+            if (user.getPassword() != null && (user.getPassword().startsWith("$2a$") || user.getPassword().startsWith("$2b$") || user.getPassword().startsWith("$2y$"))) {
+                match = passwordEncoder.matches(password, user.getPassword());
+            } else if (user.getPassword() != null && user.getPassword().equals(password)) {
+                match = true;
+                user.setPassword(passwordEncoder.encode(password));
+                userRepository.save(user);
+            }
+
+            if (match) {
+                res.put("status", "SUCCESS");
+                res.put("userId", user.getId());
+                res.put("username", user.getUsername());
+                res.put("fullName", user.getFullName());
+                res.put("role", user.getRole()); // HR_MANAGER, RECRUITER, INTERVIEWER
+                res.put("department", user.getDepartment());
+                res.put("email", user.getEmail());
+
+                auditLogRepository.save(new AuditLogEntity(user.getUsername(), user.getRole(), "USER_LOGIN", "Auth", "127.0.0.1", "Đăng nhập hệ thống thành công (Xác thực BCrypt)"));
+                return res;
+            }
         }
 
         res.put("status", "ERROR");

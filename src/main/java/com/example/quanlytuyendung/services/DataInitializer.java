@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 
@@ -21,6 +22,7 @@ public class DataInitializer implements CommandLineRunner {
     private final OfferRepository offerRepository;
     private final OnboardingRepository onboardingRepository;
     private final AuditLogRepository auditLogRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public DataInitializer(UserRepository userRepository,
                            JobPostingRepository jobPostingRepository,
@@ -28,7 +30,8 @@ public class DataInitializer implements CommandLineRunner {
                            InterviewRepository interviewRepository,
                            OfferRepository offerRepository,
                            OnboardingRepository onboardingRepository,
-                           AuditLogRepository auditLogRepository) {
+                           AuditLogRepository auditLogRepository,
+                           PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.jobPostingRepository = jobPostingRepository;
         this.candidateRepository = candidateRepository;
@@ -36,16 +39,27 @@ public class DataInitializer implements CommandLineRunner {
         this.offerRepository = offerRepository;
         this.onboardingRepository = onboardingRepository;
         this.auditLogRepository = auditLogRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        // 1. Seed Users (HR_MANAGER, RECRUITER, INTERVIEWER)
+        // 1. Seed Users & Tự động mã hóa mật khẩu bằng BCrypt
         if (userRepository.count() == 0) {
-            log.info("Khởi tạo tài khoản người dùng mặc định...");
-            userRepository.save(new UserEntity("admin", "admin123", "Nguyễn Văn Hùng (HR Lead)", "hung.hr@techcorp.vn", "Phòng Nhân sự", "HR_MANAGER"));
-            userRepository.save(new UserEntity("recruiter", "recruiter123", "Trần Thu Hà (Recruiter)", "ha.tran@techcorp.vn", "Phòng Tuyển dụng", "RECRUITER"));
-            userRepository.save(new UserEntity("interviewer", "interviewer123", "Lê Thanh Thiện (Tech Lead)", "thien.le@techcorp.vn", "Phòng Kỹ thuật & Công nghệ", "INTERVIEWER"));
+            log.info("Khởi tạo tài khoản người dùng mặc định (Mã hóa mật khẩu với BCrypt)...");
+            userRepository.save(new UserEntity("admin", passwordEncoder.encode("admin123"), "Nguyễn Văn Hùng (HR Lead)", "hung.hr@techcorp.vn", "Phòng Nhân sự", "HR_MANAGER"));
+            userRepository.save(new UserEntity("recruiter", passwordEncoder.encode("recruiter123"), "Trần Thu Hà (Recruiter)", "ha.tran@techcorp.vn", "Phòng Tuyển dụng", "RECRUITER"));
+            userRepository.save(new UserEntity("interviewer", passwordEncoder.encode("interviewer123"), "Lê Thanh Thiện (Tech Lead)", "thien.le@techcorp.vn", "Phòng Kỹ thuật & Công nghệ", "INTERVIEWER"));
+        } else {
+            // Nâng cấp toàn bộ mật khẩu dạng plain text cũ trong MySQL sang mã hóa BCrypt
+            for (UserEntity user : userRepository.findAll()) {
+                String pwd = user.getPassword();
+                if (pwd != null && !pwd.startsWith("$2a$") && !pwd.startsWith("$2b$") && !pwd.startsWith("$2y$")) {
+                    user.setPassword(passwordEncoder.encode(pwd));
+                    userRepository.save(user);
+                    log.info("Đã nâng cấp mật khẩu tài khoản '{}' sang mã hóa BCrypt an toàn.", user.getUsername());
+                }
+            }
         }
 
         // 2. Seed Job Postings
