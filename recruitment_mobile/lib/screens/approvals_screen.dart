@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 
 class ApprovalsScreen extends StatefulWidget {
@@ -164,18 +164,33 @@ class _ApprovalsScreenState extends State<ApprovalsScreen> {
                                 border: Border.all(color: Colors.grey.shade100),
                               ),
                               child: Column(
-                                children: (item['details'] as List<Map<String, String>>).map((d) {
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 2),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(d['label']!, style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
-                                        Text(d['value']!, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF1E293B))),
-                                      ],
-                                    ),
-                                  );
-                                }).toList(),
+                                children: (item['details'] is Map)
+                                    ? (item['details'] as Map).entries.map((entry) {
+                                        return Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 2),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(entry.key.toString(), style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
+                                              Text(entry.value.toString(), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF1E293B))),
+                                            ],
+                                          ),
+                                        );
+                                      }).toList()
+                                    : (item['details'] is List)
+                                        ? (item['details'] as List).map((d) {
+                                            return Padding(
+                                              padding: const EdgeInsets.symmetric(vertical: 2),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text((d['label'] ?? '').toString(), style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
+                                                  Text((d['value'] ?? '').toString(), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF1E293B))),
+                                                ],
+                                              ),
+                                            );
+                                          }).toList()
+                                        : [],
                               ),
                             ),
                             const SizedBox(height: 12),
