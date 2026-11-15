@@ -68,11 +68,11 @@ public class RecruitmentController {
     @ResponseBody
     @PostMapping("/api/auth/login")
     public Map<String, Object> login(@RequestBody Map<String, String> creds) {
-        String username = creds.get("username");
-        String password = creds.get("password");
+        String identifier = creds.get("username") != null ? creds.get("username").trim() : (creds.get("email") != null ? creds.get("email").trim() : "");
+        String password = creds.get("password") != null ? creds.get("password") : "";
 
         Map<String, Object> res = new HashMap<>();
-        Optional<UserEntity> userOpt = userRepository.findByUsername(username);
+        Optional<UserEntity> userOpt = userRepository.findByUsernameOrEmail(identifier, identifier);
 
         if (userOpt.isPresent()) {
             UserEntity user = userOpt.get();
@@ -91,7 +91,7 @@ public class RecruitmentController {
                 res.put("userId", user.getId());
                 res.put("username", user.getUsername());
                 res.put("fullName", user.getFullName());
-                res.put("role", user.getRole()); // HR_MANAGER, RECRUITER, INTERVIEWER
+                res.put("role", user.getRole()); // HR_MANAGER, RECRUITER, INTERVIEWER, CANDIDATE
                 res.put("department", user.getDepartment());
                 res.put("email", user.getEmail());
 
@@ -102,6 +102,59 @@ public class RecruitmentController {
 
         res.put("status", "ERROR");
         res.put("message", "Tên đăng nhập hoặc mật khẩu không chính xác!");
+        return res;
+    }
+
+    @ResponseBody
+    @PostMapping("/api/auth/register")
+    public Map<String, Object> register(@RequestBody Map<String, String> payload) {
+        Map<String, Object> res = new HashMap<>();
+        String email = payload.get("email") != null ? payload.get("email").trim() : "";
+        String password = payload.get("password") != null ? payload.get("password") : "";
+        String fullName = payload.get("fullName") != null ? payload.get("fullName").trim() : "";
+        String phone = payload.get("phone") != null ? payload.get("phone").trim() : "";
+        String username = payload.get("username") != null ? payload.get("username").trim() : "";
+
+        if (username.isEmpty()) {
+            username = email.contains("@") ? email.substring(0, email.indexOf("@")) : email;
+        }
+
+        if (email.isEmpty() || password.isEmpty()) {
+            res.put("status", "ERROR");
+            res.put("message", "Vui lòng nhập đầy đủ Email và Mật khẩu!");
+            return res;
+        }
+
+        if (userRepository.findByUsernameOrEmail(username, email).isPresent()) {
+            res.put("status", "ERROR");
+            res.put("message", "Tên đăng nhập hoặc Email này đã tồn tại trong hệ thống!");
+            return res;
+        }
+
+        UserEntity newUser = new UserEntity(
+            username,
+            passwordEncoder.encode(password),
+            !fullName.isEmpty() ? fullName : "Ứng viên mới",
+            email,
+            "Ứng viên",
+            "CANDIDATE"
+        );
+        userRepository.save(newUser);
+
+        auditLogRepository.save(new AuditLogEntity(
+            newUser.getUsername(), "CANDIDATE", "USER_REGISTER", "Auth", "127.0.0.1",
+            "Ứng viên đăng ký tài khoản mới: " + newUser.getFullName()
+        ));
+
+        res.put("status", "SUCCESS");
+        res.put("userId", newUser.getId());
+        res.put("username", newUser.getUsername());
+        res.put("fullName", newUser.getFullName());
+        res.put("role", newUser.getRole());
+        res.put("department", newUser.getDepartment());
+        res.put("email", newUser.getEmail());
+        res.put("phone", phone);
+        res.put("message", "Đăng ký tài khoản ứng viên thành công!");
         return res;
     }
 

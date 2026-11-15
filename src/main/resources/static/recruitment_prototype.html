@@ -103,11 +103,15 @@
                 <span class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white"></span>
             </button>
             <div class="flex items-center gap-2.5 pl-2 border-l border-slate-200 ml-1">
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="w-8 h-8 rounded-full border border-slate-200 object-cover" alt="Avatar">
+                <img id="atsUserAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="w-8 h-8 rounded-full border border-slate-200 object-cover" alt="Avatar">
                 <div class="hidden lg:block text-left">
-                    <div class="text-xs font-bold text-slate-800 leading-tight">Minh Hưng</div>
-                    <div class="text-[10px] text-slate-400 font-medium">HR Lead</div>
+                    <div id="atsUserName" class="text-xs font-bold text-slate-800 leading-tight">Nguyễn Văn Hùng</div>
+                    <div id="atsUserRole" class="text-[10px] text-blue-600 font-bold">HR Lead</div>
                 </div>
+                <button onclick="handleAtsLogout()" class="ml-2 px-2.5 py-1.5 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-2xs cursor-pointer border border-slate-200 hover:border-rose-200" title="Đăng xuất khỏi Cổng ATS">
+                    <i class="fas fa-right-from-bracket text-xs text-rose-500"></i>
+                    <span class="hidden sm:inline text-[11px]">Đăng xuất</span>
+                </button>
             </div>
         </div>
     </header>
@@ -1935,6 +1939,40 @@ public class ExamDocParserService {
             initKanbanWheel();
         }
     
+    
+        // ================= ATS SESSION & LOGOUT LOGIC =================
+        function initAtsAuthSession() {
+            const raw = localStorage.getItem('talentflow_candidate');
+            if (raw) {
+                try {
+                    const user = JSON.parse(raw);
+                    if (user && user.isLoggedIn) {
+                        const nameEl = document.getElementById('atsUserName');
+                        const roleEl = document.getElementById('atsUserRole');
+                        if (nameEl) nameEl.textContent = user.name || user.fullName || user.username;
+                        if (roleEl) {
+                            let roleDisplay = 'HR Lead';
+                            if (user.role === 'HR_MANAGER') roleDisplay = 'Super Admin / HR Lead';
+                            else if (user.role === 'RECRUITER') roleDisplay = 'HR Recruiter';
+                            else if (user.role === 'INTERVIEWER') roleDisplay = 'Tech Lead / Interviewer';
+                            else if (user.role === 'CANDIDATE') roleDisplay = 'Ứng viên';
+                            roleEl.textContent = roleDisplay;
+                        }
+                    }
+                } catch (e) {}
+            }
+        }
+
+        function handleAtsLogout() {
+            if (confirm('Bạn có muốn đăng xuất khỏi phiên làm việc hiện tại và quay về Cổng việc làm?')) {
+                localStorage.removeItem('talentflow_candidate');
+                sessionStorage.clear();
+                window.location.href = 'job_board.html';
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', initAtsAuthSession);
+
     </script>
 
     <!-- ============================================================ -->
