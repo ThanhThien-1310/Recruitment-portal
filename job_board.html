@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -617,11 +617,24 @@
                     </div>
                 </div>
 
-                <!-- Center: Color Theme Palette & Actions -->
-                <div class="flex items-center gap-4 flex-wrap">
+                <!-- Center: Layout Switcher, Color Theme Palette & Actions -->
+                <div class="flex items-center gap-3 flex-wrap">
+                    <!-- Dynamic Layout Switcher -->
+                    <div class="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200">
+                        <span class="text-[11px] text-slate-500 font-bold mr-1 flex items-center gap-1">
+                            <i class="fas fa-table-columns text-blue-600"></i> Bố cục:
+                        </span>
+                        <select id="builderLayoutSelect" onchange="changeCvLayout(this.value)" class="bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-700 px-2.5 py-1 focus:outline-none focus:border-blue-500 cursor-pointer shadow-2xs">
+                            <option value="sidebar-left">2 Cột Hiện Đại (TopCV Sidebar)</option>
+                            <option value="top-banner">Header Đậm Nét (Executive Banner)</option>
+                            <option value="minimalist-clean">Tối Giản Tinh Tế (Silicon Valley Clean)</option>
+                            <option value="creative-portfolio">Sáng Tạo Phá Cách (Canva Magazine)</option>
+                        </select>
+                    </div>
+
                     <!-- Color Swatches -->
                     <div class="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200">
-                        <span class="text-[11px] text-slate-500 font-bold mr-1">Màu chủ đạo:</span>
+                        <span class="text-[11px] text-slate-500 font-bold mr-1">Màu sắc:</span>
                         <button onclick="setThemeColor('#2563eb')" class="w-5 h-5 rounded-full bg-blue-600 hover:scale-110 transition shadow-xs border border-white" title="Xanh Hiện Đại"></button>
                         <button onclick="setThemeColor('#059669')" class="w-5 h-5 rounded-full bg-emerald-600 hover:scale-110 transition shadow-xs border border-white" title="Xanh Lá Tươi Sáng"></button>
                         <button onclick="setThemeColor('#4f46e5')" class="w-5 h-5 rounded-full bg-indigo-600 hover:scale-110 transition shadow-xs border border-white" title="Tím Indigo Công Nghệ"></button>
@@ -633,10 +646,10 @@
                     <!-- Auto Fill & Clear -->
                     <div class="flex items-center gap-2">
                         <button onclick="autoFillCurrentIndustry()" class="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-xl text-xs font-bold transition flex items-center gap-1.5" title="Tự động điền dữ liệu mẫu chuẩn ngành">
-                            <i class="fas fa-wand-magic-sparkles text-indigo-500"></i> Nạp dữ liệu mẫu
+                            <i class="fas fa-wand-magic-sparkles text-indigo-500"></i> Nạp mẫu
                         </button>
                         <button onclick="resetCvForm()" class="px-3 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-xl text-xs font-bold transition flex items-center gap-1" title="Xóa toàn bộ nội dung để viết từ đầu">
-                            <i class="fas fa-rotate-left text-xs"></i> Xóa trắng
+                            <i class="fas fa-rotate-left text-xs"></i> Xóa
                         </button>
                     </div>
                 </div>
@@ -804,7 +817,7 @@
                         
                         <!-- RENDERED CV HTML (Generated live by JS) -->
                         <div id="cv-rendered-content" class="h-full flex flex-col">
-                            <!-- Live DOM injected here -->
+                            <!-- Live DOM injected here based on selected layout -->
                         </div>
 
                     </div>
@@ -815,7 +828,6 @@
 
         </div>
     </div>
-
 
     <!-- ======================================================== -->
     <!-- VIEW: HỒ SƠ & ĐƠN NỘP CỦA TÔI (CANDIDATE DASHBOARD)      -->
@@ -1866,12 +1878,12 @@ public class ExamDocParserService {
         }
     
         // ========================================================
-        // CANDIDATE PORTAL & CV BUILDER LOGIC
+        // CANDIDATE PORTAL & CV BUILDER LOGIC (MULTI-LAYOUT ENGINE)
         // ========================================================
 
-        // 16 TopCV-Style Templates Catalog
+        // 16 TopCV-Style Templates with 4 DISTINCT ARCHITECTURAL LAYOUTS
         const TEMPLATES_CATALOG = [
-            // IT & Software (4 templates)
+            // IT & Software (4 distinct layouts)
             {
                 id: 'tpl-it-1',
                 name: 'Tech Stack Pro',
@@ -1879,10 +1891,10 @@ public class ExamDocParserService {
                 level: 'senior',
                 industryLabel: 'Công nghệ thông tin',
                 levelLabel: 'Senior / Trưởng nhóm',
-                badge: 'Phổ biến nhất',
+                badge: '2 Cột Sidebar TopCV',
                 themeColor: '#2563eb',
                 layout: 'sidebar-left',
-                description: 'Bố cục 2 cột tiêu chuẩn dành cho Kỹ sư phần mềm cao cấp, nổi bật kỹ năng Cloud, Microservices và dự án lớn.',
+                description: 'Bố cục 2 cột tiêu chuẩn TopCV với thanh bên thông tin, kỹ năng có thanh tiến độ và timeline kinh nghiệm.',
                 defaultRole: 'Kỹ sư Phần mềm Cao cấp (Senior Backend Engineer)',
                 skills: 'Java 21, Spring Boot 3, PostgreSQL, Docker, Kubernetes, Apache Kafka, Redis, Microservices, CI/CD, AWS'
             },
@@ -1893,43 +1905,43 @@ public class ExamDocParserService {
                 level: 'mid',
                 industryLabel: 'Công nghệ thông tin',
                 levelLabel: 'Junior / Mid-level',
-                badge: 'Tối giản',
+                badge: 'Tối Giản Silicon Valley',
                 themeColor: '#0f766e',
-                layout: 'top-banner',
-                description: 'Phong cách tối giản hiện đại, chú trọng trải nghiệm đọc của Tech Lead, phù hợp lập trình viên Frontend & Fullstack.',
+                layout: 'minimalist-clean',
+                description: 'Bố cục phong cách Notion & Stripe tinh tế, phông chữ thanh mảnh, phân cách line tinh gọn, chuẩn ATS toàn cầu.',
                 defaultRole: 'Lập trình viên Frontend (ReactJS / TypeScript)',
                 skills: 'ReactJS, TypeScript, Next.js, TailwindCSS, Redux Toolkit, RESTful API, Webpack, Jest, Git'
             },
             {
                 id: 'tpl-it-3',
-                name: 'Cloud & DevOps Architect',
+                name: 'Cloud DevOps Architect',
                 industry: 'it',
                 level: 'senior',
                 industryLabel: 'Công nghệ thông tin',
                 levelLabel: 'Senior / Quản lý',
-                badge: 'Chuyên sâu',
+                badge: 'Executive Top Banner',
                 themeColor: '#4338ca',
-                layout: 'sidebar-left',
-                description: 'Nhấn mạnh năng lực tự động hóa hạ tầng, bảo mật đám mây và tối ưu hóa chi phí vận hành hệ thống.',
+                layout: 'top-banner',
+                description: 'Bố cục Header khối màu sang trọng trải rộng 100%, 2 cột cân đối phân tách chuyên môn và hạ tầng đám mây.',
                 defaultRole: 'Kỹ sư DevOps & Điện toán Đám mây',
                 skills: 'AWS Solutions, Terraform, Docker, Kubernetes, CI/CD Pipeline, Ansible, Linux, Prometheus, Grafana'
             },
             {
                 id: 'tpl-it-4',
-                name: 'Mobile Crafter',
+                name: 'Mobile Crafter & UI',
                 industry: 'it',
                 level: 'fresher',
                 industryLabel: 'Công nghệ thông tin',
                 levelLabel: 'Thực tập / Fresher',
-                badge: 'Trẻ trung',
+                badge: 'Sáng Tạo Đột Phá',
                 themeColor: '#0284c7',
-                layout: 'sidebar-left',
-                description: 'Bố cục năng động, nêu bật sản phẩm di động thực tế đã xuất bản lên Google Play hoặc App Store.',
+                layout: 'creative-portfolio',
+                description: 'Bố cục dạng thẻ Magazine sáng tạo, góc bo hiện đại, nổi bật dự án App Mobile và case study thực tế.',
                 defaultRole: 'Lập trình viên Flutter & Mobile App',
                 skills: 'Flutter, Dart, Provider/Bloc, SQLite, Firebase, REST API, App Store Deployment, Clean Architecture'
             },
 
-            // Business & Marketing (4 templates)
+            // Business & Marketing (4 distinct layouts)
             {
                 id: 'tpl-mkt-1',
                 name: 'Growth Hacker Pro',
@@ -1937,10 +1949,10 @@ public class ExamDocParserService {
                 level: 'senior',
                 industryLabel: 'Kinh doanh & Marketing',
                 levelLabel: 'Senior / Trưởng nhóm',
-                badge: 'Tăng trưởng',
+                badge: '2 Cột Sidebar',
                 themeColor: '#ea580c',
                 layout: 'sidebar-left',
-                description: 'Bố cục chú trọng số liệu tăng trưởng (CAC, LTV, ROAS, MQL), phù hợp chuyên gia Marketing dữ liệu.',
+                description: 'Nhấn mạnh số liệu tăng trưởng (CAC, LTV, ROAS, MQL), thanh kỹ năng trực quan hóa năng lực chuyển đổi.',
                 defaultRole: 'Chuyên gia Tăng trưởng & Performance Marketing',
                 skills: 'Performance Ads, Google Ads, Meta Ads, SEO/SEM, Google Analytics 4, HubSpot, Looker Studio, Funnel Optimization'
             },
@@ -1951,10 +1963,10 @@ public class ExamDocParserService {
                 level: 'mid',
                 industryLabel: 'Kinh doanh & Marketing',
                 levelLabel: 'Junior / Mid-level',
-                badge: 'Thuyết phục',
+                badge: 'Executive Banner',
                 themeColor: '#15803d',
                 layout: 'top-banner',
-                description: 'Thanh lịch và tự tin, làm nổi bật doanh số thực đạt, kỹ năng đàm phán hợp đồng lớn và chăm sóc khách hàng VIP.',
+                description: 'Thanh lịch và tự tin, banner trên sang trọng, làm nổi bật doanh số thực đạt và mở rộng mạng lưới đối tác.',
                 defaultRole: 'Chuyên viên Phát triển Khách hàng Doanh nghiệp (B2B)',
                 skills: 'B2B Sales, CRM (Salesforce), Kỹ năng Đàm phán, Quản lý Khách hàng Doanh nghiệp, Cold Calling, Pipeline Tracking'
             },
@@ -1965,29 +1977,29 @@ public class ExamDocParserService {
                 level: 'mid',
                 industryLabel: 'Kinh doanh & Marketing',
                 levelLabel: 'Junior / Mid-level',
-                badge: 'Sáng tạo',
+                badge: 'Sáng Tạo Magazine',
                 themeColor: '#7c3aed',
-                layout: 'sidebar-left',
-                description: 'Nổi bật thông điệp truyền thông, quản lý nội dung đa nền tảng và nhận diện thương hiệu cảm xúc.',
+                layout: 'creative-portfolio',
+                description: 'Bố cục nghệ thuật, trích dẫn triết lý thương hiệu, định dạng thẻ bài viết và chiến dịch truyền thông đa kênh.',
                 defaultRole: 'Chuyên viên Quản trị Thương hiệu (Brand Specialist)',
                 skills: 'Brand Strategy, Content Creation, PR & Truyền thông, Copywriting, Tổ chức Sự kiện, Social Media Campaign'
             },
             {
                 id: 'tpl-mkt-4',
-                name: 'Omnichannel E-Commerce Master',
+                name: 'Omnichannel E-Commerce',
                 industry: 'mkt',
                 level: 'fresher',
                 industryLabel: 'Kinh doanh & Marketing',
                 levelLabel: 'Thực tập / Fresher',
-                badge: 'Thương mại số',
+                badge: 'Tối Giản Tinh Gọn',
                 themeColor: '#be185d',
-                layout: 'top-banner',
-                description: 'Tập trung vào kỹ năng vận hành sàn Shopee, TikTok Shop, quản trị gian hàng và tối ưu tỷ lệ chuyển đổi.',
+                layout: 'minimalist-clean',
+                description: 'Bố cục tối giản dòng thời gian, tập trung kỹ năng vận hành sàn Shopee, TikTok Shop và tối ưu tỷ lệ chuyển đổi.',
                 defaultRole: 'Chuyên viên Vận hành Sàn TMĐT & Livestream',
                 skills: 'Shopee Shop, TikTok Shop Ops, Livestream Ads, Tối ưu GMV, Chăm sóc Khách hàng, Excel / Data Report'
             },
 
-            // Design & UI/UX (4 templates)
+            // Design & UI/UX (4 distinct layouts)
             {
                 id: 'tpl-dsg-1',
                 name: 'Product Design Leader',
@@ -1995,10 +2007,10 @@ public class ExamDocParserService {
                 level: 'senior',
                 industryLabel: 'Thiết kế & UI/UX',
                 levelLabel: 'Senior / Trưởng nhóm',
-                badge: 'Sản phẩm cao cấp',
+                badge: 'Tối Giản Chuẩn UX',
                 themeColor: '#3b82f6',
-                layout: 'sidebar-left',
-                description: 'Tập trung vào Design System, tư duy lấy người dùng làm trung tâm, số liệu UX và Case Study trực quan.',
+                layout: 'minimalist-clean',
+                description: 'Tối giản theo triết lý Apple & Braun, nhường toàn bộ không gian cho tư duy sản phẩm, UX Metrics và hệ thống Design System.',
                 defaultRole: 'Senior Product Designer (UI/UX)',
                 skills: 'Figma, Design System, UX Research, Wireframing, Prototyping, Usability Testing, Micro-interactions, Mobile UI'
             },
@@ -2009,10 +2021,10 @@ public class ExamDocParserService {
                 level: 'mid',
                 industryLabel: 'Thiết kế & UI/UX',
                 levelLabel: 'Junior / Mid-level',
-                badge: 'Nghệ thuật',
+                badge: 'Sáng Tạo Phá Cách',
                 themeColor: '#9333ea',
-                layout: 'top-banner',
-                description: 'Bố cục mỹ thuật cao, phù hợp Graphic Designer, Illustrator, làm nổi bật phong cách thiết kế và gu màu.',
+                layout: 'creative-portfolio',
+                description: 'Bố cục mỹ thuật ấn tượng với dải màu gradient, thẻ case study nổi bật và ảnh đại diện cách điệu.',
                 defaultRole: 'Chuyên viên Thiết kế Đồ họa (Graphic Designer)',
                 skills: 'Adobe Photoshop, Illustrator, InDesign, Typography, Color Theory, Layout Grid, Key Visual, In ấn'
             },
@@ -2023,10 +2035,10 @@ public class ExamDocParserService {
                 level: 'fresher',
                 industryLabel: 'Thiết kế & UI/UX',
                 levelLabel: 'Thực tập / Fresher',
-                badge: 'Khoa học',
+                badge: '2 Cột Khoa Học',
                 themeColor: '#0d9488',
                 layout: 'sidebar-left',
-                description: 'Dành cho các bạn trẻ mới vào nghề UX, tập trung vào User Journey Map, Wireframe và Prototype kiểm thử.',
+                description: 'Bố cục 2 cột phân minh, cột trái kỹ năng công cụ (Figma, ProtoPie), cột phải trình bày quy trình nghiên cứu người dùng.',
                 defaultRole: 'Junior UI/UX Designer',
                 skills: 'Figma, Whimsical, User Flow, Wireframe, Responsive Layout, Heuristic Evaluation, Auto-layout'
             },
@@ -2037,15 +2049,15 @@ public class ExamDocParserService {
                 level: 'senior',
                 industryLabel: 'Thiết kế & UI/UX',
                 levelLabel: 'Senior / Quản lý',
-                badge: 'Chuẩn mực',
+                badge: 'Executive Banner',
                 themeColor: '#b45309',
-                layout: 'sidebar-left',
-                description: 'Thiết kế chuẩn mực dành cho chuyên gia thiết kế bộ nhận diện thương hiệu doanh nghiệp đa quốc gia.',
+                layout: 'top-banner',
+                description: 'Header hoàng gia sang trọng, dành cho Art Director thiết kế bộ nhận diện thương hiệu tập đoàn đa quốc gia.',
                 defaultRole: 'Brand Identity Art Director',
                 skills: 'Brand Identity System, Logo Design, Packaging, Guidelines Book, Motion Graphic, 3D Mockup'
             },
 
-            // HR & Administration (4 templates)
+            // HR & Administration (4 distinct layouts)
             {
                 id: 'tpl-hr-1',
                 name: 'People & Culture Generalist',
@@ -2053,10 +2065,10 @@ public class ExamDocParserService {
                 level: 'senior',
                 industryLabel: 'Nhân sự & Hành chính',
                 levelLabel: 'Senior / Quản lý',
-                badge: 'Toàn diện',
+                badge: '2 Cột Thân Thiện',
                 themeColor: '#059669',
                 layout: 'sidebar-left',
-                description: 'Cân bằng giữa tuyển dụng nhân tài, xây dựng văn hóa gắn kết và đào tạo phát triển nội bộ.',
+                description: 'Bố cục ấm áp, chuẩn mực doanh nghiệp, thanh bên liên hệ rõ ràng, cân đối giữa tuyển dụng và đào tạo.',
                 defaultRole: 'Trưởng phòng Nhân sự & Văn hóa Doanh nghiệp',
                 skills: 'Tuyển dụng, Đào tạo L&D, Văn hóa Doanh nghiệp, Luật Lao động, Employee Engagement, OKRs / KPIs'
             },
@@ -2067,10 +2079,10 @@ public class ExamDocParserService {
                 level: 'senior',
                 industryLabel: 'Nhân sự & Hành chính',
                 levelLabel: 'Senior / Trưởng nhóm',
-                badge: 'Săn nhân tài',
+                badge: 'Executive Banner',
                 themeColor: '#1d4ed8',
-                layout: 'sidebar-left',
-                description: 'Dành cho Chuyên gia tuyển dụng IT, Headhunter với mạng lưới quan hệ sâu rộng và kỹ năng phỏng vấn chuyên sâu.',
+                layout: 'top-banner',
+                description: 'Header khối màu uy tín, chuyên nghiệp cho Headhunter săn nhân tài cấp cao, nổi bật mạng lưới tuyển dụng.',
                 defaultRole: 'Trưởng nhóm Tuyển dụng IT (IT Talent Acquisition)',
                 skills: 'IT Sourcing, LinkedIn Recruiter, Phỏng vấn Hành vi STAR, Employer Branding, Offer Negotiation, ATS Management'
             },
@@ -2081,10 +2093,10 @@ public class ExamDocParserService {
                 level: 'mid',
                 industryLabel: 'Nhân sự & Hành chính',
                 levelLabel: 'Junior / Mid-level',
-                badge: 'Chính xác',
+                badge: 'Tối Giản Khoa Học',
                 themeColor: '#475569',
-                layout: 'top-banner',
-                description: 'Bố cục chi tiết, khoa học, thể hiện thế mạnh quản trị lương thưởng, bảo hiểm, thuế TNCN và ngân sách nhân sự.',
+                layout: 'minimalist-clean',
+                description: 'Bố cục tối giản dòng kẻ khoa học, làm nổi bật thế mạnh tính lương, bảo hiểm, chính sách phúc lợi và ngân sách.',
                 defaultRole: 'Chuyên viên Tiền lương & Phúc lợi (C&B Specialist)',
                 skills: 'Tính lương Payroll, BHXH & Thuế TNCN, Quản trị Ngân sách, Excel nâng cao, Phần mềm HRM, Xây dựng Thang bảng lương'
             },
@@ -2095,10 +2107,10 @@ public class ExamDocParserService {
                 level: 'fresher',
                 industryLabel: 'Nhân sự & Hành chính',
                 levelLabel: 'Thực tập / Fresher',
-                badge: 'Chu đáo',
+                badge: 'Sáng Tạo Thanh Lịch',
                 themeColor: '#047857',
-                layout: 'sidebar-left',
-                description: 'Thanh lịch, cẩn trọng, làm nổi bật kỹ năng điều phối lịch họp ban giám đốc, soạn thảo văn bản và lễ tân đối ngoại.',
+                layout: 'creative-portfolio',
+                description: 'Bố cục thẻ thanh lịch, chu đáo, làm nổi bật kỹ năng điều phối lịch trình, tổ chức sự kiện và ngoại giao.',
                 defaultRole: 'Trợ lý Giám đốc & Hành chính Văn phòng',
                 skills: 'Quản lý Lịch trình, Soạn thảo Công văn, Lễ tân & Đối ngoại, Tổ chức Hội thảo, Tiếng Anh Giao tiếp, MS Office'
             }
@@ -2108,6 +2120,7 @@ public class ExamDocParserService {
         let currentFilterIndustry = 'all';
         let activeTemplateId = 'tpl-it-1';
         let currentThemeColor = '#2563eb';
+        let currentLayout = 'sidebar-left'; // 'sidebar-left', 'top-banner', 'minimalist-clean', 'creative-portfolio'
 
         // Candidate Profile & CV State
         let currentCvData = {
@@ -2119,7 +2132,7 @@ public class ExamDocParserService {
             address: 'TP. Hồ Chí Minh',
             links: 'github.com/minhhung | linkedin.com/in/minhhung',
             avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80',
-            summary: 'Kỹ sư phần mềm với hơn 4 năm kinh nghiệm chuyên sâu về kiến trúc Microservices, Java 21, Spring Boot 3 và các hệ thống phân tán xử lý lưu lượng lớn. Đam mê tối ưu hóa hiệu năng, Clean Architecture và xây dựng giải pháp công nghệ đáng tin cậy.',
+            summary: 'Kỹ sư phần mềm với hơn 4 năm kinh nghiệm chuyên sâu về kiến trúc Microservices, Java 21, Spring Boot 3 và hệ thống phân tán chịu tải lớn. Đam mê tối ưu hóa hiệu năng, Clean Architecture và phát triển các giải pháp phần mềm ổn định, tin cậy.',
             skills: 'Java 21, Spring Boot 3, PostgreSQL, Docker, Kubernetes, Apache Kafka, Redis, Microservices, CI/CD, Flutter',
             certs: 'AWS Certified Solutions Architect - Associate (2024)\nOracle Certified Professional: Java SE 17 Developer\nIELTS 7.5 Academic (2023)',
             experiences: [
@@ -2127,13 +2140,13 @@ public class ExamDocParserService {
                     role: 'Senior Software Engineer',
                     company: 'TechCorp High-Tech Enterprise',
                     period: '03/2023 - Hiện tại',
-                    desc: '• Thiết kế và vận hành cụm microservices phân tán phục vụ hơn 500,000 người dùng hàng ngày với SLA 99.98%.\n• Tối ưu hóa câu truy vấn cơ sở dữ liệu PostgreSQL và tích hợp đa tầng cache Redis, giảm 45% thời gian phản hồi API (Latency).\n• Thiết lập pipeline CI/CD tự động kiểm thử và triển khai ứng dụng lên Kubernetes (EKS).'
+                    desc: '• Thiết kế và vận hành cụm microservices phân tán phục vụ hơn 500,000 người dùng hàng ngày với SLA 99.98%.\n• Tối ưu hóa truy vấn cơ sở dữ liệu PostgreSQL và tích hợp đa tầng cache Redis, giảm 45% độ trễ API.\n• Thiết lập pipeline CI/CD tự động kiểm thử và triển khai ứng dụng lên Kubernetes (EKS).'
                 },
                 {
                     role: 'Fullstack Software Engineer',
                     company: 'NextGen Solutions Lab',
                     period: '06/2021 - 02/2023',
-                    desc: '• Phát triển cổng thanh toán tích hợp ngân hàng và các ví điện tử, xử lý bảo mật giao dịch theo chuẩn PCI-DSS.\n• Xây dựng giao diện ứng dụng quản trị bằng ReactJS và ứng dụng di động Flutter dành cho người dùng cuối.'
+                    desc: '• Phát triển cổng thanh toán tích hợp ngân hàng và ví điện tử, tuân thủ chuẩn bảo mật PCI-DSS.\n• Xây dựng giao diện web ReactJS hiệu năng cao và ứng dụng di động Flutter dành cho người dùng cuối.'
                 }
             ],
             educations: [
@@ -2147,12 +2160,127 @@ public class ExamDocParserService {
             projects: [
                 {
                     name: 'TalentFlow ATS & Cổng Tuyển Dụng Thông Minh',
-                    role: 'Tech Lead / Lead Backend',
+                    role: 'Lead Backend Developer',
                     tech: 'Java 21, Spring Boot 3, MySQL JPA, TailwindCSS, Flutter',
-                    desc: 'Hệ thống quản lý tuyển dụng toàn diện tích hợp kiểm tra sàng lọc Knock-out, tự động xuất thư mời nhận việc PDF và đồng bộ lịch phỏng vấn.'
+                    desc: 'Giải pháp tuyển dụng kết nối trực tiếp với ứng dụng mobile, hỗ trợ sàng lọc Knock-out và tự động xuất thư mời nhận việc chuẩn PDF.'
                 }
             ]
         };
+
+        // Render Distinct Miniature Preview according to Layout Type
+        function getMiniatureLayoutPreview(tpl) {
+            const color = tpl.themeColor;
+            if (tpl.layout === 'sidebar-left') {
+                return `
+                    <div class="w-full max-w-[200px] h-[250px] bg-white rounded-lg shadow-md border border-slate-200 overflow-hidden flex text-[6px] select-none pointer-events-none transform group-hover:scale-105 transition-transform duration-300">
+                        <div class="w-[35%] bg-slate-100 p-2 border-r border-slate-200/80 flex flex-col justify-between">
+                            <div>
+                                <div class="w-7 h-7 rounded-full mx-auto mb-2 border-2" style="border-color: ${color}; background-color: #cbd5e1;"></div>
+                                <div class="h-1 bg-slate-300 rounded mb-1"></div>
+                                <div class="h-1 bg-slate-200 rounded w-4/5 mb-2"></div>
+                                <div class="h-1 rounded w-full mb-1" style="background-color: ${color}"></div>
+                                <div class="h-1 bg-slate-200 rounded w-full mb-0.5"></div>
+                                <div class="h-1 bg-slate-200 rounded w-2/3"></div>
+                            </div>
+                            <div class="text-[5px] text-slate-400 font-bold uppercase">2 Cột Sidebar</div>
+                        </div>
+                        <div class="w-[65%] p-2.5 space-y-2">
+                            <div class="border-b pb-1" style="border-color: ${color}">
+                                <div class="h-1.5 rounded w-3/4 mb-0.5 font-bold" style="background-color: ${color}"></div>
+                                <div class="h-1 bg-slate-300 rounded w-1/2"></div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="h-1 bg-slate-200 rounded w-full"></div>
+                                <div class="h-1 bg-slate-200 rounded w-5/6"></div>
+                            </div>
+                            <div class="border-l pl-1 space-y-1" style="border-color: ${color}">
+                                <div class="h-1 bg-slate-300 rounded w-2/3"></div>
+                                <div class="h-1 bg-slate-200 rounded w-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (tpl.layout === 'top-banner') {
+                return `
+                    <div class="w-full max-w-[200px] h-[250px] bg-white rounded-lg shadow-md border border-slate-200 overflow-hidden flex flex-col text-[6px] select-none pointer-events-none transform group-hover:scale-105 transition-transform duration-300">
+                        <div class="p-2.5 text-white flex items-center gap-2" style="background: linear-gradient(135deg, ${color}, #0f172a);">
+                            <div class="w-6 h-6 rounded-md bg-white/30 shrink-0 border border-white/50"></div>
+                            <div class="flex-1">
+                                <div class="h-1.5 bg-white rounded w-3/4 mb-1"></div>
+                                <div class="h-1 bg-white/60 rounded w-1/2"></div>
+                            </div>
+                        </div>
+                        <div class="p-2.5 flex-1 grid grid-cols-5 gap-1.5">
+                            <div class="col-span-3 space-y-1.5">
+                                <div class="h-1 rounded w-2/3 mb-1" style="background-color: ${color}"></div>
+                                <div class="h-1 bg-slate-200 rounded w-full"></div>
+                                <div class="h-1 bg-slate-200 rounded w-4/5"></div>
+                                <div class="h-1 bg-slate-200 rounded w-full"></div>
+                            </div>
+                            <div class="col-span-2 space-y-1.5 border-l pl-1 border-slate-100">
+                                <div class="h-1 rounded w-full mb-1" style="background-color: ${color}"></div>
+                                <div class="h-1 bg-slate-200 rounded w-full"></div>
+                                <div class="h-1 bg-slate-200 rounded w-3/4"></div>
+                            </div>
+                        </div>
+                        <div class="px-2 py-0.5 bg-slate-50 border-t text-[5px] text-slate-400 font-bold uppercase text-center">Executive Banner</div>
+                    </div>
+                `;
+            } else if (tpl.layout === 'minimalist-clean') {
+                return `
+                    <div class="w-full max-w-[200px] h-[250px] bg-white rounded-lg shadow-md border border-slate-200 p-3 flex flex-col justify-between text-[6px] select-none pointer-events-none transform group-hover:scale-105 transition-transform duration-300">
+                        <div>
+                            <div class="flex justify-between items-start pb-2 border-b border-slate-300 mb-2">
+                                <div>
+                                    <div class="h-2 bg-slate-800 rounded w-20 mb-1"></div>
+                                    <div class="h-1 rounded w-12" style="background-color: ${color}"></div>
+                                </div>
+                                <div class="w-6 h-6 rounded bg-slate-200 border border-slate-300"></div>
+                            </div>
+                            <div class="space-y-2">
+                                <div>
+                                    <div class="h-1 bg-slate-400 rounded w-16 mb-1"></div>
+                                    <div class="h-1 bg-slate-200 rounded w-full mb-0.5"></div>
+                                    <div class="h-1 bg-slate-200 rounded w-5/6"></div>
+                                </div>
+                                <div>
+                                    <div class="h-1 bg-slate-400 rounded w-20 mb-1"></div>
+                                    <div class="h-1 bg-slate-200 rounded w-full mb-0.5"></div>
+                                    <div class="h-1 bg-slate-200 rounded w-4/5"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-[5px] font-mono text-slate-400 uppercase text-center border-t pt-1">// Minimalist Clean</div>
+                    </div>
+                `;
+            } else {
+                // creative-portfolio
+                return `
+                    <div class="w-full max-w-[200px] h-[250px] bg-white rounded-lg shadow-md border border-slate-200 overflow-hidden flex flex-col text-[6px] select-none pointer-events-none transform group-hover:scale-105 transition-transform duration-300">
+                        <div class="h-2 w-full" style="background: linear-gradient(90deg, ${color}, #f59e0b, #ec4899);"></div>
+                        <div class="p-2 bg-slate-50 border-b border-slate-100 flex items-center gap-1.5">
+                            <div class="w-6 h-6 rounded-lg rotate-3 shadow-xs shrink-0" style="background-color: ${color};"></div>
+                            <div class="flex-1">
+                                <div class="h-1.5 bg-slate-900 rounded w-3/4 mb-0.5"></div>
+                                <div class="h-1 rounded w-1/2" style="background-color: ${color}"></div>
+                            </div>
+                        </div>
+                        <div class="p-2 flex-1 grid grid-cols-2 gap-1.5">
+                            <div class="space-y-1">
+                                <div class="p-1 rounded bg-purple-50 border border-purple-100 h-8"></div>
+                                <div class="h-1 bg-slate-200 rounded w-full"></div>
+                                <div class="h-1 bg-slate-200 rounded w-2/3"></div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="p-1 rounded bg-slate-50 border border-slate-100 h-10"></div>
+                                <div class="h-1 bg-slate-200 rounded w-full"></div>
+                            </div>
+                        </div>
+                        <div class="px-2 py-0.5 bg-slate-50 border-t text-[5px] text-purple-700 font-extrabold uppercase text-center">Creative Magazine</div>
+                    </div>
+                `;
+            }
+        }
 
         // Render Templates Grid
         function renderTemplatesGrid() {
@@ -2186,47 +2314,13 @@ public class ExamDocParserService {
 
             container.innerHTML = filtered.map(tpl => `
                 <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col group border-hover">
-                    <!-- Miniature Preview Layout Card -->
+                    <!-- Miniature Preview Layout Card with Distinct Architectural Mock -->
                     <div class="relative bg-slate-100 p-4 pt-5 pb-3 border-b border-slate-100 flex items-center justify-center overflow-hidden cursor-pointer" onclick="selectTemplate('${tpl.id}')">
-                        <div class="w-full max-w-[210px] h-[260px] bg-white rounded-lg shadow-md border border-slate-200/80 p-3 flex flex-col text-[7px] leading-tight select-none pointer-events-none transform group-hover:scale-105 transition-transform duration-300">
-                            <!-- Mock mini CV header -->
-                            <div class="flex items-center gap-2 pb-2 border-b border-slate-100" style="border-top: 3px solid ${tpl.themeColor}">
-                                <div class="w-6 h-6 rounded-full bg-slate-200 shrink-0"></div>
-                                <div class="flex-1">
-                                    <div class="font-bold text-slate-800 text-[8px] truncate">Họ và Tên Ứng Viên</div>
-                                    <div class="text-[6.5px] truncate font-medium" style="color: ${tpl.themeColor}">${tpl.defaultRole}</div>
-                                </div>
-                            </div>
-                            <!-- Mock 2-col body -->
-                            <div class="flex-1 grid grid-cols-3 gap-1.5 pt-2">
-                                <div class="col-span-1 space-y-1.5 bg-slate-50 p-1 rounded">
-                                    <div class="h-1.5 bg-slate-200 rounded w-full"></div>
-                                    <div class="h-1 bg-slate-200 rounded w-4/5"></div>
-                                    <div class="h-1 bg-slate-200 rounded w-2/3"></div>
-                                    <div class="pt-1">
-                                        <div class="h-1 rounded w-3/4 mb-1" style="background-color: ${tpl.themeColor}"></div>
-                                        <div class="h-1 bg-slate-200 rounded w-full mb-0.5"></div>
-                                        <div class="h-1 bg-slate-200 rounded w-5/6"></div>
-                                    </div>
-                                </div>
-                                <div class="col-span-2 space-y-2 p-1">
-                                    <div>
-                                        <div class="h-1.5 rounded w-1/2 mb-1" style="background-color: ${tpl.themeColor}"></div>
-                                        <div class="h-1 bg-slate-200 rounded w-full mb-0.5"></div>
-                                        <div class="h-1 bg-slate-200 rounded w-5/6"></div>
-                                    </div>
-                                    <div>
-                                        <div class="h-1.5 rounded w-2/3 mb-1" style="background-color: ${tpl.themeColor}"></div>
-                                        <div class="h-1 bg-slate-200 rounded w-full mb-0.5"></div>
-                                        <div class="h-1 bg-slate-200 rounded w-4/5"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        ${getMiniatureLayoutPreview(tpl)}
 
                         <!-- Top badge -->
-                        <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[10px] font-bold text-white shadow-xs" style="background-color: ${tpl.themeColor}">
-                            ${tpl.badge}
+                        <span class="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold text-white shadow-sm flex items-center gap-1" style="background-color: ${tpl.themeColor}">
+                            <i class="fas fa-layer-group text-[9px]"></i> ${tpl.badge}
                         </span>
                     </div>
 
@@ -2237,7 +2331,9 @@ public class ExamDocParserService {
                                 <span class="px-2 py-0.5 bg-slate-100 text-slate-700 text-[10px] font-bold rounded-md">${tpl.industryLabel}</span>
                                 <span class="px-2 py-0.5 bg-blue-50 text-blue-700 text-[10px] font-semibold rounded-md">${tpl.levelLabel}</span>
                             </div>
-                            <h4 class="font-extrabold text-slate-900 text-sm group-hover:text-blue-600 transition">${tpl.name}</h4>
+                            <h4 class="font-extrabold text-slate-900 text-sm group-hover:text-blue-600 transition flex items-center justify-between">
+                                <span>${tpl.name}</span>
+                            </h4>
                             <p class="text-xs text-slate-500 line-clamp-2 mt-1 leading-relaxed">${tpl.description}</p>
                         </div>
 
@@ -2278,17 +2374,29 @@ public class ExamDocParserService {
             setIndustryFilter('all');
         }
 
-        // Template Selection -> Switch to Builder
+        // Layout Switcher in Builder
+        function changeCvLayout(newLayout) {
+            currentLayout = newLayout;
+            const selectEl = document.getElementById('builderLayoutSelect');
+            if (selectEl) selectEl.value = newLayout;
+            renderCvPreview();
+        }
+
+        // Template Selection -> Switch to Builder & apply Layout
         function selectTemplate(tplId) {
             const tpl = TEMPLATES_CATALOG.find(t => t.id === tplId);
             if (!tpl) return;
 
             activeTemplateId = tpl.id;
             currentThemeColor = tpl.themeColor;
+            currentLayout = tpl.layout || 'sidebar-left';
 
-            // Update title
+            // Update title & layout select
             const activeTitleEl = document.getElementById('active-template-title');
             if (activeTitleEl) activeTitleEl.innerText = `${tpl.name} (${tpl.industryLabel})`;
+
+            const selectEl = document.getElementById('builderLayoutSelect');
+            if (selectEl) selectEl.value = currentLayout;
 
             // Load Industry sample data into CV if title or industry changed
             loadIndustrySampleContent(tpl.industry, tpl.defaultRole, tpl.skills);
@@ -2296,7 +2404,7 @@ public class ExamDocParserService {
             // Populate form inputs
             syncStateToForm();
 
-            // Render Preview
+            // Render Preview with new layout
             renderCvPreview();
 
             // Switch to builder view
@@ -2659,134 +2767,159 @@ public class ExamDocParserService {
             }
         }
 
-        // Render Live A4 Preview
-        function renderCvPreview() {
-            const previewContainer = document.getElementById('cv-rendered-content');
-            if (!previewContainer) return;
+        // ========================================================
+        // 4 DISTINCT ARCHITECTURAL LAYOUT RENDERERS
+        // ========================================================
 
-            const skillsArray = currentCvData.skills ? currentCvData.skills.split(',').map(s => s.trim()).filter(Boolean) : [];
-            const certsArray = currentCvData.certs ? currentCvData.certs.split('\n').map(c => c.trim()).filter(Boolean) : [];
+        // LAYOUT 1: SIDEBAR LEFT (TopCV Classic 2-Column with Progress Bars)
+        function renderSidebarLeftLayout(data, color) {
+            const skillsArray = data.skills ? data.skills.split(',').map(s => s.trim()).filter(Boolean) : [];
+            const certsArray = data.certs ? data.certs.split('\n').map(c => c.trim()).filter(Boolean) : [];
 
-            // A4 Layout Style: 2-column sidebar layout
-            previewContainer.innerHTML = `
-                <div class="flex flex-row h-full min-h-[297mm] text-slate-800 bg-white">
-                    
-                    <!-- Left Sidebar (35% width) -->
-                    <div class="w-[35%] bg-slate-50 p-6 flex flex-col justify-between border-r border-slate-200/80">
+            return `
+                <div class="flex flex-row h-full min-h-[297mm] text-slate-800 bg-white font-sans">
+                    <!-- Left Sidebar (34% width) -->
+                    <div class="w-[34%] bg-slate-50 p-6 flex flex-col justify-between border-r border-slate-200/80">
                         <div>
-                            <!-- Avatar -->
+                            <!-- Avatar with status badge -->
                             <div class="text-center mb-6">
-                                <img src="${currentCvData.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80'}" alt="Avatar" class="w-28 h-28 rounded-full object-cover mx-auto shadow-md border-4" style="border-color: ${currentThemeColor}">
+                                <div class="w-28 h-28 rounded-full mx-auto p-1 border-2 shadow-md relative" style="border-color: ${color}">
+                                    <img src="${data.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80'}" class="w-full h-full rounded-full object-cover">
+                                    <span class="absolute bottom-1 right-2 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full" title="Sẵn sàng nhận việc"></span>
+                                </div>
                             </div>
 
                             <!-- Contact Info Section -->
                             <div class="mb-6">
-                                <h4 class="font-extrabold uppercase text-[11px] tracking-wider mb-3 pb-1 border-b" style="border-color: ${currentThemeColor}; color: ${currentThemeColor}">
-                                    <i class="fas fa-address-book mr-1.5"></i> Thông Tin Liên Hệ
+                                <h4 class="font-extrabold uppercase text-[11px] tracking-wider mb-3 pb-1 border-b flex items-center gap-1.5" style="border-color: ${color}; color: ${color}">
+                                    <i class="fas fa-address-book"></i> Thông Tin Liên Hệ
                                 </h4>
                                 <ul class="space-y-2 text-[11px] text-slate-600">
                                     <li class="flex items-start gap-2 break-all">
-                                        <i class="fas fa-envelope text-[10px] mt-1 shrink-0" style="color: ${currentThemeColor}"></i>
-                                        <span>${currentCvData.email || 'email@example.com'}</span>
+                                        <i class="fas fa-envelope text-[10px] mt-1 shrink-0" style="color: ${color}"></i>
+                                        <span>${data.email || 'email@example.com'}</span>
                                     </li>
                                     <li class="flex items-center gap-2">
-                                        <i class="fas fa-phone text-[10px] shrink-0" style="color: ${currentThemeColor}"></i>
-                                        <span>${currentCvData.phone || '0901 234 567'}</span>
+                                        <i class="fas fa-phone text-[10px] shrink-0" style="color: ${color}"></i>
+                                        <span>${data.phone || '0901 234 567'}</span>
                                     </li>
-                                    ${currentCvData.dob ? `
+                                    ${data.dob ? `
                                     <li class="flex items-center gap-2">
-                                        <i class="fas fa-calendar-days text-[10px] shrink-0" style="color: ${currentThemeColor}"></i>
-                                        <span>${currentCvData.dob}</span>
+                                        <i class="fas fa-calendar-days text-[10px] shrink-0" style="color: ${color}"></i>
+                                        <span>${data.dob}</span>
                                     </li>` : ''}
-                                    ${currentCvData.address ? `
+                                    ${data.address ? `
                                     <li class="flex items-start gap-2">
-                                        <i class="fas fa-location-dot text-[10px] mt-1 shrink-0" style="color: ${currentThemeColor}"></i>
-                                        <span>${currentCvData.address}</span>
+                                        <i class="fas fa-location-dot text-[10px] mt-1 shrink-0" style="color: ${color}"></i>
+                                        <span>${data.address}</span>
                                     </li>` : ''}
-                                    ${currentCvData.links ? `
+                                    ${data.links ? `
                                     <li class="flex items-start gap-2 break-all">
-                                        <i class="fas fa-globe text-[10px] mt-1 shrink-0" style="color: ${currentThemeColor}"></i>
-                                        <span>${currentCvData.links}</span>
+                                        <i class="fas fa-globe text-[10px] mt-1 shrink-0" style="color: ${color}"></i>
+                                        <span>${data.links}</span>
                                     </li>` : ''}
                                 </ul>
                             </div>
 
-                            <!-- Core Skills Section -->
+                            <!-- Core Skills with Visual Progress Bars -->
                             <div class="mb-6">
-                                <h4 class="font-extrabold uppercase text-[11px] tracking-wider mb-3 pb-1 border-b" style="border-color: ${currentThemeColor}; color: ${currentThemeColor}">
-                                    <i class="fas fa-screwdriver-wrench mr-1.5"></i> Kỹ Năng Chuyên Môn
+                                <h4 class="font-extrabold uppercase text-[11px] tracking-wider mb-3 pb-1 border-b flex items-center gap-1.5" style="border-color: ${color}; color: ${color}">
+                                    <i class="fas fa-chart-simple"></i> Kỹ Năng Chuyên Môn
                                 </h4>
-                                <div class="flex flex-wrap gap-1.5">
-                                    ${skillsArray.length > 0 ? skillsArray.map(s => `
-                                        <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-white border border-slate-200 shadow-2xs text-slate-700">
-                                            ${s}
-                                        </span>
-                                    `).join('') : '<span class="text-slate-400 italic text-[11px]">Chưa nhập kỹ năng</span>'}
+                                <div class="space-y-2.5">
+                                    ${skillsArray.length > 0 ? skillsArray.map((s, idx) => {
+                                        const pct = Math.max(75, 96 - (idx * 5));
+                                        return `
+                                            <div>
+                                                <div class="flex justify-between items-center text-[10px] font-bold text-slate-700 mb-0.5">
+                                                    <span>${s}</span>
+                                                    <span style="color: ${color}">${pct}%</span>
+                                                </div>
+                                                <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                                                    <div class="h-full rounded-full transition-all" style="width: ${pct}%; background-color: ${color}"></div>
+                                                </div>
+                                            </div>
+                                        `;
+                                    }).join('') : '<span class="text-slate-400 italic text-[11px]">Chưa nhập kỹ năng</span>'}
                                 </div>
                             </div>
 
                             <!-- Certifications Section -->
                             ${certsArray.length > 0 ? `
                             <div class="mb-6">
-                                <h4 class="font-extrabold uppercase text-[11px] tracking-wider mb-3 pb-1 border-b" style="border-color: ${currentThemeColor}; color: ${currentThemeColor}">
-                                    <i class="fas fa-award mr-1.5"></i> Chứng Chỉ & Ngoại Ngữ
+                                <h4 class="font-extrabold uppercase text-[11px] tracking-wider mb-3 pb-1 border-b flex items-center gap-1.5" style="border-color: ${color}; color: ${color}">
+                                    <i class="fas fa-award"></i> Chứng Chỉ & Ngoại Ngữ
                                 </h4>
                                 <ul class="space-y-1.5 text-[11px] text-slate-600">
                                     ${certsArray.map(c => `
                                         <li class="flex items-start gap-1.5">
-                                            <i class="fas fa-circle-check text-[10px] mt-0.5 shrink-0" style="color: ${currentThemeColor}"></i>
+                                            <i class="fas fa-circle-check text-[10px] mt-0.5 shrink-0" style="color: ${color}"></i>
                                             <span>${c}</span>
                                         </li>
                                     `).join('')}
                                 </ul>
                             </div>` : ''}
+
+                            <!-- Languages -->
+                            <div class="mb-4">
+                                <h4 class="font-extrabold uppercase text-[11px] tracking-wider mb-2 pb-1 border-b flex items-center gap-1.5" style="border-color: ${color}; color: ${color}">
+                                    <i class="fas fa-language"></i> Trình Độ Ngoại Ngữ
+                                </h4>
+                                <div class="space-y-1.5 text-[11px]">
+                                    <div class="flex justify-between items-center"><span class="font-semibold text-slate-700">Tiếng Anh (Giao tiếp & Docs)</span><span class="text-amber-500 font-bold">★★★★☆</span></div>
+                                    <div class="flex justify-between items-center"><span class="font-semibold text-slate-700">Tiếng Việt (Bản ngữ)</span><span class="text-amber-500 font-bold">★★★★★</span></div>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Brand signature badge in footer of CV -->
-                        <div class="pt-4 border-t border-slate-200 text-center text-[9px] text-slate-400 font-medium">
-                            Tạo bởi TalentFlow CV Builder • Chuẩn ATS
+                        <div class="pt-3 border-t border-slate-200 text-center text-[9px] text-slate-400 font-medium">
+                            TalentFlow ATS • Bố Cục 2 Cột Sidebar
                         </div>
                     </div>
 
-                    <!-- Right Main Content (65% width) -->
-                    <div class="w-[65%] p-7 flex flex-col justify-between">
+                    <!-- Right Main Content (66% width) -->
+                    <div class="w-[66%] p-7 flex flex-col justify-between">
                         <div>
                             <!-- Header: Name & Title -->
-                            <div class="pb-4 mb-5 border-b-2" style="border-color: ${currentThemeColor}">
+                            <div class="pb-4 mb-5 border-b-2" style="border-color: ${color}">
                                 <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight leading-none uppercase">
-                                    ${currentCvData.fullName || 'Họ Và Tên Ứng Viên'}
+                                    ${data.fullName || 'Họ Và Tên Ứng Viên'}
                                 </h1>
-                                <div class="text-xs font-bold uppercase tracking-wider mt-1.5" style="color: ${currentThemeColor}">
-                                    ${currentCvData.title || 'Vị Trí Ứng Tuyển'}
+                                <div class="text-xs font-bold uppercase tracking-wider mt-1.5 flex items-center gap-2" style="color: ${color}">
+                                    <span>${data.title || 'Vị Trí Ứng Tuyển'}</span>
+                                    <span class="text-slate-300">•</span>
+                                    <span class="text-slate-500 font-semibold text-[11px]">Hồ sơ chuyên nghiệp</span>
                                 </div>
                             </div>
 
                             <!-- Summary / Objective -->
-                            ${currentCvData.summary ? `
+                            ${data.summary ? `
                             <div class="mb-5">
                                 <h3 class="font-extrabold text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5 text-slate-900">
-                                    <span class="w-2 h-2 rounded-full" style="background-color: ${currentThemeColor}"></span>
-                                    Mục Tiêu Nghề Nghiệp & Tóm Tắt
+                                    <span class="w-2 h-2 rounded-full" style="background-color: ${color}"></span>
+                                    Mục Tiêu Nghề Nghiệp & Giới Thiệu
                                 </h3>
                                 <p class="text-xs text-slate-600 leading-relaxed text-justify">
-                                    ${currentCvData.summary}
+                                    ${data.summary}
                                 </p>
                             </div>` : ''}
 
                             <!-- Work Experience Timeline -->
                             <div class="mb-5">
                                 <h3 class="font-extrabold text-xs uppercase tracking-wider mb-3 flex items-center gap-1.5 text-slate-900">
-                                    <span class="w-2 h-2 rounded-full" style="background-color: ${currentThemeColor}"></span>
+                                    <span class="w-2 h-2 rounded-full" style="background-color: ${color}"></span>
                                     Kinh Nghiệm Làm Việc
                                 </h3>
                                 <div class="space-y-4">
-                                    ${currentCvData.experiences.length > 0 ? currentCvData.experiences.map(exp => `
-                                        <div class="relative pl-3 border-l-2" style="border-color: ${currentThemeColor}">
+                                    ${data.experiences.length > 0 ? data.experiences.map(exp => `
+                                        <div class="relative pl-3.5 border-l-2" style="border-color: ${color}">
+                                            <div class="absolute -left-[5px] top-0.5 w-2 h-2 rounded-full border-2 border-white" style="background-color: ${color}"></div>
                                             <div class="flex justify-between items-start text-xs mb-0.5">
                                                 <strong class="text-slate-900 font-extrabold">${exp.role}</strong>
-                                                <span class="text-[10px] font-bold text-slate-400">${exp.period}</span>
+                                                <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded">${exp.period}</span>
                                             </div>
-                                            <div class="text-[11px] font-bold mb-1" style="color: ${currentThemeColor}">${exp.company}</div>
+                                            <div class="text-[11px] font-bold mb-1" style="color: ${color}">${exp.company}</div>
                                             <div class="text-[11px] text-slate-600 whitespace-pre-line leading-relaxed">
                                                 ${exp.desc}
                                             </div>
@@ -2796,20 +2929,20 @@ public class ExamDocParserService {
                             </div>
 
                             <!-- Featured Projects -->
-                            ${currentCvData.projects.length > 0 ? `
+                            ${data.projects.length > 0 ? `
                             <div class="mb-5">
                                 <h3 class="font-extrabold text-xs uppercase tracking-wider mb-3 flex items-center gap-1.5 text-slate-900">
-                                    <span class="w-2 h-2 rounded-full" style="background-color: ${currentThemeColor}"></span>
+                                    <span class="w-2 h-2 rounded-full" style="background-color: ${color}"></span>
                                     Dự Án Tiêu Biểu
                                 </h3>
                                 <div class="space-y-3">
-                                    ${currentCvData.projects.map(proj => `
-                                        <div class="bg-slate-50/60 p-2.5 rounded-lg border border-slate-100 text-xs">
+                                    ${data.projects.map(proj => `
+                                        <div class="bg-slate-50/70 p-3 rounded-xl border border-slate-200/80 text-xs">
                                             <div class="flex justify-between items-center mb-0.5">
                                                 <strong class="text-slate-900 font-bold">${proj.name}</strong>
                                                 <span class="text-[10px] font-semibold text-slate-500">${proj.role}</span>
                                             </div>
-                                            ${proj.tech ? `<div class="text-[10px] font-semibold mb-1" style="color: ${currentThemeColor}">Công nghệ: ${proj.tech}</div>` : ''}
+                                            ${proj.tech ? `<div class="text-[10px] font-semibold mb-1" style="color: ${color}">Công nghệ: ${proj.tech}</div>` : ''}
                                             <div class="text-[11px] text-slate-600 leading-relaxed">${proj.desc}</div>
                                         </div>
                                     `).join('')}
@@ -2819,28 +2952,465 @@ public class ExamDocParserService {
                             <!-- Education -->
                             <div class="mb-4">
                                 <h3 class="font-extrabold text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5 text-slate-900">
-                                    <span class="w-2 h-2 rounded-full" style="background-color: ${currentThemeColor}"></span>
+                                    <span class="w-2 h-2 rounded-full" style="background-color: ${color}"></span>
                                     Học Vấn & Bằng Cấp
                                 </h3>
                                 <div class="space-y-2">
-                                    ${currentCvData.educations.length > 0 ? currentCvData.educations.map(edu => `
-                                        <div class="text-xs">
+                                    ${data.educations.length > 0 ? data.educations.map(edu => `
+                                        <div class="text-xs bg-slate-50/40 p-2 rounded-lg">
                                             <div class="flex justify-between items-baseline font-bold text-slate-900">
                                                 <span>${edu.school}</span>
-                                                <span class="text-[10px] text-slate-400">${edu.period}</span>
+                                                <span class="text-[10px] text-slate-400 font-normal">${edu.period}</span>
                                             </div>
-                                            <div class="text-[11px] font-semibold" style="color: ${currentThemeColor}">${edu.major}</div>
-                                            ${edu.details ? `<div class="text-[10px] text-slate-500">${edu.details}</div>` : ''}
+                                            <div class="text-[11px] font-semibold" style="color: ${color}">${edu.major}</div>
+                                            ${edu.details ? `<div class="text-[10px] text-slate-500 mt-0.5">${edu.details}</div>` : ''}
+                                        </div>
+                                    `).join('') : '<p class="text-xs text-slate-400 italic">Chưa có thông tin học vấn</p>'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // LAYOUT 2: TOP BANNER (Executive Corporate with 100% Header & 2 Columns Below)
+        function renderTopBannerLayout(data, color) {
+            const skillsArray = data.skills ? data.skills.split(',').map(s => s.trim()).filter(Boolean) : [];
+            const certsArray = data.certs ? data.certs.split('\n').map(c => c.trim()).filter(Boolean) : [];
+
+            return `
+                <div class="flex flex-col h-full min-h-[297mm] text-slate-800 bg-white font-sans">
+                    <!-- Top Full-Width Hero Header -->
+                    <div class="p-8 text-white relative shadow-sm" style="background: linear-gradient(135deg, ${color} 0%, #0f172a 100%);">
+                        <div class="flex items-center gap-6">
+                            <div class="w-24 h-24 rounded-2xl overflow-hidden border-2 border-white/80 shadow-xl shrink-0">
+                                <img src="${data.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80'}" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1">
+                                <div class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[10px] font-extrabold bg-white/20 backdrop-blur-sm border border-white/30 text-white mb-2">
+                                    <i class="fas fa-crown text-amber-300"></i> Executive Profile
+                                </div>
+                                <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight leading-tight uppercase text-white">
+                                    ${data.fullName || 'Họ Và Tên Ứng Viên'}
+                                </h1>
+                                <div class="text-xs font-bold tracking-widest uppercase text-amber-300 mt-1">
+                                    ${data.title || 'Vị Trí Đảm Nhiệm'}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Horizontal Contact Strip -->
+                        <div class="mt-5 pt-3.5 border-t border-white/20 grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] text-white/90">
+                            <div class="flex items-center gap-1.5 truncate"><i class="fas fa-envelope text-amber-300 text-[10px]"></i> <span class="truncate">${data.email || 'email@example.com'}</span></div>
+                            <div class="flex items-center gap-1.5"><i class="fas fa-phone text-amber-300 text-[10px]"></i> <span>${data.phone || '0901 234 567'}</span></div>
+                            <div class="flex items-center gap-1.5 truncate"><i class="fas fa-location-dot text-amber-300 text-[10px]"></i> <span class="truncate">${data.address || 'TP. Hồ Chí Minh'}</span></div>
+                            <div class="flex items-center gap-1.5 truncate"><i class="fas fa-globe text-amber-300 text-[10px]"></i> <span class="truncate">${data.links || 'portfolio.me'}</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Body 2 Columns Below Banner (Left 58%, Right 42%) -->
+                    <div class="p-7 grid grid-cols-12 gap-7 flex-1">
+                        <!-- Left Column (7 cols = 58%) -->
+                        <div class="col-span-7 space-y-5">
+                            <!-- Executive Summary -->
+                            ${data.summary ? `
+                            <div class="bg-slate-50 p-4 rounded-xl border-l-4 border-slate-300" style="border-left-color: ${color}">
+                                <h3 class="font-extrabold text-xs uppercase tracking-wider mb-1.5 text-slate-900 flex items-center gap-1.5">
+                                    <i class="fas fa-quote-left text-slate-400"></i> Mục Tiêu & Định Hướng
+                                </h3>
+                                <p class="text-xs text-slate-700 leading-relaxed text-justify">
+                                    ${data.summary}
+                                </p>
+                            </div>` : ''}
+
+                            <!-- Work Experience -->
+                            <div>
+                                <h3 class="font-extrabold text-xs uppercase tracking-wider mb-3 pb-1 border-b-2 flex items-center justify-between text-slate-900" style="border-color: ${color}">
+                                    <span><i class="fas fa-briefcase mr-1.5" style="color: ${color}"></i> Kinh Nghiệm Làm Việc</span>
+                                    <span class="text-[10px] font-bold text-slate-400">Chuyên sâu</span>
+                                </h3>
+                                <div class="space-y-4">
+                                    ${data.experiences.length > 0 ? data.experiences.map(exp => `
+                                        <div class="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs">
+                                            <div class="flex justify-between items-start text-xs mb-1">
+                                                <strong class="text-slate-900 font-extrabold text-xs">${exp.role}</strong>
+                                                <span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">${exp.period}</span>
+                                            </div>
+                                            <div class="text-[11px] font-extrabold mb-1.5" style="color: ${color}">${exp.company}</div>
+                                            <div class="text-[11px] text-slate-600 whitespace-pre-line leading-relaxed">
+                                                ${exp.desc}
+                                            </div>
+                                        </div>
+                                    `).join('') : '<p class="text-xs text-slate-400 italic">Chưa có kinh nghiệm</p>'}
+                                </div>
+                            </div>
+
+                            <!-- Featured Projects -->
+                            ${data.projects.length > 0 ? `
+                            <div>
+                                <h3 class="font-extrabold text-xs uppercase tracking-wider mb-3 pb-1 border-b-2 flex items-center gap-1.5 text-slate-900" style="border-color: ${color}">
+                                    <i class="fas fa-rocket mr-1" style="color: ${color}"></i> Dự Án Trọng Điểm
+                                </h3>
+                                <div class="space-y-3">
+                                    ${data.projects.map(proj => `
+                                        <div class="bg-slate-50/80 p-3 rounded-xl border border-slate-200 text-xs">
+                                            <div class="flex justify-between items-center mb-1">
+                                                <strong class="text-slate-900 font-bold">${proj.name}</strong>
+                                                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700">${proj.role}</span>
+                                            </div>
+                                            ${proj.tech ? `<div class="text-[10px] font-semibold mb-1" style="color: ${color}">Công nghệ: ${proj.tech}</div>` : ''}
+                                            <div class="text-[11px] text-slate-600 leading-relaxed">${proj.desc}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>` : ''}
+                        </div>
+
+                        <!-- Right Column (5 cols = 42%) -->
+                        <div class="col-span-5 space-y-5 border-l border-slate-100 pl-6">
+                            <!-- Core Skills as Styled Pill Chips -->
+                            <div>
+                                <h3 class="font-extrabold text-xs uppercase tracking-wider mb-3 pb-1 border-b-2 flex items-center gap-1.5 text-slate-900" style="border-color: ${color}">
+                                    <i class="fas fa-gears" style="color: ${color}"></i> Kỹ Năng Trọng Tâm
+                                </h3>
+                                <div class="flex flex-wrap gap-1.5">
+                                    ${skillsArray.length > 0 ? skillsArray.map(s => `
+                                        <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 text-slate-800 border border-slate-200 shadow-2xs hover:border-blue-400 transition">
+                                            ${s}
+                                        </span>
+                                    `).join('') : '<span class="text-slate-400 italic text-[11px]">Chưa nhập kỹ năng</span>'}
+                                </div>
+                            </div>
+
+                            <!-- Education -->
+                            <div>
+                                <h3 class="font-extrabold text-xs uppercase tracking-wider mb-3 pb-1 border-b-2 flex items-center gap-1.5 text-slate-900" style="border-color: ${color}">
+                                    <i class="fas fa-graduation-cap" style="color: ${color}"></i> Học Vấn & Bằng Cấp
+                                </h3>
+                                <div class="space-y-3">
+                                    ${data.educations.length > 0 ? data.educations.map(edu => `
+                                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/80 text-xs">
+                                            <div class="font-extrabold text-slate-900">${edu.school}</div>
+                                            <div class="text-[11px] font-semibold mt-0.5" style="color: ${color}">${edu.major}</div>
+                                            <div class="text-[10px] text-slate-400 font-medium mt-1 flex justify-between">
+                                                <span>Niên khóa: ${edu.period}</span>
+                                                <span class="font-bold text-emerald-600">${edu.details}</span>
+                                            </div>
                                         </div>
                                     `).join('') : '<p class="text-xs text-slate-400 italic">Chưa có thông tin học vấn</p>'}
                                 </div>
                             </div>
 
+                            <!-- Certifications -->
+                            ${certsArray.length > 0 ? `
+                            <div>
+                                <h3 class="font-extrabold text-xs uppercase tracking-wider mb-3 pb-1 border-b-2 flex items-center gap-1.5 text-slate-900" style="border-color: ${color}">
+                                    <i class="fas fa-certificate" style="color: ${color}"></i> Chứng Chỉ Quốc Tế
+                                </h3>
+                                <div class="space-y-2">
+                                    ${certsArray.map(c => `
+                                        <div class="flex items-center gap-2 p-2 bg-slate-50 rounded-lg text-[11px] text-slate-700 font-medium">
+                                            <i class="fas fa-badge-check text-amber-500 shrink-0"></i>
+                                            <span>${c}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>` : ''}
+
+                            <div class="pt-4 text-center text-[9px] text-slate-400 font-medium border-t border-slate-100">
+                                TalentFlow ATS • Bố Cục Executive Top-Banner
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // LAYOUT 3: MINIMALIST CLEAN (Silicon Valley / Notion Clean Editorial)
+        function renderMinimalistCleanLayout(data, color) {
+            const skillsArray = data.skills ? data.skills.split(',').map(s => s.trim()).filter(Boolean) : [];
+            const certsArray = data.certs ? data.certs.split('\n').map(c => c.trim()).filter(Boolean) : [];
+
+            return `
+                <div class="p-8 text-slate-900 bg-white min-h-[297mm] flex flex-col justify-between font-sans">
+                    <div>
+                        <!-- Minimalist Editorial Header -->
+                        <div class="pb-5 mb-6 border-b border-slate-300">
+                            <div class="flex items-start justify-between gap-4">
+                                <div>
+                                    <span class="text-[10px] font-mono tracking-widest text-slate-400 uppercase">// CURRICULUM VITAE</span>
+                                    <h1 class="text-3xl font-extrabold tracking-tight text-slate-950 uppercase mt-0.5">
+                                        ${data.fullName || 'Họ Và Tên Ứng Viên'}
+                                    </h1>
+                                    <div class="text-xs font-bold uppercase tracking-wider mt-1" style="color: ${color}">
+                                        ${data.title || 'Vị Trí Ứng Tuyển'}
+                                    </div>
+                                </div>
+                                <img src="${data.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80'}" class="w-20 h-20 rounded-xl object-cover grayscale hover:grayscale-0 transition border border-slate-200 shadow-xs">
+                            </div>
+
+                            <!-- Inline Monospace Contact Row -->
+                            <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-600 font-mono">
+                                <span><i class="fas fa-envelope text-[10px] mr-1 text-slate-400"></i>${data.email || 'email@example.com'}</span>
+                                <span>•</span>
+                                <span><i class="fas fa-phone text-[10px] mr-1 text-slate-400"></i>${data.phone || '0901 234 567'}</span>
+                                <span>•</span>
+                                <span><i class="fas fa-location-dot text-[10px] mr-1 text-slate-400"></i>${data.address || 'TP. Hồ Chí Minh'}</span>
+                                ${data.links ? `<span>•</span><span><i class="fas fa-link text-[10px] mr-1 text-slate-400"></i>${data.links}</span>` : ''}
+                            </div>
+                        </div>
+
+                        <!-- 01. Summary -->
+                        ${data.summary ? `
+                        <div class="mb-6">
+                            <h2 class="text-[11px] font-mono font-bold tracking-widest text-slate-400 uppercase mb-2">// 01. TÓM TẮT & MỤC TIÊU CỐT LÕI</h2>
+                            <p class="text-xs text-slate-700 leading-relaxed text-justify pl-2 border-l-2" style="border-color: ${color}">
+                                ${data.summary}
+                            </p>
+                        </div>` : ''}
+
+                        <!-- 02. Work Experience -->
+                        <div class="mb-6">
+                            <h2 class="text-[11px] font-mono font-bold tracking-widest text-slate-400 uppercase mb-3">// 02. KINH NGHIỆM LÀM VIỆC</h2>
+                            <div class="space-y-4">
+                                ${data.experiences.length > 0 ? data.experiences.map(exp => `
+                                    <div class="space-y-1 text-xs">
+                                        <div class="flex justify-between items-baseline font-mono text-[11px]">
+                                            <span class="font-extrabold text-slate-900 text-xs">${exp.role}</span>
+                                            <span class="text-slate-500 font-bold">[${exp.period}]</span>
+                                        </div>
+                                        <div class="font-semibold text-[11px]" style="color: ${color}">${exp.company}</div>
+                                        <div class="text-[11px] text-slate-600 whitespace-pre-line leading-relaxed pl-2">
+                                            ${exp.desc}
+                                        </div>
+                                    </div>
+                                `).join('') : '<p class="text-xs text-slate-400 italic">Chưa có kinh nghiệm</p>'}
+                            </div>
+                        </div>
+
+                        <!-- 03 & 04. 2-Column Grid for Projects & Education -->
+                        <div class="grid grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <h2 class="text-[11px] font-mono font-bold tracking-widest text-slate-400 uppercase mb-3">// 03. DỰ ÁN NỔI BẬT</h2>
+                                <div class="space-y-3">
+                                    ${data.projects.map(proj => `
+                                        <div class="text-xs space-y-0.5 border-b border-slate-100 pb-2">
+                                            <div class="font-bold text-slate-900">${proj.name}</div>
+                                            <div class="text-[10px] font-mono" style="color: ${color}">${proj.role}</div>
+                                            <div class="text-[11px] text-slate-600">${proj.desc}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            <div>
+                                <h2 class="text-[11px] font-mono font-bold tracking-widest text-slate-400 uppercase mb-3">// 04. HỌC VẤN & BẰNG CẤP</h2>
+                                <div class="space-y-3">
+                                    ${data.educations.map(edu => `
+                                        <div class="text-xs space-y-0.5 border-b border-slate-100 pb-2">
+                                            <div class="font-bold text-slate-900">${edu.school}</div>
+                                            <div class="text-[11px] font-semibold" style="color: ${color}">${edu.major}</div>
+                                            <div class="text-[10px] text-slate-500 font-mono">${edu.period} • ${edu.details}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 05. Skills as Monospace Chips -->
+                        <div class="mb-4">
+                            <h2 class="text-[11px] font-mono font-bold tracking-widest text-slate-400 uppercase mb-2">// 05. KỸ NĂNG & CÔNG NGHỆ</h2>
+                            <div class="flex flex-wrap gap-1.5 font-mono">
+                                ${skillsArray.map(s => `
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-50 border border-slate-300 text-slate-800">
+                                        ${s}
+                                    </span>
+                                `).join('')}
+                            </div>
+                            ${certsArray.length > 0 ? `
+                            <div class="mt-3 pt-2 border-t border-slate-100 font-mono text-[11px] text-slate-600">
+                                <strong>Chứng chỉ:</strong> ${certsArray.join(' • ')}
+                            </div>` : ''}
                         </div>
                     </div>
 
+                    <div class="pt-4 border-t border-slate-200 text-right font-mono text-[9px] text-slate-400">
+                        // TALENTFLOW ATS • MINIMALIST SILICON VALLEY TEMPLATE
+                    </div>
                 </div>
             `;
+        }
+
+        // LAYOUT 4: CREATIVE PORTFOLIO (Canva Magazine Style with Card Widgets)
+        function renderCreativePortfolioLayout(data, color) {
+            const skillsArray = data.skills ? data.skills.split(',').map(s => s.trim()).filter(Boolean) : [];
+            const certsArray = data.certs ? data.certs.split('\n').map(c => c.trim()).filter(Boolean) : [];
+
+            return `
+                <div class="flex flex-col h-full min-h-[297mm] text-slate-800 bg-white relative overflow-hidden font-sans">
+                    <!-- Top Multi-Tone Color Gradient Bar -->
+                    <div class="h-3 w-full" style="background: linear-gradient(90deg, ${color}, #f59e0b, #ec4899);"></div>
+
+                    <!-- Creative Header with Offset Avatar -->
+                    <div class="p-7 pb-5 bg-slate-50 border-b border-slate-200/80">
+                        <div class="flex flex-col sm:flex-row items-center sm:items-start gap-5">
+                            <div class="relative shrink-0">
+                                <div class="w-24 h-24 rounded-3xl overflow-hidden border-4 border-white shadow-xl rotate-3 hover:rotate-0 transition duration-300" style="background-color: ${color}">
+                                    <img src="${data.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80'}" class="w-full h-full object-cover">
+                                </div>
+                                <span class="absolute -top-2 -right-2 px-2 py-0.5 rounded-full text-[9px] font-extrabold text-white shadow-sm" style="background-color: ${color}">
+                                    PRO
+                                </span>
+                            </div>
+                            <div class="flex-1 text-center sm:text-left">
+                                <div class="inline-block px-2.5 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider text-white mb-1 shadow-2xs" style="background-color: ${color}">
+                                    Creative Portfolio Resume
+                                </div>
+                                <h1 class="text-3xl font-black text-slate-900 tracking-tight leading-none uppercase">
+                                    ${data.fullName || 'Họ Và Tên Ứng Viên'}
+                                </h1>
+                                <div class="text-xs font-bold text-slate-600 mt-1.5 flex items-center justify-center sm:justify-start gap-2">
+                                    <span style="color: ${color}">${data.title || 'Vị Trí Sáng Tạo'}</span>
+                                    <span>•</span>
+                                    <span class="text-slate-400">${data.address || 'TP. Hồ Chí Minh'}</span>
+                                </div>
+                                <!-- Contact pills -->
+                                <div class="mt-3 flex flex-wrap items-center justify-center sm:justify-start gap-2 text-[10px]">
+                                    <span class="px-2.5 py-1 bg-white rounded-full border border-slate-200 shadow-2xs font-semibold text-slate-700"><i class="fas fa-envelope mr-1 text-pink-500"></i>${data.email || 'email@example.com'}</span>
+                                    <span class="px-2.5 py-1 bg-white rounded-full border border-slate-200 shadow-2xs font-semibold text-slate-700"><i class="fas fa-phone mr-1 text-amber-500"></i>${data.phone || '0901 234 567'}</span>
+                                    ${data.links ? `<span class="px-2.5 py-1 bg-white rounded-full border border-slate-200 shadow-2xs font-semibold text-slate-700"><i class="fas fa-sparkles mr-1 text-indigo-500"></i>${data.links}</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Body: Card-Based Grid (Left 38% widgets, Right 62% timeline & case studies) -->
+                    <div class="p-7 grid grid-cols-12 gap-6 flex-1">
+                        <!-- Left Column: Cards (5 cols = 38%) -->
+                        <div class="col-span-5 space-y-4">
+                            <!-- Creative Vision Card -->
+                            <div class="p-4 rounded-2xl border text-xs" style="background-color: #fdf4ff; border-color: #f0abfc;">
+                                <div class="font-extrabold text-purple-900 text-[11px] mb-1 flex items-center gap-1.5">
+                                    <i class="fas fa-quote-left text-purple-500"></i> Tôn Chỉ Sáng Tạo
+                                </div>
+                                <p class="text-[11px] text-purple-800 italic leading-relaxed">
+                                    "${data.summary || 'Biến ý tưởng phức tạp thành trải nghiệm trực quan, tinh gọn và truyền cảm hứng.'}"
+                                </p>
+                            </div>
+
+                            <!-- Skills with Dot Rating Meters -->
+                            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                                <h3 class="font-extrabold text-[11px] uppercase tracking-wider text-slate-900 mb-3 flex items-center gap-1.5">
+                                    <i class="fas fa-palette" style="color: ${color}"></i> Kỹ Năng & Công Cụ
+                                </h3>
+                                <div class="space-y-2">
+                                    ${skillsArray.map((s, idx) => {
+                                        const filled = Math.max(3, 5 - Math.floor(idx / 2));
+                                        const dots = '●'.repeat(filled) + '○'.repeat(5 - filled);
+                                        return `
+                                            <div class="flex justify-between items-center text-[10px]">
+                                                <span class="font-bold text-slate-700">${s}</span>
+                                                <span class="tracking-widest" style="color: ${color}">${dots}</span>
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
+
+                            <!-- Education Card -->
+                            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                                <h3 class="font-extrabold text-[11px] uppercase tracking-wider text-slate-900 mb-2.5 flex items-center gap-1.5">
+                                    <i class="fas fa-graduation-cap" style="color: ${color}"></i> Học Vấn
+                                </h3>
+                                ${data.educations.map(edu => `
+                                    <div class="text-[11px] space-y-0.5">
+                                        <div class="font-extrabold text-slate-900">${edu.school}</div>
+                                        <div class="font-semibold" style="color: ${color}">${edu.major}</div>
+                                        <div class="text-[10px] text-slate-400">${edu.period} • ${edu.details}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+
+                            <!-- Certifications Card -->
+                            ${certsArray.length > 0 ? `
+                            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                                <h3 class="font-extrabold text-[11px] uppercase tracking-wider text-slate-900 mb-2 flex items-center gap-1.5">
+                                    <i class="fas fa-award" style="color: ${color}"></i> Chứng Chỉ
+                                </h3>
+                                <ul class="space-y-1 text-[11px] text-slate-600">
+                                    ${certsArray.map(c => `<li>• ${c}</li>`).join('')}
+                                </ul>
+                            </div>` : ''}
+                        </div>
+
+                        <!-- Right Column: Timeline & Case Studies (7 cols = 62%) -->
+                        <div class="col-span-7 space-y-5">
+                            <!-- Career Trajectory (Experience) -->
+                            <div>
+                                <h3 class="font-extrabold text-xs uppercase tracking-wider text-slate-900 mb-3 pb-1 border-b-2 flex items-center justify-between" style="border-color: ${color}">
+                                    <span><i class="fas fa-timeline mr-1.5" style="color: ${color}"></i> Kinh Nghiệm Thực Chiến</span>
+                                    <span class="text-[10px] font-bold text-slate-400">Timeline</span>
+                                </h3>
+                                <div class="space-y-3.5">
+                                    ${data.experiences.map(exp => `
+                                        <div class="p-3.5 bg-slate-50/70 rounded-2xl border border-slate-200/80 shadow-2xs">
+                                            <div class="flex justify-between items-start text-xs mb-1">
+                                                <strong class="text-slate-900 font-extrabold">${exp.role}</strong>
+                                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white text-slate-600 border border-slate-200">${exp.period}</span>
+                                            </div>
+                                            <div class="text-[11px] font-extrabold mb-1" style="color: ${color}">${exp.company}</div>
+                                            <div class="text-[11px] text-slate-600 whitespace-pre-line leading-relaxed">
+                                                ${exp.desc}
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <!-- Featured Projects / Case Studies with Metric Badge -->
+                            <div>
+                                <h3 class="font-extrabold text-xs uppercase tracking-wider text-slate-900 mb-3 pb-1 border-b-2 flex items-center gap-1.5" style="border-color: ${color}">
+                                    <i class="fas fa-sparkles mr-1 text-amber-500"></i> Case Study & Dự Án
+                                </h3>
+                                <div class="space-y-3">
+                                    ${data.projects.map(proj => `
+                                        <div class="p-3.5 rounded-2xl border text-xs" style="background-color: #f8fafc; border-color: #e2e8f0;">
+                                            <div class="flex justify-between items-center mb-1">
+                                                <strong class="text-slate-900 font-bold">${proj.name}</strong>
+                                                <span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold text-white" style="background-color: ${color}">
+                                                    ${proj.role}
+                                                </span>
+                                            </div>
+                                            ${proj.tech ? `<div class="text-[10px] font-semibold mb-1 text-slate-500">Tools: ${proj.tech}</div>` : ''}
+                                            <div class="text-[11px] text-slate-600 leading-relaxed">${proj.desc}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-3 text-center text-[9px] text-slate-400 font-medium border-t border-slate-100 bg-slate-50/50">
+                        TalentFlow ATS • Bố Cục Sáng Tạo Magazine
+                    </div>
+                </div>
+            `;
+        }
+
+        // Main Render Dispatcher
+        function renderCvPreview() {
+            const previewContainer = document.getElementById('cv-rendered-content');
+            if (!previewContainer) return;
+
+            if (currentLayout === 'top-banner') {
+                previewContainer.innerHTML = renderTopBannerLayout(currentCvData, currentThemeColor);
+            } else if (currentLayout === 'minimalist-clean') {
+                previewContainer.innerHTML = renderMinimalistCleanLayout(currentCvData, currentThemeColor);
+            } else if (currentLayout === 'creative-portfolio') {
+                previewContainer.innerHTML = renderCreativePortfolioLayout(currentCvData, currentThemeColor);
+            } else {
+                previewContainer.innerHTML = renderSidebarLeftLayout(currentCvData, currentThemeColor);
+            }
         }
 
         // Print CV
@@ -2851,8 +3421,12 @@ public class ExamDocParserService {
         // Save CV to Profile
         function saveCvToProfile() {
             try {
-                localStorage.setItem('talentflow_saved_cv', JSON.stringify(currentCvData));
-                alert('ĐÃ LƯU CV VÀO HỒ SƠ THÀNH CÔNG!\n\nBản CV "' + (currentCvData.title || 'Kỹ sư Phần mềm') + '" đã được lưu trữ an toàn. Bạn có thể mở lại để chỉnh sửa hoặc nộp hồ sơ bất cứ lúc nào trong mục "Hồ sơ của tôi".');
+                localStorage.setItem('talentflow_saved_cv', JSON.stringify({
+                    ...currentCvData,
+                    layout: currentLayout,
+                    themeColor: currentThemeColor
+                }));
+                alert('ĐÃ LƯU CV VÀO HỒ SƠ THÀNH CÔNG!\n\nBản CV "' + (currentCvData.title || 'Kỹ sư Phần mềm') + '" với bố cục [' + currentLayout + '] đã được lưu trữ an toàn.');
             } catch (e) {
                 alert('Lưu CV thành công!');
             }
@@ -2862,7 +3436,7 @@ public class ExamDocParserService {
         function openApplyWithCvModal() {
             const previewName = document.getElementById('applyPreviewCvName');
             if (previewName) {
-                previewName.innerText = `CV: ${currentCvData.fullName || 'Ứng viên'} - ${currentCvData.title || 'Vị trí'}`;
+                previewName.innerText = `CV: ${currentCvData.fullName || 'Ứng viên'} - ${currentCvData.title || 'Vị trí'} (${currentLayout})`;
             }
             document.getElementById('applyWithCvModal').classList.remove('hidden');
         }
@@ -2877,10 +3451,7 @@ public class ExamDocParserService {
             const jobTitle = jobSelect ? jobSelect.options[jobSelect.selectedIndex].text : 'Vị trí công nghệ';
             const code = 'APP-2026-' + Math.floor(100 + Math.random() * 900);
 
-            alert('NỘP HỒ SƠ ỨNG TUYỂN THÀNH CÔNG!\n\n' +
-                  'Vị trí ứng tuyển: ' + jobTitle + '\n' +
-                  'Mã hồ sơ: ' + code + '\n\n' +
-                  'Hệ thống ATS đã tự động tiếp nhận bản CV bạn vừa thiết kế. Bạn có thể theo dõi tiến trình đơn trong mục "Hồ sơ của tôi"!');
+            alert('NỘP HỒ SƠ ỨNG TUYỂN THÀNH CÔNG!\n\nVị trí ứng tuyển: ' + jobTitle + '\nMã hồ sơ: ' + code + '\nBố cục CV đã nộp: ' + currentLayout + '\n\nHồ sơ đã được lưu trữ an toàn và chuyển tiếp đến nhà tuyển dụng!');
             closeApplyWithCvModal();
             switchMainView('my-apps');
         }
