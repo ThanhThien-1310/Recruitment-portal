@@ -3730,8 +3730,8 @@ public class ExamDocParserService {
                     closeCandidateAuthModal();
                     updateNavAuthUI();
 
-                    alert(`ĐĂNG KÝ TÀI KHOẢN THÀNH CÔNG!\n\nChào mừng ứng viên ${data.fullName} đến với TalentFlow! Bây giờ bạn có thể lựa chọn mẫu CV và nộp đơn ứng tuyển.`);
-                    switchMainView('templates');
+                    alert(`ĐĂNG KÝ TÀI KHOẢN THÀNH CÔNG!\n\nChào mừng ứng viên ${data.fullName} đến với TalentFlow! Bây giờ bạn có thể khám phá danh sách việc làm và nộp đơn ứng tuyển ngay.`);
+                    switchMainView('jobs');
                 } else {
                     alert(data.message || 'Đăng ký tài khoản không thành công!');
                 }
