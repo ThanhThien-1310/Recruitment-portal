@@ -1014,7 +1014,12 @@
                     </div>
 
     
-    <!-- ======================================================== -->
+                    </div>
+            </div>
+        </section>
+    </div>
+
+<!-- ======================================================== -->
     <!-- VIEW: THƯ VIỆN MẪU CV TOPCV (CV TEMPLATES LIBRARY)        -->
     <!-- ======================================================== -->
     <div id="view-templates" class="view-content hidden flex-1 py-10 bg-slate-50">
@@ -2384,6 +2389,11 @@ public class ExamDocParserService {
             if (targetView) targetView.classList.remove('hidden');
 
             const activeBtn = document.getElementById('nav-btn-' + viewId);
+            if (viewId === 'templates') {
+                renderTemplatesGrid();
+            } else if (viewId === 'builder') {
+                renderCvPreview();
+            }
             if (activeBtn) {
                 activeBtn.classList.remove('hover:text-slate-900', 'hover:bg-slate-100');
                 activeBtn.classList.add('text-blue-600', 'bg-blue-50/80');
@@ -4586,6 +4596,19 @@ public class ExamDocParserService {
                     closeCandidateAuthModal();
                     updateNavAuthUI();
 
+            const path = window.location.pathname.toLowerCase();
+            if (path.includes('/templates')) {
+                switchMainView('templates');
+            } else if (path.includes('/builder')) {
+                switchMainView('builder');
+            } else if (path.includes('/my-apps')) {
+                switchMainView('my-apps');
+            } else if (path.includes('/track')) {
+                switchMainView('track');
+            } else if (path.includes('/exam')) {
+                switchMainView('exam');
+            }
+
                     const roleDisplay = data.role === 'HR_MANAGER' ? 'Super Admin / HR Lead' :
                                        (data.role === 'RECRUITER' ? 'HR Recruiter' :
                                        (data.role === 'INTERVIEWER' ? 'Tech Lead / Interviewer' : 'Ứng viên'));
@@ -4655,6 +4678,19 @@ public class ExamDocParserService {
                     closeCandidateAuthModal();
                     updateNavAuthUI();
 
+            const path = window.location.pathname.toLowerCase();
+            if (path.includes('/templates')) {
+                switchMainView('templates');
+            } else if (path.includes('/builder')) {
+                switchMainView('builder');
+            } else if (path.includes('/my-apps')) {
+                switchMainView('my-apps');
+            } else if (path.includes('/track')) {
+                switchMainView('track');
+            } else if (path.includes('/exam')) {
+                switchMainView('exam');
+            }
+
                     alert(`ĐĂNG KÝ TÀI KHOẢN THÀNH CÔNG!\n\nChào mừng ứng viên ${data.fullName} đến với TalentFlow! Bây giờ bạn có thể khám phá danh sách việc làm và nộp đơn ứng tuyển ngay.`);
                     switchMainView('jobs');
                 } else {
@@ -4676,6 +4712,19 @@ public class ExamDocParserService {
                 localStorage.removeItem('talentflow_candidate');
                 sessionStorage.clear();
                 updateNavAuthUI();
+
+            const path = window.location.pathname.toLowerCase();
+            if (path.includes('/templates')) {
+                switchMainView('templates');
+            } else if (path.includes('/builder')) {
+                switchMainView('builder');
+            } else if (path.includes('/my-apps')) {
+                switchMainView('my-apps');
+            } else if (path.includes('/track')) {
+                switchMainView('track');
+            } else if (path.includes('/exam')) {
+                switchMainView('exam');
+            }
                 alert('Đã đăng xuất thành công khỏi hệ thống.');
                 switchMainView('jobs');
             }
@@ -4703,6 +4752,19 @@ public class ExamDocParserService {
             syncStateToForm();
             renderCvPreview();
             updateNavAuthUI();
+
+            const path = window.location.pathname.toLowerCase();
+            if (path.includes('/templates')) {
+                switchMainView('templates');
+            } else if (path.includes('/builder')) {
+                switchMainView('builder');
+            } else if (path.includes('/my-apps')) {
+                switchMainView('my-apps');
+            } else if (path.includes('/track')) {
+                switchMainView('track');
+            } else if (path.includes('/exam')) {
+                switchMainView('exam');
+            }
         });
 
     </script>
