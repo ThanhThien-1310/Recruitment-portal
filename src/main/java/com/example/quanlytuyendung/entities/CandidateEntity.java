@@ -32,6 +32,12 @@ public class CandidateEntity {
     // Flag for screening knockout: PASSED, FAILED_KNOCKOUT, PENDING
     private String screeningStatus = "PASSED";
 
+    // AI Match Score (0 - 100%) & AI Feedback after CV screening
+    private Integer matchScore = 0;
+
+    @Column(columnDefinition = "TEXT")
+    private String matchFeedback;
+
     @Column(columnDefinition = "TEXT")
     private String notes;
 
@@ -98,4 +104,10 @@ public class CandidateEntity {
 
     public LocalDateTime getAppliedAt() { return appliedAt; }
     public void setAppliedAt(LocalDateTime appliedAt) { this.appliedAt = appliedAt; }
+
+    public Integer getMatchScore() { return matchScore; }
+    public void setMatchScore(Integer matchScore) { this.matchScore = matchScore; }
+
+    public String getMatchFeedback() { return matchFeedback; }
+    public void setMatchFeedback(String matchFeedback) { this.matchFeedback = matchFeedback; }
 }

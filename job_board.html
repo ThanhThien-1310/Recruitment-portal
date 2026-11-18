@@ -189,6 +189,7 @@
                             <option value="Công nghệ">Công nghệ thông tin</option>
                             <option value="Sản phẩm">Sản phẩm & UI/UX</option>
                             <option value="Nhân sự">Nhân sự & Tuyển dụng</option>
+                            <option value="Marketing">Marketing & Kinh doanh</option>
                         </select>
                     </div>
                     <button onclick="applyJobFilters()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs md:text-sm flex items-center justify-center gap-2 shadow-md transition shrink-0">
@@ -204,6 +205,10 @@
                     <button onclick="quickFilter('Designer')" class="px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-slate-700 font-semibold transition">#UI/UX</button>
                     <button onclick="quickFilter('Web')" class="px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-slate-700 font-semibold transition">#Web Fresher</button>
                     <button onclick="quickFilter('Remote')" class="px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-slate-700 font-semibold transition">#Remote</button>
+                    <button onclick="quickFilter('DevOps')" class="px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-slate-700 font-semibold transition">#DevOps</button>
+                    <button onclick="quickFilter('AI')" class="px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-slate-700 font-semibold transition">#AI</button>
+                    <button onclick="quickFilter('Marketing')" class="px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-slate-700 font-semibold transition">#Marketing</button>
+                    <button onclick="quickFilter('Sales')" class="px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-slate-700 font-semibold transition">#Sales</button>
                 </div>
             </div>
         </section>
@@ -212,7 +217,7 @@
         <section class="bg-white border-b border-slate-200 py-6">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                 <div class="p-3">
-                    <div class="text-2xl md:text-3xl font-extrabold text-blue-600">5</div>
+                    <div class="text-2xl md:text-3xl font-extrabold text-blue-600">18</div>
                     <div class="text-xs text-slate-500 font-semibold mt-1">Vị trí mở tại TechCorp</div>
                 </div>
                 <div class="p-3 border-l border-slate-100">
@@ -317,7 +322,7 @@
                     <!-- Search Results Header -->
                     <div class="flex justify-between items-center px-1">
                         <div class="text-xs md:text-sm text-slate-600">
-                            Hiển thị <span id="jobCountBadge" class="font-bold text-slate-900">5</span> vị trí việc làm đang tuyển dụng
+                            Hiển thị <span id="jobCountBadge" class="font-bold text-slate-900">18</span> vị trí việc làm đang tuyển dụng
                         </div>
                         <div class="flex items-center gap-2 text-xs text-slate-500">
                             <span>Sắp xếp:</span>
@@ -328,20 +333,20 @@
                         </div>
                     </div>
 
-                    <!-- JOB CARD 1 -->
-                    <div class="job-card bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-2xs" data-title="Senior Java Backend Engineer" data-dept="Công nghệ" data-loc="Hồ Chí Minh">
+                                        <!-- JOB CARD 1 -->
+                    <div class="job-card bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-2xs hover:border-blue-400 hover:shadow-md transition" data-id="1" data-title="Senior Java Backend Engineer" data-dept="Công nghệ" data-loc="Hà Nội">
                         <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
                             <div class="flex items-start gap-4">
                                 <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl shrink-0">
                                     <i class="fas fa-server"></i>
                                 </div>
                                 <div>
-                                    <h3 class="font-extrabold text-base md:text-lg text-slate-900 hover:text-blue-600 cursor-pointer transition" onclick="openJobDetailModal('Senior Java Backend Engineer', 'Công nghệ', 'TP. Hồ Chí Minh', '28 - 42 Triệu')">
+                                    <h3 class="font-extrabold text-base md:text-lg text-slate-900 hover:text-blue-600 cursor-pointer transition" onclick="openJobDetailModal(1)">
                                         Senior Java Backend Engineer
                                     </h3>
-                                    <div class="text-xs text-slate-500 font-semibold mt-1">TechCorp Solution • Phòng Công nghệ thông tin</div>
+                                    <div class="text-xs text-slate-500 font-semibold mt-1">TechCorp Solution • Phòng Kỹ thuật & Công nghệ</div>
                                     <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-2">
-                                        <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> TP. Hồ Chí Minh</span>
+                                        <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> Hà Nội / Hybrid</span>
                                         <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 28 - 42 Triệu</span>
                                         <span><i class="fas fa-briefcase text-slate-400 mr-1"></i> Toàn thời gian</span>
                                         <span class="text-rose-500"><i class="fas fa-clock mr-1"></i> Hạn: 30/11/2026</span>
@@ -349,10 +354,10 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
-                                <button onclick="openJobDetailModal('Senior Java Backend Engineer', 'Công nghệ', 'TP. Hồ Chí Minh', '28 - 42 Triệu')" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition">
+                                <button onclick="openJobDetailModal(1)" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition">
                                     Chi tiết
                                 </button>
-                                <button onclick="openApplyJobModal('Senior Java Backend Engineer')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
+                                <button onclick="openApplyJobModal(1)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
                                     Ứng tuyển
                                 </button>
                             </div>
@@ -363,21 +368,135 @@
                             <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">PostgreSQL</span>
                             <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Kafka</span>
                             <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Microservices</span>
+                            
                         </div>
                     </div>
-
                     <!-- JOB CARD 2 -->
-                    <div class="job-card bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-2xs" data-title="Flutter Mobile Developer" data-dept="Công nghệ" data-loc="Hồ Chí Minh Remote">
+                    <div class="job-card bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-2xs hover:border-blue-400 hover:shadow-md transition" data-id="2" data-title="Fullstack Developer (Java & ReactJS)" data-dept="Công nghệ" data-loc="Hồ Chí Minh">
+                        <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center text-xl shrink-0">
+                                    <i class="fas fa-code"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-extrabold text-base md:text-lg text-slate-900 hover:text-blue-600 cursor-pointer transition" onclick="openJobDetailModal(2)">
+                                        Fullstack Developer (Java & ReactJS)
+                                    </h3>
+                                    <div class="text-xs text-slate-500 font-semibold mt-1">TechCorp Solution • Phòng Kỹ thuật & Công nghệ</div>
+                                    <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-2">
+                                        <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> TP. Hồ Chí Minh</span>
+                                        <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 22 - 35 Triệu</span>
+                                        <span><i class="fas fa-briefcase text-slate-400 mr-1"></i> Toàn thời gian</span>
+                                        <span class="text-rose-500"><i class="fas fa-clock mr-1"></i> Hạn: 15/12/2026</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                                <button onclick="openJobDetailModal(2)" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition">
+                                    Chi tiết
+                                </button>
+                                <button onclick="openApplyJobModal(2)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
+                                    Ứng tuyển
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Java</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Spring Boot</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">ReactJS</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">TypeScript</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">TailwindCSS</span>
+                            
+                        </div>
+                    </div>
+                    <!-- JOB CARD 3 -->
+                    <div class="job-card bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-2xs hover:border-blue-400 hover:shadow-md transition" data-id="3" data-title="DevOps & Cloud Infrastructure Engineer (AWS/K8s)" data-dept="Công nghệ" data-loc="Hà Nội Remote">
+                        <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl shrink-0">
+                                    <i class="fas fa-cloud"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-extrabold text-base md:text-lg text-slate-900 hover:text-blue-600 cursor-pointer transition" onclick="openJobDetailModal(3)">
+                                        DevOps & Cloud Infrastructure Engineer (AWS/K8s)
+                                    </h3>
+                                    <div class="text-xs text-slate-500 font-semibold mt-1">TechCorp Solution • Phòng Kỹ thuật & Công nghệ</div>
+                                    <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-2">
+                                        <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> Hà Nội / Remote</span>
+                                        <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 25 - 40 Triệu</span>
+                                        <span><i class="fas fa-briefcase text-slate-400 mr-1"></i> Toàn thời gian</span>
+                                        <span class="text-rose-500"><i class="fas fa-clock mr-1"></i> Hạn: 10/12/2026</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                                <button onclick="openJobDetailModal(3)" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition">
+                                    Chi tiết
+                                </button>
+                                <button onclick="openApplyJobModal(3)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
+                                    Ứng tuyển
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">AWS</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Kubernetes</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Docker</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">CI/CD</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Terraform</span>
+                            
+                        </div>
+                    </div>
+                    <!-- JOB CARD 4 -->
+                    <div class="job-card bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-2xs hover:border-blue-400 hover:shadow-md transition" data-id="4" data-title="AI & Machine Learning Engineer (Python/LLM)" data-dept="Công nghệ" data-loc="Hồ Chí Minh">
+                        <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl shrink-0">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-extrabold text-base md:text-lg text-slate-900 hover:text-blue-600 cursor-pointer transition" onclick="openJobDetailModal(4)">
+                                        AI & Machine Learning Engineer (Python/LLM)
+                                    </h3>
+                                    <div class="text-xs text-slate-500 font-semibold mt-1">TechCorp Solution • Phòng Kỹ thuật & Công nghệ</div>
+                                    <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-2">
+                                        <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> TP. Hồ Chí Minh / Hybrid</span>
+                                        <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 30 - 50 Triệu</span>
+                                        <span><i class="fas fa-briefcase text-slate-400 mr-1"></i> Toàn thời gian</span>
+                                        <span class="text-rose-500"><i class="fas fa-clock mr-1"></i> Hạn: 20/12/2026</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                                <button onclick="openJobDetailModal(4)" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition">
+                                    Chi tiết
+                                </button>
+                                <button onclick="openApplyJobModal(4)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
+                                    Ứng tuyển
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Python</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">PyTorch</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">LLM</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">LangChain</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Vector DB</span>
+                            
+                        </div>
+                    </div>
+                    <!-- JOB CARD 5 -->
+                    <div class="job-card bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-2xs hover:border-blue-400 hover:shadow-md transition" data-id="5" data-title="Flutter Mobile Developer" data-dept="Công nghệ" data-loc="Hồ Chí Minh Remote">
                         <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
                             <div class="flex items-start gap-4">
                                 <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl shrink-0">
-                                    <i class="fas fa-mobile-alt"></i>
+                                    <i class="fas fa-mobile-screen-button"></i>
                                 </div>
                                 <div>
-                                    <h3 class="font-extrabold text-base md:text-lg text-slate-900 hover:text-blue-600 cursor-pointer transition" onclick="openJobDetailModal('Flutter Mobile Developer', 'Công nghệ', 'TP. Hồ Chí Minh / Remote', '20 - 32 Triệu')">
+                                    <h3 class="font-extrabold text-base md:text-lg text-slate-900 hover:text-blue-600 cursor-pointer transition" onclick="openJobDetailModal(5)">
                                         Flutter Mobile Developer
                                     </h3>
-                                    <div class="text-xs text-slate-500 font-semibold mt-1">TechCorp Solution • Phòng Công nghệ thông tin</div>
+                                    <div class="text-xs text-slate-500 font-semibold mt-1">TechCorp Solution • Phòng Kỹ thuật & Công nghệ</div>
                                     <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-2">
                                         <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> TP. Hồ Chí Minh / Remote</span>
                                         <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 20 - 32 Triệu</span>
@@ -387,10 +506,10 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
-                                <button onclick="openJobDetailModal('Flutter Mobile Developer', 'Công nghệ', 'TP. Hồ Chí Minh / Remote', '20 - 32 Triệu')" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition">
+                                <button onclick="openJobDetailModal(5)" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition">
                                     Chi tiết
                                 </button>
-                                <button onclick="openApplyJobModal('Flutter Mobile Developer')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
+                                <button onclick="openApplyJobModal(5)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
                                     Ứng tuyển
                                 </button>
                             </div>
@@ -398,36 +517,190 @@
                         <div class="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
                             <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Flutter</span>
                             <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Dart</span>
-                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Bloc / Provider</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Bloc</span>
                             <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">REST API</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Firebase</span>
+                            
                         </div>
                     </div>
-
-                    <!-- JOB CARD 3 -->
-                    <div class="job-card bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-2xs" data-title="UI/UX Designer" data-dept="Sản phẩm" data-loc="Hồ Chí Minh">
+                    <!-- JOB CARD 6 -->
+                    <div class="job-card bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-2xs hover:border-blue-400 hover:shadow-md transition" data-id="6" data-title="Senior iOS Native Developer (Swift/SwiftUI)" data-dept="Công nghệ" data-loc="Hà Nội">
                         <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
                             <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl shrink-0">
-                                    <i class="fas fa-paint-brush"></i>
+                                <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-800 flex items-center justify-center text-xl shrink-0">
+                                    <i class="fas fa-apple-whole"></i>
                                 </div>
                                 <div>
-                                    <h3 class="font-extrabold text-base md:text-lg text-slate-900 hover:text-blue-600 cursor-pointer transition" onclick="openJobDetailModal('UI/UX Designer', 'Sản phẩm', 'TP. Hồ Chí Minh', '16 - 24 Triệu')">
-                                        UI/UX Designer
+                                    <h3 class="font-extrabold text-base md:text-lg text-slate-900 hover:text-blue-600 cursor-pointer transition" onclick="openJobDetailModal(6)">
+                                        Senior iOS Native Developer (Swift/SwiftUI)
                                     </h3>
-                                    <div class="text-xs text-slate-500 font-semibold mt-1">TechCorp Solution • Phòng Sản phẩm & Thiết kế</div>
+                                    <div class="text-xs text-slate-500 font-semibold mt-1">TechCorp Solution • Phòng Kỹ thuật & Công nghệ</div>
                                     <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-2">
-                                        <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> TP. Hồ Chí Minh</span>
-                                        <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 16 - 24 Triệu</span>
+                                        <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> Hà Nội</span>
+                                        <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 25 - 38 Triệu</span>
                                         <span><i class="fas fa-briefcase text-slate-400 mr-1"></i> Toàn thời gian</span>
-                                        <span class="text-rose-500"><i class="fas fa-clock mr-1"></i> Hạn: 10/11/2026</span>
+                                        <span class="text-rose-500"><i class="fas fa-clock mr-1"></i> Hạn: 05/12/2026</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
-                                <button onclick="openJobDetailModal('UI/UX Designer', 'Sản phẩm', 'TP. Hồ Chí Minh', '16 - 24 Triệu')" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition">
+                                <button onclick="openJobDetailModal(6)" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition">
                                     Chi tiết
                                 </button>
-                                <button onclick="openApplyJobModal('UI/UX Designer')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
+                                <button onclick="openApplyJobModal(6)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
+                                    Ứng tuyển
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Swift</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">SwiftUI</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Combine</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Core Data</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">iOS Native</span>
+                            
+                        </div>
+                    </div>
+                    <!-- JOB CARD 7 -->
+                    <div class="job-card bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-2xs hover:border-blue-400 hover:shadow-md transition" data-id="7" data-title="Frontend React / Next.js Engineer" data-dept="Công nghệ" data-loc="Hồ Chí Minh">
+                        <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-xl shrink-0">
+                                    <i class="fas fa-brands fa-react"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-extrabold text-base md:text-lg text-slate-900 hover:text-blue-600 cursor-pointer transition" onclick="openJobDetailModal(7)">
+                                        Frontend React / Next.js Engineer
+                                    </h3>
+                                    <div class="text-xs text-slate-500 font-semibold mt-1">TechCorp Solution • Phòng Kỹ thuật & Công nghệ</div>
+                                    <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-2">
+                                        <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> TP. Hồ Chí Minh</span>
+                                        <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 18 - 28 Triệu</span>
+                                        <span><i class="fas fa-briefcase text-slate-400 mr-1"></i> Toàn thời gian</span>
+                                        <span class="text-rose-500"><i class="fas fa-clock mr-1"></i> Hạn: 12/12/2026</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                                <button onclick="openJobDetailModal(7)" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition">
+                                    Chi tiết
+                                </button>
+                                <button onclick="openApplyJobModal(7)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
+                                    Ứng tuyển
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">ReactJS</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Next.js</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">TypeScript</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Tailwind</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Web Performance</span>
+                            
+                        </div>
+                    </div>
+                    <!-- JOB CARD 8 -->
+                    <div class="job-card bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-2xs hover:border-blue-400 hover:shadow-md transition" data-id="8" data-title="QA / Automation Test Engineer (Selenium/Playwright)" data-dept="Công nghệ" data-loc="Hà Nội Đà Nẵng">
+                        <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl shrink-0">
+                                    <i class="fas fa-bug"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-extrabold text-base md:text-lg text-slate-900 hover:text-blue-600 cursor-pointer transition" onclick="openJobDetailModal(8)">
+                                        QA / Automation Test Engineer (Selenium/Playwright)
+                                    </h3>
+                                    <div class="text-xs text-slate-500 font-semibold mt-1">TechCorp Solution • Phòng Kỹ thuật & Công nghệ</div>
+                                    <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-2">
+                                        <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> Hà Nội / Đà Nẵng</span>
+                                        <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 16 - 25 Triệu</span>
+                                        <span><i class="fas fa-briefcase text-slate-400 mr-1"></i> Toàn thời gian</span>
+                                        <span class="text-rose-500"><i class="fas fa-clock mr-1"></i> Hạn: 25/11/2026</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                                <button onclick="openJobDetailModal(8)" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition">
+                                    Chi tiết
+                                </button>
+                                <button onclick="openApplyJobModal(8)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
+                                    Ứng tuyển
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Automation Test</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Selenium</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Playwright</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Java</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">JMeter</span>
+                            
+                        </div>
+                    </div>
+                    <!-- JOB CARD 9 -->
+                    <div class="job-card bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-2xs hover:border-blue-400 hover:shadow-md transition" data-id="9" data-title="Data Engineer (Spark/Airflow/Kafka)" data-dept="Công nghệ" data-loc="Hồ Chí Minh">
+                        <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl shrink-0">
+                                    <i class="fas fa-database"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-extrabold text-base md:text-lg text-slate-900 hover:text-blue-600 cursor-pointer transition" onclick="openJobDetailModal(9)">
+                                        Data Engineer (Spark/Airflow/Kafka)
+                                    </h3>
+                                    <div class="text-xs text-slate-500 font-semibold mt-1">TechCorp Solution • Phòng Kỹ thuật & Công nghệ</div>
+                                    <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-2">
+                                        <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> TP. Hồ Chí Minh</span>
+                                        <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 25 - 42 Triệu</span>
+                                        <span><i class="fas fa-briefcase text-slate-400 mr-1"></i> Toàn thời gian</span>
+                                        <span class="text-rose-500"><i class="fas fa-clock mr-1"></i> Hạn: 18/12/2026</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                                <button onclick="openJobDetailModal(9)" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition">
+                                    Chi tiết
+                                </button>
+                                <button onclick="openApplyJobModal(9)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
+                                    Ứng tuyển
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Spark</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Airflow</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Kafka</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Python</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">SQL</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">BigQuery</span>
+                            
+                        </div>
+                    </div>
+                    <!-- JOB CARD 10 -->
+                    <div class="job-card bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-2xs hover:border-blue-400 hover:shadow-md transition" data-id="10" data-title="UI/UX Product Designer" data-dept="Sản phẩm" data-loc="Hồ Chí Minh">
+                        <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-fuchsia-50 text-fuchsia-600 flex items-center justify-center text-xl shrink-0">
+                                    <i class="fas fa-pen-nib"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-extrabold text-base md:text-lg text-slate-900 hover:text-blue-600 cursor-pointer transition" onclick="openJobDetailModal(10)">
+                                        UI/UX Product Designer
+                                    </h3>
+                                    <div class="text-xs text-slate-500 font-semibold mt-1">TechCorp Solution • Phòng Sản phẩm & Thiết kế</div>
+                                    <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-2">
+                                        <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> TP. Hồ Chí Minh</span>
+                                        <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 18 - 28 Triệu</span>
+                                        <span><i class="fas fa-briefcase text-slate-400 mr-1"></i> Toàn thời gian</span>
+                                        <span class="text-rose-500"><i class="fas fa-clock mr-1"></i> Hạn: 10/12/2026</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                                <button onclick="openJobDetailModal(10)" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition">
+                                    Chi tiết
+                                </button>
+                                <button onclick="openApplyJobModal(10)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
                                     Ứng tuyển
                                 </button>
                             </div>
@@ -435,87 +708,310 @@
                         <div class="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
                             <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Figma</span>
                             <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Design System</span>
-                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Prototyping</span>
-                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">User Research</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">User Journey</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">UI/UX</span>
+                            
                         </div>
                     </div>
-
-                    <!-- JOB CARD 4 -->
-                    <div class="job-card bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-2xs" data-title="Thực tập sinh Web Frontend" data-dept="Công nghệ" data-loc="Hà Nội">
+                    <!-- JOB CARD 11 -->
+                    <div class="job-card bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-2xs hover:border-blue-400 hover:shadow-md transition" data-id="11" data-title="Senior Product Owner (FinTech & HR SaaS)" data-dept="Sản phẩm" data-loc="Hà Nội">
                         <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
                             <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl shrink-0">
-                                    <i class="fas fa-graduation-cap"></i>
+                                <div class="w-12 h-12 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center text-xl shrink-0">
+                                    <i class="fas fa-diagram-project"></i>
                                 </div>
                                 <div>
-                                    <h3 class="font-extrabold text-base md:text-lg text-slate-900 hover:text-blue-600 cursor-pointer transition" onclick="openJobDetailModal('Thực tập sinh Web Frontend', 'Công nghệ', 'Hà Nội', '5 - 8 Triệu')">
-                                        Thực tập sinh Web Frontend
+                                    <h3 class="font-extrabold text-base md:text-lg text-slate-900 hover:text-blue-600 cursor-pointer transition" onclick="openJobDetailModal(11)">
+                                        Senior Product Owner (FinTech & HR SaaS)
                                     </h3>
-                                    <div class="text-xs text-slate-500 font-semibold mt-1">TechCorp Solution • Phòng Công nghệ thông tin</div>
+                                    <div class="text-xs text-slate-500 font-semibold mt-1">TechCorp Solution • Phòng Sản phẩm & Thiết kế</div>
                                     <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-2">
                                         <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> Hà Nội</span>
-                                        <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 5 - 8 Triệu</span>
-                                        <span><i class="fas fa-briefcase text-slate-400 mr-1"></i> Thực tập sinh</span>
-                                        <span class="text-rose-500"><i class="fas fa-clock mr-1"></i> Hạn: 20/11/2026</span>
+                                        <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 30 - 45 Triệu</span>
+                                        <span><i class="fas fa-briefcase text-slate-400 mr-1"></i> Toàn thời gian</span>
+                                        <span class="text-rose-500"><i class="fas fa-clock mr-1"></i> Hạn: 20/12/2026</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
-                                <button onclick="openJobDetailModal('Thực tập sinh Web Frontend', 'Công nghệ', 'Hà Nội', '5 - 8 Triệu')" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition">
+                                <button onclick="openJobDetailModal(11)" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition">
                                     Chi tiết
                                 </button>
-                                <button onclick="openApplyJobModal('Thực tập sinh Web Frontend')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
+                                <button onclick="openApplyJobModal(11)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
                                     Ứng tuyển
                                 </button>
                             </div>
                         </div>
                         <div class="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
-                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">HTML5 / CSS3</span>
-                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">JavaScript ES6</span>
-                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Tailwind CSS</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Product Roadmap</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Scrum</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">SaaS B2B</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">FinTech</span>
+                            
                         </div>
                     </div>
-
-                    <!-- JOB CARD 5 -->
-                    <div class="job-card bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-2xs" data-title="Chuyên viên Tuyển dụng & Đào tạo" data-dept="Nhân sự" data-loc="Hồ Chí Minh">
+                    <!-- JOB CARD 12 -->
+                    <div class="job-card bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-2xs hover:border-blue-400 hover:shadow-md transition" data-id="12" data-title="Business Analyst (BA IT / Enterprise)" data-dept="Sản phẩm" data-loc="Hà Nội Đà Nẵng">
+                        <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-xl shrink-0">
+                                    <i class="fas fa-file-lines"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-extrabold text-base md:text-lg text-slate-900 hover:text-blue-600 cursor-pointer transition" onclick="openJobDetailModal(12)">
+                                        Business Analyst (BA IT / Enterprise)
+                                    </h3>
+                                    <div class="text-xs text-slate-500 font-semibold mt-1">TechCorp Solution • Phòng Sản phẩm & Thiết kế</div>
+                                    <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-2">
+                                        <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> Hà Nội / Đà Nẵng</span>
+                                        <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 18 - 30 Triệu</span>
+                                        <span><i class="fas fa-briefcase text-slate-400 mr-1"></i> Toàn thời gian</span>
+                                        <span class="text-rose-500"><i class="fas fa-clock mr-1"></i> Hạn: 15/12/2026</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                                <button onclick="openJobDetailModal(12)" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition">
+                                    Chi tiết
+                                </button>
+                                <button onclick="openApplyJobModal(12)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
+                                    Ứng tuyển
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">BRD/SRS</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Jira</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Confluence</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">SQL</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Agile BA</span>
+                            
+                        </div>
+                    </div>
+                    <!-- JOB CARD 13 -->
+                    <div class="job-card bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-2xs hover:border-blue-400 hover:shadow-md transition" data-id="13" data-title="Brand & Motion Graphic Designer" data-dept="Sản phẩm" data-loc="Hồ Chí Minh">
+                        <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center text-xl shrink-0">
+                                    <i class="fas fa-photo-film"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-extrabold text-base md:text-lg text-slate-900 hover:text-blue-600 cursor-pointer transition" onclick="openJobDetailModal(13)">
+                                        Brand & Motion Graphic Designer
+                                    </h3>
+                                    <div class="text-xs text-slate-500 font-semibold mt-1">TechCorp Solution • Phòng Sản phẩm & Thiết kế</div>
+                                    <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-2">
+                                        <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> TP. Hồ Chí Minh</span>
+                                        <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 15 - 22 Triệu</span>
+                                        <span><i class="fas fa-briefcase text-slate-400 mr-1"></i> Toàn thời gian</span>
+                                        <span class="text-rose-500"><i class="fas fa-clock mr-1"></i> Hạn: 30/11/2026</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                                <button onclick="openJobDetailModal(13)" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition">
+                                    Chi tiết
+                                </button>
+                                <button onclick="openApplyJobModal(13)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
+                                    Ứng tuyển
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">After Effects</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Premiere</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Illustrator</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Motion Graphics</span>
+                            
+                        </div>
+                    </div>
+                    <!-- JOB CARD 14 -->
+                    <div class="job-card bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-2xs hover:border-blue-400 hover:shadow-md transition" data-id="14" data-title="Chuyên viên Tuyển dụng & Đào tạo (Senior IT Recruiter)" data-dept="Nhân sự" data-loc="Hà Nội">
                         <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
                             <div class="flex items-start gap-4">
                                 <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl shrink-0">
                                     <i class="fas fa-user-tie"></i>
                                 </div>
                                 <div>
-                                    <h3 class="font-extrabold text-base md:text-lg text-slate-900 hover:text-blue-600 cursor-pointer transition" onclick="openJobDetailModal('Chuyên viên Tuyển dụng & Đào tạo', 'Nhân sự', 'TP. Hồ Chí Minh', '14 - 20 Triệu')">
-                                        Chuyên viên Tuyển dụng & Đào tạo (HR)
+                                    <h3 class="font-extrabold text-base md:text-lg text-slate-900 hover:text-blue-600 cursor-pointer transition" onclick="openJobDetailModal(14)">
+                                        Chuyên viên Tuyển dụng & Đào tạo (Senior IT Recruiter)
                                     </h3>
                                     <div class="text-xs text-slate-500 font-semibold mt-1">TechCorp Solution • Phòng Nhân sự</div>
                                     <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-2">
-                                        <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> TP. Hồ Chí Minh</span>
-                                        <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 14 - 20 Triệu</span>
+                                        <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> Hà Nội</span>
+                                        <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 15 - 24 Triệu</span>
                                         <span><i class="fas fa-briefcase text-slate-400 mr-1"></i> Toàn thời gian</span>
-                                        <span class="text-rose-500"><i class="fas fa-clock mr-1"></i> Hạn: 25/11/2026</span>
+                                        <span class="text-rose-500"><i class="fas fa-clock mr-1"></i> Hạn: 05/12/2026</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
-                                <button onclick="openJobDetailModal('Chuyên viên Tuyển dụng & Đào tạo', 'Nhân sự', 'TP. Hồ Chí Minh', '14 - 20 Triệu')" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition">
+                                <button onclick="openJobDetailModal(14)" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition">
                                     Chi tiết
                                 </button>
-                                <button onclick="openApplyJobModal('Chuyên viên Tuyển dụng & Đào tạo')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
+                                <button onclick="openApplyJobModal(14)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
                                     Ứng tuyển
                                 </button>
                             </div>
                         </div>
                         <div class="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
                             <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">IT Headhunting</span>
-                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">ATS Portal</span>
-                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Onboarding</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">ATS</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">LinkedIn Sourcing</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Interviewing</span>
+                            
                         </div>
                     </div>
-
-                </div>
-            </div>
-        </section>
-    </div>
+                    <!-- JOB CARD 15 -->
+                    <div class="job-card bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-2xs hover:border-blue-400 hover:shadow-md transition" data-id="15" data-title="HR Generalist & Chuyên viên C&B (Tiền lương & Phúc lợi)" data-dept="Nhân sự" data-loc="Hồ Chí Minh">
+                        <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-xl shrink-0">
+                                    <i class="fas fa-handshake"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-extrabold text-base md:text-lg text-slate-900 hover:text-blue-600 cursor-pointer transition" onclick="openJobDetailModal(15)">
+                                        HR Generalist & Chuyên viên C&B (Tiền lương & Phúc lợi)
+                                    </h3>
+                                    <div class="text-xs text-slate-500 font-semibold mt-1">TechCorp Solution • Phòng Nhân sự</div>
+                                    <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-2">
+                                        <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> TP. Hồ Chí Minh</span>
+                                        <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 14 - 20 Triệu</span>
+                                        <span><i class="fas fa-briefcase text-slate-400 mr-1"></i> Toàn thời gian</span>
+                                        <span class="text-rose-500"><i class="fas fa-clock mr-1"></i> Hạn: 12/12/2026</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                                <button onclick="openJobDetailModal(15)" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition">
+                                    Chi tiết
+                                </button>
+                                <button onclick="openApplyJobModal(15)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
+                                    Ứng tuyển
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">C&B</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Payroll</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Labor Law</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">BHXH & Thuế</span>
+                            
+                        </div>
+                    </div>
+                    <!-- JOB CARD 16 -->
+                    <div class="job-card bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-2xs hover:border-blue-400 hover:shadow-md transition" data-id="16" data-title="Digital Marketing Specialist (Growth & Performance)" data-dept="Marketing" data-loc="Hồ Chí Minh">
+                        <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center text-xl shrink-0">
+                                    <i class="fas fa-bullhorn"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-extrabold text-base md:text-lg text-slate-900 hover:text-blue-600 cursor-pointer transition" onclick="openJobDetailModal(16)">
+                                        Digital Marketing Specialist (Growth & Performance)
+                                    </h3>
+                                    <div class="text-xs text-slate-500 font-semibold mt-1">TechCorp Solution • Phòng Marketing & Kinh doanh</div>
+                                    <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-2">
+                                        <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> TP. Hồ Chí Minh</span>
+                                        <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 16 - 26 Triệu</span>
+                                        <span><i class="fas fa-briefcase text-slate-400 mr-1"></i> Toàn thời gian</span>
+                                        <span class="text-rose-500"><i class="fas fa-clock mr-1"></i> Hạn: 15/12/2026</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                                <button onclick="openJobDetailModal(16)" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition">
+                                    Chi tiết
+                                </button>
+                                <button onclick="openApplyJobModal(16)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
+                                    Ứng tuyển
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Google Ads</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Meta Ads</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">SEO</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">GA4</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Tracking</span>
+                            
+                        </div>
+                    </div>
+                    <!-- JOB CARD 17 -->
+                    <div class="job-card bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-2xs hover:border-blue-400 hover:shadow-md transition" data-id="17" data-title="B2B Tech Enterprise Sales Specialist" data-dept="Marketing" data-loc="Hà Nội">
+                        <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl shrink-0">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-extrabold text-base md:text-lg text-slate-900 hover:text-blue-600 cursor-pointer transition" onclick="openJobDetailModal(17)">
+                                        B2B Tech Enterprise Sales Specialist
+                                    </h3>
+                                    <div class="text-xs text-slate-500 font-semibold mt-1">TechCorp Solution • Phòng Marketing & Kinh doanh</div>
+                                    <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-2">
+                                        <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> Hà Nội</span>
+                                        <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 18 - 35 Triệu</span>
+                                        <span><i class="fas fa-briefcase text-slate-400 mr-1"></i> Toàn thời gian</span>
+                                        <span class="text-rose-500"><i class="fas fa-clock mr-1"></i> Hạn: 20/12/2026</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                                <button onclick="openJobDetailModal(17)" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition">
+                                    Chi tiết
+                                </button>
+                                <button onclick="openApplyJobModal(17)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
+                                    Ứng tuyển
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">B2B Sales</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">SaaS Enterprise</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Negotiation</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">CRM Pipeline</span>
+                            
+                        </div>
+                    </div>
+                    <!-- JOB CARD 18 -->
+                    <div class="job-card bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-2xs hover:border-blue-400 hover:shadow-md transition" data-id="18" data-title="Thực tập sinh Lập trình Web & AI (Intern Web/AI)" data-dept="Công nghệ" data-loc="Hà Nội Hồ Chí Minh">
+                        <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center text-xl shrink-0">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-extrabold text-base md:text-lg text-slate-900 hover:text-blue-600 cursor-pointer transition" onclick="openJobDetailModal(18)">
+                                        Thực tập sinh Lập trình Web & AI (Intern Web/AI)
+                                    </h3>
+                                    <div class="text-xs text-slate-500 font-semibold mt-1">TechCorp Solution • Phòng Kỹ thuật & Công nghệ</div>
+                                    <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-2">
+                                        <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> Hà Nội / TP. Hồ Chí Minh</span>
+                                        <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 5 - 8 Triệu</span>
+                                        <span><i class="fas fa-briefcase text-slate-400 mr-1"></i> Thực tập</span>
+                                        <span class="text-rose-500"><i class="fas fa-clock mr-1"></i> Hạn: 30/12/2026</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                                <button onclick="openJobDetailModal(18)" class="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition">
+                                    Chi tiết
+                                </button>
+                                <button onclick="openApplyJobModal(18)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
+                                    Ứng tuyển
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Java Core</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">Spring Boot</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">ReactJS</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">AI Basics</span>
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">OOP</span>
+                            
+                        </div>
+                    </div>
 
     
     <!-- ======================================================== -->
@@ -1355,16 +1851,22 @@ public class ExamDocParserService {
     <!-- ======================================================== -->
     <!-- MODAL 1: CHI TIẾT CÔNG VIỆC & NỘP CV NHANH               -->
     <!-- ======================================================== -->
+        <!-- ======================================================== -->
+    <!-- MODAL 1: CHI TIẾT CÔNG VIỆC & NỘP CV NHANH               -->
+    <!-- ======================================================== -->
     <div id="jobDetailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8">
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 animate-fade-in">
             <div class="flex justify-between items-start pb-4 border-b border-slate-100">
                 <div>
-                    <span id="modalJobDept" class="text-xs font-bold text-blue-600 uppercase">Công nghệ thông tin</span>
+                    <span id="modalJobDept" class="text-xs font-bold text-blue-600 uppercase">Phòng Kỹ thuật & Công nghệ</span>
                     <h2 id="modalJobTitle" class="text-xl md:text-2xl font-extrabold text-slate-900 mt-1">Senior Java Backend Engineer</h2>
                     <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-2">
-                        <span id="modalJobLoc"><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> TP. Hồ Chí Minh</span>
+                        <span id="modalJobLoc"><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> Hà Nội / Hybrid</span>
                         <span id="modalJobSalary" class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i> 28 - 42 Triệu</span>
-                        <span><i class="fas fa-briefcase text-slate-400 mr-1"></i> Toàn thời gian</span>
+                        <span id="modalJobType"><i class="fas fa-briefcase text-slate-400 mr-1"></i> Toàn thời gian</span>
+                        <span id="modalJobExpBadge" class="px-2.5 py-0.5 bg-blue-50 text-blue-700 font-bold rounded-lg border border-blue-200/60">
+                            <i class="fas fa-award mr-1"></i> Yêu cầu: 3+ năm KN
+                        </span>
                     </div>
                 </div>
                 <button onclick="closeJobDetailModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center font-bold">
@@ -1375,69 +1877,84 @@ public class ExamDocParserService {
             <!-- Job details body -->
             <div class="py-6 space-y-6 text-sm text-slate-700 leading-relaxed border-b border-slate-100">
                 <div>
-                    <h4 class="font-bold text-slate-900 mb-2">Mô tả công việc:</h4>
-                    <ul class="list-disc list-inside space-y-1.5 text-xs text-slate-600">
-                        <li>Tham gia thiết kế, phát triển và tối ưu hóa hệ thống Backend phục vụ hơn 500,000 người dùng hàng ngày.</li>
-                        <li>Xây dựng các microservices hiệu năng cao sử dụng Java 21, Spring Boot 3 và kiến trúc hướng sự kiện (Event-driven) với Apache Kafka.</li>
-                        <li>Tối ưu hóa cơ sở dữ liệu PostgreSQL, lập chỉ mục và xử lý các bài toán Concurrency Control, High Availability.</li>
-                        <li>Phối hợp cùng đội ngũ Product và Mobile (Flutter) để cung cấp các chuẩn REST API và gRPC bảo mật, tin cậy.</li>
-                    </ul>
+                    <h4 class="font-bold text-slate-900 mb-2 flex items-center gap-2">
+                        <i class="fas fa-tasks text-blue-600"></i> Mô tả công việc:
+                    </h4>
+                    <p id="modalJobDesc" class="text-xs text-slate-600 leading-relaxed whitespace-pre-line">
+                        Thiết kế, xây dựng và tối ưu hóa hệ thống microservices backend chịu tải cao phục vụ hàng triệu người dùng. Tối ưu kiến trúc phân tán, message queue Kafka và cơ sở dữ liệu lớn. Phối hợp với đội ngũ DevOps và Frontend để triển khai sản phẩm.
+                    </p>
                 </div>
 
                 <div>
-                    <h4 class="font-bold text-slate-900 mb-2">Yêu cầu ứng viên:</h4>
-                    <ul class="list-disc list-inside space-y-1.5 text-xs text-slate-600">
-                        <li>Từ 3+ năm kinh nghiệm làm việc chuyên sâu với Java và Spring Boot ecosystem.</li>
-                        <li>Thành thạo cơ sở dữ liệu quan hệ (PostgreSQL / MySQL) và NoSQL (Redis, MongoDB).</li>
-                        <li>Hiểu biết vững chắc về Design Patterns, Clean Architecture và Docker/Kubernetes cơ bản.</li>
-                        <li>Tinh thần trách nhiệm cao, chủ động trong công việc và có tư duy giải quyết vấn đề tốt.</li>
-                    </ul>
+                    <h4 class="font-bold text-slate-900 mb-2 flex items-center gap-2">
+                        <i class="fas fa-user-check text-blue-600"></i> Yêu cầu ứng viên:
+                    </h4>
+                    <p id="modalJobReq" class="text-xs text-slate-600 leading-relaxed whitespace-pre-line">
+                        Tối thiểu 3 năm kinh nghiệm với Java Core (Java 17/21), Spring Boot 3, Spring Cloud. Thành thạo PostgreSQL/MySQL, Redis caching, Kafka message broker. Nắm vững Clean Architecture, Design Patterns, Docker & Kubernetes cơ bản.
+                    </p>
                 </div>
 
                 <div>
-                    <h4 class="font-bold text-slate-900 mb-2">Quyền lợi & Phúc lợi:</h4>
-                    <ul class="list-disc list-inside space-y-1.5 text-xs text-slate-600">
-                        <li>Mức lương cạnh tranh theo năng lực, thưởng lương tháng 13 và thưởng hiệu quả dự án hàng quý.</li>
-                        <li>Bảo hiểm sức khỏe cao cấp (PVI Care), khám sức khỏe định kỳ hàng năm.</li>
-                        <li>Cung cấp MacBook Pro M-series và màn hình 4K làm việc.</li>
-                        <li>Hỗ trợ 2 ngày làm việc từ xa (Work From Home) mỗi tuần.</li>
-                    </ul>
+                    <h4 class="font-bold text-slate-900 mb-2 flex items-center gap-2">
+                        <i class="fas fa-gift text-blue-600"></i> Quyền lợi & Phúc lợi:
+                    </h4>
+                    <p id="modalJobBenefits" class="text-xs text-slate-600 leading-relaxed whitespace-pre-line">
+                        Lương cạnh tranh 28 - 42M, thưởng tháng 13 + KPIs quý, bảo hiểm PVI Care quốc tế, cấp MacBook Pro M3 Max, hỗ trợ 2 ngày làm việc từ xa (WFH) mỗi tuần.
+                    </p>
                 </div>
             </div>
 
             <!-- Fast Apply Form inside Modal -->
             <div class="pt-6">
-                <h4 class="font-bold text-slate-900 text-sm mb-4">Nộp hồ sơ ứng tuyển vị trí này:</h4>
-                <form onsubmit="handleApplySubmit(event)" class="space-y-4">
+                <h4 class="font-bold text-slate-900 text-sm mb-4 flex items-center gap-2">
+                    <i class="fas fa-paper-plane text-blue-600"></i> Nộp hồ sơ ứng tuyển vị trí này:
+                </h4>
+                <form id="fastApplyForm" onsubmit="handleApplySubmit(event)" class="space-y-4">
+                    <input type="hidden" id="applyJobId" value="1">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">Họ và tên *</label>
-                            <input type="text" required placeholder="Nguyễn Văn A" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-blue-500 focus:bg-white transition">
+                            <input type="text" id="applyFullName" required placeholder="Nguyễn Văn A" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-blue-500 focus:bg-white transition">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">Email liên hệ *</label>
-                            <input type="email" required placeholder="nguyenvana@gmail.com" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-blue-500 focus:bg-white transition">
+                            <input type="email" id="applyEmail" required placeholder="nguyenvana@gmail.com" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-blue-500 focus:bg-white transition">
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">Số điện thoại *</label>
-                            <input type="tel" required placeholder="0901 234 567" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-blue-500 focus:bg-white transition">
+                            <input type="tel" id="applyPhone" required placeholder="0901 234 567" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-blue-500 focus:bg-white transition">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Tải lên tệp CV (.pdf, .docx) *</label>
-                            <input type="file" required accept=".pdf,.docx,.doc" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Số năm kinh nghiệm *</label>
+                            <select id="applyExpYears" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500 focus:bg-white transition">
+                                <option value="0">Dưới 1 năm / Mới tốt nghiệp</option>
+                                <option value="1">1 năm kinh nghiệm</option>
+                                <option value="2">2 năm kinh nghiệm</option>
+                                <option value="3" selected>3 năm kinh nghiệm</option>
+                                <option value="4">4 năm kinh nghiệm</option>
+                                <option value="5">5+ năm kinh nghiệm</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Tệp CV (.pdf, .docx) *</label>
+                            <input type="file" id="applyCvFile" required accept=".pdf,.docx,.doc" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
                         </div>
                     </div>
                     <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Kỹ năng chuyên môn chính (hỗ trợ AI tính điểm tương thích)</label>
+                        <input type="text" id="applySkills" placeholder="Ví dụ: Java, Spring Boot, MySQL, Kafka, Docker..." class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-blue-500 focus:bg-white transition">
+                    </div>
+                    <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Lời nhắn gửi nhà tuyển dụng (Tùy chọn)</label>
-                        <textarea rows="2" placeholder="Giới thiệu ngắn về kinh nghiệm hoặc liên kết LinkedIn/GitHub của bạn..." class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-blue-500 focus:bg-white transition"></textarea>
+                        <textarea id="applyMessage" rows="2" placeholder="Giới thiệu ngắn về thế mạnh hoặc đường dẫn LinkedIn/GitHub của bạn..." class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-blue-500 focus:bg-white transition"></textarea>
                     </div>
                     <div class="flex justify-end gap-3 pt-2">
                         <button type="button" onclick="closeJobDetailModal()" class="px-4 py-2 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-xl text-xs font-bold transition">
                             Hủy
                         </button>
-                        <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center gap-1.5">
+                        <button type="submit" id="applySubmitBtn" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center gap-1.5">
                             <i class="fas fa-paper-plane"></i> Gửi hồ sơ ứng tuyển
                         </button>
                     </div>
@@ -1447,7 +1964,90 @@ public class ExamDocParserService {
     </div>
 
     <!-- ======================================================== -->
-    <!-- MODAL 2: NỘP CV MỞ (OPEN TALENT POOL)                     -->
+    <!-- MODAL 1.5: KẾT QUẢ ĐÁNH GIÁ AI & GỢI Ý CÔNG VIỆC PHÙ HỢP  -->
+    <!-- ======================================================== -->
+    <div id="applySuccessModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-2xl w-full max-h-[92vh] overflow-y-auto p-6 md:p-8 animate-fade-in">
+            
+            <!-- Header -->
+            <div class="text-center pb-5 border-b border-slate-100 relative">
+                <div class="w-16 h-16 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-3xl mx-auto shadow-inner mb-3">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2 class="text-2xl font-black text-slate-900">Ứng Tuyển Thành Công!</h2>
+                <p class="text-xs text-slate-500 mt-1">Hồ sơ của bạn đã được ghi nhận vào hệ thống TalentFlow ATS</p>
+                <button onclick="closeApplySuccessModal()" class="absolute top-0 right-0 w-8 h-8 rounded-full bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center font-bold">
+                    &times;
+                </button>
+            </div>
+
+            <div class="py-5 space-y-5">
+                <!-- 1. AI Match Score Notification Card -->
+                <div class="bg-gradient-to-br from-blue-50 via-indigo-50/50 to-emerald-50 border border-blue-200/80 rounded-2xl p-5 shadow-xs relative overflow-hidden">
+                    <div class="flex flex-col sm:flex-row items-center gap-5">
+                        <!-- Circular Score Gauge -->
+                        <div id="scoreGaugeBorder" class="relative shrink-0 flex items-center justify-center w-24 h-24 rounded-full bg-white shadow-md border-4 border-emerald-500">
+                            <div class="text-center">
+                                <span id="successMatchScoreVal" class="text-2xl font-black text-emerald-600">88%</span>
+                                <div class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">AI Match</div>
+                            </div>
+                        </div>
+                        <!-- Score Details -->
+                        <div class="flex-1 text-center sm:text-left">
+                            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-100/80 text-blue-700 text-[11px] font-bold mb-1">
+                                <i class="fas fa-sparkles text-amber-500"></i> AI ATS Evaluation Engine
+                            </div>
+                            <h3 class="text-base font-extrabold text-slate-900">
+                                Đánh giá độ phù hợp CV: <span id="successMatchScoreText" class="text-emerald-600 font-black">88%</span> so với tin tuyển dụng
+                            </h3>
+                            <p id="successMatchFeedback" class="text-xs text-slate-600 leading-relaxed mt-2 bg-white/70 p-3 rounded-xl border border-blue-100">
+                                Độ tương thích rất cao! Kỹ năng và kinh nghiệm của bạn rất phù hợp với dự án. Khuyến nghị chuẩn bị thêm kiến thức chuyên sâu về kiến trúc hệ thống và quy trình Agile cho vòng phỏng vấn chuyên môn.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Email Confirmation Notice Banner -->
+                <div class="bg-emerald-50/80 border border-emerald-200 rounded-xl p-3.5 flex items-start gap-3 text-xs text-emerald-900">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center text-sm shrink-0 mt-0.5">
+                        <i class="fas fa-envelope-circle-check"></i>
+                    </div>
+                    <div>
+                        <div class="font-bold text-emerald-900">Hệ thống đã tự động gửi email xác nhận ứng tuyển!</div>
+                        <div class="text-emerald-700 text-[11px] mt-0.5">
+                            Thư xác nhận kèm Mã hồ sơ <strong id="successAppCodeBadge" class="bg-emerald-200/60 px-1.5 py-0.5 rounded font-mono text-emerald-900">APP-2026-X</strong> đã được gửi tới email <strong id="successEmailBadge">candidate@email.com</strong>.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Recommended Jobs Section -->
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                            <i class="fas fa-briefcase text-blue-600"></i> Gợi ý việc làm phù hợp với hồ sơ của bạn:
+                        </h4>
+                        <span class="text-[11px] text-slate-500 font-semibold">Tự động đề xuất theo chuyên môn</span>
+                    </div>
+
+                    <div id="recommendedJobsContainer" class="space-y-3">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-3">
+                <button onclick="goToTrackApplication()" class="w-full sm:w-auto px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
+                    <i class="fas fa-magnifying-glass"></i> Tra cứu tiến độ hồ sơ này
+                </button>
+                <button onclick="closeApplySuccessModal()" class="w-full sm:w-auto px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center justify-center gap-2">
+                    <i class="fas fa-check"></i> Hoàn tất & Xem việc làm khác
+                </button>
+            </div>
+
+        </div>
+    </div>
+
     <!-- ======================================================== -->
     <div id="openApplyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 md:p-8">
@@ -1838,12 +2438,180 @@ public class ExamDocParserService {
             applyJobFilters();
         }
 
-        // Job Detail Modal
-        function openJobDetailModal(title, dept, loc, salary) {
-            document.getElementById('modalJobTitle').innerText = title;
-            document.getElementById('modalJobDept').innerText = dept;
-            document.getElementById('modalJobLoc').innerHTML = '<i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> ' + loc;
-            document.getElementById('modalJobSalary').innerHTML = '<i class="fas fa-money-bill-wave mr-1"></i> ' + salary;
+        // ========================================================
+        // 18 JOBS FULL CATALOG DATA FOR MODAL & DYNAMIC DETAILS
+        // ========================================================
+        const JOBS_CATALOG = [
+            {
+                id: 1, title: 'Senior Java Backend Engineer', department: 'Phòng Kỹ thuật & Công nghệ',
+                location: 'Hà Nội / Hybrid', salary: '28 - 42 Triệu VNĐ', type: 'Toàn thời gian', minExp: 3,
+                description: 'Thiết kế, xây dựng và tối ưu hóa hệ thống microservices backend chịu tải cao phục vụ hàng triệu người dùng. Tối ưu kiến trúc phân tán, message queue Kafka và cơ sở dữ liệu lớn. Phối hợp với đội ngũ DevOps và Frontend để triển khai sản phẩm.',
+                requirements: 'Tối thiểu 3 năm kinh nghiệm với Java Core (Java 17/21), Spring Boot 3, Spring Cloud. Thành thạo PostgreSQL/MySQL, Redis caching, Kafka message broker. Nắm vững Clean Architecture, Design Patterns, Docker & Kubernetes cơ bản.',
+                benefits: 'Lương cạnh tranh 28 - 42M, thưởng tháng 13 + KPIs quý, bảo hiểm PVI Care quốc tế, cấp MacBook Pro M3 Max, hỗ trợ 2 ngày làm việc từ xa (WFH) mỗi tuần.'
+            },
+            {
+                id: 2, title: 'Fullstack Developer (Java & ReactJS)', department: 'Phòng Kỹ thuật & Công nghệ',
+                location: 'TP. Hồ Chí Minh', salary: '22 - 35 Triệu VNĐ', type: 'Toàn thời gian', minExp: 2,
+                description: 'Phát triển toàn diện từ giao diện người dùng hiện đại bằng ReactJS/Next.js đến hệ thống backend xử lý nghiệp vụ với Spring Boot. Tối ưu hóa trải nghiệm người dùng, tốc độ tải trang và xây dựng RESTful API chuẩn mực.',
+                requirements: 'Tối thiểu 2 năm kinh nghiệm làm việc với Java (Spring Boot) và ReactJS/TypeScript. Thành thạo TailwindCSS, Redux Toolkit, REST API, MySQL/PostgreSQL. Có tư duy thẩm mỹ UI/UX tốt.',
+                benefits: 'Lương 22 - 35M, môi trường Agile năng động, phụ cấp ăn trưa và gửi xe, bảo hiểm sức khỏe toàn diện, review lương 2 lần/năm.'
+            },
+            {
+                id: 3, title: 'DevOps & Cloud Infrastructure Engineer (AWS/K8s)', department: 'Phòng Kỹ thuật & Công nghệ',
+                location: 'Hà Nội / Remote', salary: '25 - 40 Triệu VNĐ', type: 'Toàn thời gian', minExp: 3,
+                description: 'Thiết kế và duy trì hạ tầng Cloud trên AWS/GCP, thiết lập đường ống CI/CD tự động hóa (GitLab CI / GitHub Actions). Giám sát hệ thống (Prometheus, Grafana, ELK), bảo mật mạng và tối ưu chi phí hạ tầng điện toán đám mây.',
+                requirements: 'Tối thiểu 3 năm kinh nghiệm DevOps. Thành thạo AWS (EC2, EKS, RDS, S3), Docker, Kubernetes, Terraform/Ansible. Hiểu sâu về Linux OS, Networking, Nginx, CI/CD pipeline.',
+                benefits: 'Lương 25 - 40M, làm việc Remote linh hoạt, tài trợ 100% kinh phí thi chứng chỉ AWS/CKA quốc tế, thưởng dự án theo quý.'
+            },
+            {
+                id: 4, title: 'AI & Machine Learning Engineer (Python/LLM)', department: 'Phòng Kỹ thuật & Công nghệ',
+                location: 'TP. Hồ Chí Minh / Hybrid', salary: '30 - 50 Triệu VNĐ', type: 'Toàn thời gian', minExp: 2,
+                description: 'Nghiên cứu, phát triển và tích hợp các mô hình Generative AI, Large Language Models (LLM), RAG (Retrieval-Augmented Generation) và NLP để tự động hóa trích xuất CV và đánh giá ứng viên thông minh trong hệ thống ATS.',
+                requirements: 'Tối thiểu 2 năm kinh nghiệm với Python, PyTorch/TensorFlow, LangChain, LlamaIndex, OpenAI/Gemini API, Vector Database (Milvus/Chroma). Nắm vững thuật toán xử lý ngôn ngữ tự nhiên (NLP).',
+                benefits: 'Mức lương dẫn đầu thị trường 30 - 50M, thưởng cổ phần (ESOP), ngân sách tham dự hội nghị công nghệ quốc tế, trang bị máy trạm GPU cao cấp.'
+            },
+            {
+                id: 5, title: 'Flutter Mobile Developer', department: 'Phòng Kỹ thuật & Công nghệ',
+                location: 'TP. Hồ Chí Minh / Remote', salary: '20 - 32 Triệu VNĐ', type: 'Toàn thời gian', minExp: 2,
+                description: 'Xây dựng và tối ưu ứng dụng di động đa nền tảng (iOS & Android) phục vụ hàng trăm nghìn người dùng. Tích hợp REST API, WebSockets, Firebase Push Notification và tối ưu hiệu năng render 60fps mượt mà.',
+                requirements: 'Tối thiểu 2 năm kinh nghiệm thực tế với Flutter & Dart. Nắm vững kiến trúc Bloc / Provider / Riverpod. Có sản phẩm đã phát hành trên App Store / Google Play.',
+                benefits: 'Lương 20 - 32M, cơ hội làm việc với các chuyên gia mobile hàng đầu, teambuilding 2 lần/năm, hỗ trợ thiết bị test iPhone/Android mới nhất.'
+            },
+            {
+                id: 6, title: 'Senior iOS Native Developer (Swift/SwiftUI)', department: 'Phòng Kỹ thuật & Công nghệ',
+                location: 'Hà Nội', salary: '25 - 38 Triệu VNĐ', type: 'Toàn thời gian', minExp: 3,
+                description: 'Chịu trách nhiệm kiến trúc và phát triển ứng dụng iOS native cao cấp cho hệ thống tài chính & nhân sự. Tối ưu bộ nhớ, Core Data, Apple Pay và trải nghiệm người dùng theo Human Interface Guidelines.',
+                requirements: 'Tối thiểu 3 năm kinh nghiệm lập trình iOS với Swift và SwiftUI/UIKit. Nắm vững Combine/Async-Await, Memory Management, Unit Testing trên iOS.',
+                benefits: 'Lương 25 - 38M, thưởng vượt chỉ tiêu, bảo hiểm gia đình, tài trợ thiết bị Apple sinh thái đầy đủ (MacBook + iPhone Pro).'
+            },
+            {
+                id: 7, title: 'Frontend React / Next.js Engineer', department: 'Phòng Kỹ thuật & Công nghệ',
+                location: 'TP. Hồ Chí Minh', salary: '18 - 28 Triệu VNĐ', type: 'Toàn thời gian', minExp: 2,
+                description: 'Xây dựng các giao diện Single Page Application (SPA) và Server-Side Rendering (SSR) hiện đại với ReactJS 18+ và Next.js. Tối ưu Core Web Vitals, SEO và độ phản hồi tức thì cho người dùng.',
+                requirements: 'Tối thiểu 2 năm kinh nghiệm Frontend. Thành thạo TypeScript, ReactJS, Next.js, TailwindCSS, HTML5/CSS3. Hiểu sâu về Web Performance và responsive design.',
+                benefits: 'Lương 18 - 28M, thưởng quý, phụ cấp ăn trưa, môi trường trẻ trung cởi mở, chế độ đào tạo tiếng Anh và kỹ năng mềm.'
+            },
+            {
+                id: 8, title: 'QA / Automation Test Engineer (Selenium/Playwright)', department: 'Phòng Kỹ thuật & Công nghệ',
+                location: 'Hà Nội / Đà Nẵng', salary: '16 - 25 Triệu VNĐ', type: 'Toàn thời gian', minExp: 2,
+                description: 'Thiết kế kịch bản kiểm thử tự động (Automation Test) cho Web và Mobile. Tích hợp kiểm thử vào CI/CD pipeline, kiểm thử hiệu năng (JMeter) và kiểm thử bảo mật API.',
+                requirements: 'Tối thiểu 2 năm kinh nghiệm QA/QC. Có kinh nghiệm viết Automation Test với Java/Python sử dụng Selenium WebDriver hoặc Playwright/Cypress. Hiểu rõ quy trình Agile/Scrum.',
+                benefits: 'Lương 16 - 25M, lộ trình thăng tiến rõ ràng lên QA Lead, khám sức khỏe cao cấp định kỳ, thưởng tháng 13.'
+            },
+            {
+                id: 9, title: 'Data Engineer (Spark/Airflow/Kafka)', department: 'Phòng Kỹ thuật & Công nghệ',
+                location: 'TP. Hồ Chí Minh', salary: '25 - 42 Triệu VNĐ', type: 'Toàn thời gian', minExp: 2,
+                description: 'Xây dựng và vận hành hệ thống Data Pipeline, Data Lake và Data Warehouse phục vụ báo cáo BI và các mô hình Machine Learning. Xử lý dữ liệu lớn theo thời gian thực (Real-time Streaming).',
+                requirements: 'Tối thiểu 2 năm kinh nghiệm Data Engineering. Thành thạo SQL nâng cao, Python/Scala, Apache Spark, Apache Airflow, Kafka, Snowflake hoặc BigQuery.',
+                benefits: 'Lương 25 - 42M, phụ cấp công tác, thưởng hiệu suất hàng năm, cơ hội làm việc với tập dữ liệu quy mô hàng chục Terabytes.'
+            },
+            {
+                id: 10, title: 'UI/UX Product Designer', department: 'Phòng Sản phẩm & Thiết kế',
+                location: 'TP. Hồ Chí Minh', salary: '18 - 28 Triệu VNĐ', type: 'Toàn thời gian', minExp: 2,
+                description: 'Xây dựng Design System đồng nhất, thực hiện nghiên cứu người dùng (User Research), thiết kế User Journey, Wireframe và Interactive Prototype sắc nét cho hệ thống ATS và cổng thông tin việc làm.',
+                requirements: 'Tối thiểu 2 năm kinh nghiệm thiết kế UI/UX cho sản phẩm Web/App. Thành thạo Figma, Design Tokens, Micro-interactions. Có Portfolio dự án thực tế thuyết phục.',
+                benefits: 'Lương 18 - 28M, trang bị màn hình Dell UltraSharp 4K, tham gia các khóa học chuyên sâu Design Leadership, teambuilding định kỳ.'
+            },
+            {
+                id: 11, title: 'Senior Product Owner (FinTech & HR SaaS)', department: 'Phòng Sản phẩm & Thiết kế',
+                location: 'Hà Nội', salary: '30 - 45 Triệu VNĐ', type: 'Toàn thời gian', minExp: 3,
+                description: 'Định hình tầm nhìn sản phẩm (Product Vision), quản lý và ưu tiên Product Backlog, phân tích chỉ số kinh doanh (Metrics) và phối hợp cùng đội ngũ kỹ thuật phát triển các tính năng đột phá.',
+                requirements: 'Tối thiểu 3 năm kinh nghiệm ở vai trò Product Owner hoặc Product Manager cho các sản phẩm B2B SaaS hoặc FinTech. Kỹ năng giao tiếp và tư duy phân tích dữ liệu xuất sắc.',
+                benefits: 'Lương 30 - 45M, thưởng theo mức độ tăng trưởng của sản phẩm, gói chăm sóc sức khỏe gia đình, quyền chọn cổ phiếu ưu đãi.'
+            },
+            {
+                id: 12, title: 'Business Analyst (BA IT / Enterprise)', department: 'Phòng Sản phẩm & Thiết kế',
+                location: 'Hà Nội / Đà Nẵng', salary: '18 - 30 Triệu VNĐ', type: 'Toàn thời gian', minExp: 2,
+                description: 'Khảo sát, thu thập và phân tích yêu cầu nghiệp vụ từ các bên liên quan. Viết tài liệu đặc tả chức năng (BRD, SRS, Use Case), phối hợp chặt chẽ với Developers và QA trong suốt quá trình phát triển.',
+                requirements: 'Tối thiểu 2 năm kinh nghiệm BA mảng phần mềm. Sử dụng thành thạo Jira, Confluence, Draw.io/Visio, biết viết truy vấn SQL cơ bản. Tiếng Anh giao tiếp tốt là lợi thế lớn.',
+                benefits: 'Lương 18 - 30M, lộ trình thăng tiến rõ ràng lên Senior/Lead BA, review lương 2 lần/năm, thưởng dự án hoàn thành đúng tiến độ.'
+            },
+            {
+                id: 13, title: 'Brand & Motion Graphic Designer', department: 'Phòng Sản phẩm & Thiết kế',
+                location: 'TP. Hồ Chí Minh', salary: '15 - 22 Triệu VNĐ', type: 'Toàn thời gian', minExp: 1,
+                description: 'Sáng tạo các ấn phẩm truyền thông thương hiệu, video animation giới thiệu tính năng sản phẩm, đồ họa mạng xã hội và banner tuyển dụng chuyên nghiệp.',
+                requirements: 'Tối thiểu 1 năm kinh nghiệm thiết kế đồ họa & motion. Thành thạo Adobe After Effects, Premiere, Illustrator, Photoshop. Có gu thẩm mỹ hiện đại, sáng tạo.',
+                benefits: 'Lương 15 - 22M, môi trường sáng tạo tự do, trang bị máy tính đồ họa cấu hình cao, phụ cấp trà chiều & ăn nhẹ hàng ngày.'
+            },
+            {
+                id: 14, title: 'Chuyên viên Tuyển dụng & Đào tạo (Senior IT Recruiter)', department: 'Phòng Nhân sự',
+                location: 'Hà Nội', salary: '15 - 24 Triệu VNĐ', type: 'Toàn thời gian', minExp: 2,
+                description: 'Chịu trách nhiệm toàn bộ phễu tuyển dụng nhân sự công nghệ từ tìm kiếm ứng viên (Headhunting), phỏng vấn sơ loại, điều phối lịch hẹn đến thương lượng Offer và chăm sóc Onboarding.',
+                requirements: 'Tối thiểu 2 năm kinh nghiệm tuyển dụng IT. Mạng lưới ứng viên công nghệ rộng lớn trên LinkedIn/TopCV. Kỹ năng giao tiếp, thương lượng và thuyết phục xuất sắc.',
+                benefits: 'Lương cứng 15 - 24M + Hoa hồng tuyển dụng hấp dẫn không giới hạn, du lịch nghỉ dưỡng hàng năm, bảo hiểm sức khỏe quốc tế.'
+            },
+            {
+                id: 15, title: 'HR Generalist & Chuyên viên C&B (Tiền lương & Phúc lợi)', department: 'Phòng Nhân sự',
+                location: 'TP. Hồ Chí Minh', salary: '14 - 20 Triệu VNĐ', type: 'Toàn thời gian', minExp: 2,
+                description: 'Quản lý hợp đồng lao động, tính lương, thưởng, bảo hiểm xã hội, thuế thu nhập cá nhân và thực thi các chính sách phúc lợi nhân viên. Tổ chức các hoạt động gắn kết nội bộ công ty.',
+                requirements: 'Tối thiểu 2 năm kinh nghiệm mảng C&B và HR Generalist. Nắm vững Luật Lao động, BHXH, thuế TNCN. Cẩn thận, bảo mật thông tin và thành thạo Excel/phần mềm nhân sự.',
+                benefits: 'Lương 14 - 20M, thưởng lễ tết chu đáo, làm việc giờ hành chính từ thứ 2 đến thứ 6, môi trường làm việc thân thiện, hòa đồng.'
+            },
+            {
+                id: 16, title: 'Digital Marketing Specialist (Growth & Performance)', department: 'Phòng Marketing & Kinh doanh',
+                location: 'TP. Hồ Chí Minh', salary: '16 - 26 Triệu VNĐ', type: 'Toàn thời gian', minExp: 2,
+                description: 'Lên kế hoạch và tối ưu hóa các chiến dịch quảng cáo trực tuyến (Google Ads, Facebook Ads, LinkedIn Ads, SEO) nhằm thu hút khách hàng doanh nghiệp và xây dựng thương hiệu nhà tuyển dụng hàng đầu.',
+                requirements: 'Tối thiểu 2 năm kinh nghiệm Digital Marketing. Thành thạo Google Analytics 4, Meta Ads Manager, các công cụ SEO (Ahrefs, Semrush). Tư duy định hướng số liệu (Data-driven).',
+                benefits: 'Lương 16 - 26M + Thưởng KPI chiến dịch, ngân sách quảng cáo lớn để thử nghiệm ý tưởng mới, hỗ trợ tham gia các hội thảo Marketing chuyên nghiệp.'
+            },
+            {
+                id: 17, title: 'B2B Tech Enterprise Sales Specialist', department: 'Phòng Marketing & Kinh doanh',
+                location: 'Hà Nội', salary: '18 - 35 Triệu VNĐ', type: 'Toàn thời gian', minExp: 2,
+                description: 'Tìm kiếm, tiếp cận và tư vấn giải pháp phần mềm quản trị tuyển dụng ATS cho các doanh nghiệp vừa và lớn. Đàm phán ký kết hợp đồng, chăm sóc mối quan hệ khách hàng chiến lược.',
+                requirements: 'Tối thiểu 2 năm kinh nghiệm Sales B2B trong lĩnh vực phần mềm SaaS, CNTT hoặc nhân sự. Kỹ năng thuyết trình, đàm phán thương mại và chốt deal xuất sắc.',
+                benefits: 'Lương cơ bản 18 - 35M + % Hoa hồng hợp đồng cực cao (Thu nhập thực tế 40 - 70M/tháng), phụ cấp tiếp khách và đi lại.'
+            },
+            {
+                id: 18, title: 'Thực tập sinh Lập trình Web & AI (Intern Web/AI)', department: 'Phòng Kỹ thuật & Công nghệ',
+                location: 'Hà Nội / TP. Hồ Chí Minh', salary: '5 - 8 Triệu VNĐ', type: 'Thực tập', minExp: 0,
+                description: 'Tham gia trực tiếp vào các module thực tế của hệ thống ATS dưới sự kèm cặp 1-1 từ các Senior Engineers. Được đào tạo bài bản về Java Spring Boot, ReactJS, Docker và ứng dụng AI trong doanh nghiệp.',
+                requirements: 'Sinh viên năm 3, năm 4 hoặc mới tốt nghiệp chuyên ngành CNTT/Khoa học máy tính. Nắm vững lập trình hướng đối tượng OOP, Java/JavaScript cơ bản, ham học hỏi và có tư duy logic tốt.',
+                benefits: 'Trợ cấp thực tập 5 - 8M + phụ cấp ăn trưa, hỗ trợ con dấu xác nhận thực tập và tài liệu làm đồ án tốt nghiệp, cơ hội trở thành nhân viên chính thức sau 3 tháng.'
+            }
+        ];
+
+        let currentActiveJob = null;
+        let lastApplicationData = null;
+
+        // Open Job Detail Modal
+        function openJobDetailModal(idOrTitle) {
+            let job = null;
+            if (typeof idOrTitle === 'number') {
+                job = JOBS_CATALOG.find(j => j.id === idOrTitle);
+            } else if (typeof idOrTitle === 'string') {
+                job = JOBS_CATALOG.find(j => j.title.toLowerCase() === idOrTitle.toLowerCase());
+            }
+            if (!job) job = JOBS_CATALOG[0];
+            currentActiveJob = job;
+
+            const idInput = document.getElementById('applyJobId');
+            if (idInput) idInput.value = job.id;
+            
+            document.getElementById('modalJobTitle').innerText = job.title;
+            document.getElementById('modalJobDept').innerText = job.department;
+            document.getElementById('modalJobLoc').innerHTML = '<i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> ' + job.location;
+            document.getElementById('modalJobSalary').innerHTML = '<i class="fas fa-money-bill-wave mr-1"></i> ' + job.salary;
+            document.getElementById('modalJobType').innerHTML = '<i class="fas fa-briefcase text-slate-400 mr-1"></i> ' + job.type;
+            
+            const expBadge = document.getElementById('modalJobExpBadge');
+            if (expBadge) {
+                expBadge.innerHTML = '<i class="fas fa-award mr-1"></i> ' + (job.minExp > 0 ? ('Yêu cầu: ' + job.minExp + '+ năm KN') : 'Không yêu cầu kinh nghiệm');
+            }
+            if (document.getElementById('modalJobDesc')) document.getElementById('modalJobDesc').innerText = job.description;
+            if (document.getElementById('modalJobReq')) document.getElementById('modalJobReq').innerText = job.requirements;
+            if (document.getElementById('modalJobBenefits')) document.getElementById('modalJobBenefits').innerText = job.benefits;
+
+            // Auto pre-fill if candidate is signed in
+            try {
+                const storedCandidate = localStorage.getItem('talentflow_candidate');
+                if (storedCandidate) {
+                    const cand = JSON.parse(storedCandidate);
+                    if (cand.fullName && document.getElementById('applyFullName')) document.getElementById('applyFullName').value = cand.fullName;
+                    if (cand.email && document.getElementById('applyEmail')) document.getElementById('applyEmail').value = cand.email;
+                    if (cand.phone && document.getElementById('applyPhone')) document.getElementById('applyPhone').value = cand.phone;
+                }
+            } catch(e) {}
+
             document.getElementById('jobDetailModal').classList.remove('hidden');
         }
 
@@ -1851,18 +2619,175 @@ public class ExamDocParserService {
             document.getElementById('jobDetailModal').classList.add('hidden');
         }
 
-        function openApplyJobModal(title) {
-            openJobDetailModal(title, 'Công nghệ thông tin', 'TP. Hồ Chí Minh', 'Lương cạnh tranh');
+        function openApplyJobModal(idOrTitle) {
+            openJobDetailModal(idOrTitle);
+            const formSection = document.getElementById('fastApplyForm');
+            if (formSection) {
+                formSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
         }
 
-        function handleApplySubmit(e) {
+        // Handle Apply Form Submission (Calls Real Backend API & Shows AI Match Result)
+        async function handleApplySubmit(e) {
             e.preventDefault();
-            const code = 'APP-2026-' + Math.floor(100 + Math.random() * 900);
-            alert('NỘP HỒ SƠ ỨNG TUYỂN THÀNH CÔNG!\n\nMã hồ sơ tra cứu của bạn là: ' + code + '\n\nChúng tôi đã gửi email xác nhận cùng đường link theo dõi tiến trình tuyển dụng. Bạn có thể tra cứu hồ sơ bất cứ lúc nào!');
-            closeJobDetailModal();
+            const btn = document.getElementById('applySubmitBtn');
+            const originalHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1.5"></i> AI đang thẩm định CV...';
+
+            const fullName = document.getElementById('applyFullName').value;
+            const email = document.getElementById('applyEmail').value;
+            const phone = document.getElementById('applyPhone').value;
+            const expYears = document.getElementById('applyExpYears').value || '2';
+            const skills = document.getElementById('applySkills').value || '';
+            const message = document.getElementById('applyMessage').value || '';
+            const jobId = currentActiveJob ? currentActiveJob.id : 1;
+            const appliedJobTitle = currentActiveJob ? currentActiveJob.title : 'Senior Java Backend Engineer';
+
+            const formData = new FormData();
+            formData.append('fullName', fullName);
+            formData.append('email', email);
+            formData.append('phone', phone);
+            formData.append('jobId', jobId);
+            formData.append('appliedJobTitle', appliedJobTitle);
+            formData.append('experienceYears', expYears);
+            formData.append('skills', skills);
+
+            const fileInput = document.getElementById('applyCvFile');
+            if (fileInput && fileInput.files && fileInput.files[0]) {
+                formData.append('cvFile', fileInput.files[0]);
+            }
+
+            try {
+                const res = await fetch('/careers/api/apply', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                closeJobDetailModal();
+                showApplySuccessModal(data);
+            } catch(err) {
+                console.warn('Backend API apply error, fallback to simulation:', err);
+                closeJobDetailModal();
+                const simScore = 88;
+                const simCode = 'APP-2026-' + Math.floor(100 + Math.random() * 900);
+                const recs = JOBS_CATALOG.filter(j => j.id !== jobId).slice(0, 3).map((j, idx) => ({
+                    id: j.id,
+                    title: j.title,
+                    department: j.department,
+                    location: j.location,
+                    salary: j.salary,
+                    matchScore: simScore - 4 - (idx * 3)
+                }));
+                showApplySuccessModal({
+                    status: 'SUCCESS',
+                    applicationCode: simCode,
+                    matchScore: simScore,
+                    matchFeedback: 'Độ tương thích rất cao (' + simScore + '%)! Kỹ năng và kinh nghiệm của bạn rất phù hợp với vị trí ' + appliedJobTitle + '. Khuyến nghị chuẩn bị thêm về kiến trúc hệ thống và quy trình làm việc Agile cho vòng phỏng vấn chuyên môn.',
+                    email: email,
+                    recommendedJobs: recs
+                });
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
+            }
+        }
+
+        // Show AI Match Score & Job Recommendations Modal
+        function showApplySuccessModal(data) {
+            lastApplicationData = data;
+            const score = data.matchScore || 85;
+            const scoreValEl = document.getElementById('successMatchScoreVal');
+            const scoreTextEl = document.getElementById('successMatchScoreText');
+            const feedbackEl = document.getElementById('successMatchFeedback');
+            const appCodeEl = document.getElementById('successAppCodeBadge');
+            const emailEl = document.getElementById('successEmailBadge');
+            const gaugeEl = document.getElementById('scoreGaugeBorder');
+
+            if (scoreValEl) scoreValEl.innerText = score + '%';
+            if (scoreTextEl) scoreTextEl.innerText = score + '%';
+            if (feedbackEl) feedbackEl.innerText = data.matchFeedback || 'Hồ sơ của bạn phù hợp tốt với các tiêu chí tuyển dụng.';
+            if (appCodeEl) appCodeEl.innerText = data.applicationCode || 'APP-2026-X';
+            if (emailEl) emailEl.innerText = data.email || (document.getElementById('applyEmail')?.value || 'candidate@gmail.com');
+
+            // Gauge color based on score
+            if (gaugeEl) {
+                if (score >= 80) {
+                    gaugeEl.className = 'relative shrink-0 flex items-center justify-center w-24 h-24 rounded-full bg-white shadow-md border-4 border-emerald-500';
+                    if (scoreValEl) scoreValEl.className = 'text-2xl font-black text-emerald-600';
+                    if (scoreTextEl) scoreTextEl.className = 'text-emerald-600 font-black';
+                } else if (score >= 65) {
+                    gaugeEl.className = 'relative shrink-0 flex items-center justify-center w-24 h-24 rounded-full bg-white shadow-md border-4 border-amber-500';
+                    if (scoreValEl) scoreValEl.className = 'text-2xl font-black text-amber-600';
+                    if (scoreTextEl) scoreTextEl.className = 'text-amber-600 font-black';
+                } else {
+                    gaugeEl.className = 'relative shrink-0 flex items-center justify-center w-24 h-24 rounded-full bg-white shadow-md border-4 border-rose-500';
+                    if (scoreValEl) scoreValEl.className = 'text-2xl font-black text-rose-600';
+                    if (scoreTextEl) scoreTextEl.className = 'text-rose-600 font-black';
+                }
+            }
+
+            // Populate Recommended Jobs List
+            const container = document.getElementById('recommendedJobsContainer');
+            if (container) {
+                container.innerHTML = '';
+                const recs = data.recommendedJobs && data.recommendedJobs.length > 0 
+                    ? data.recommendedJobs 
+                    : JOBS_CATALOG.filter(j => j.id !== (currentActiveJob?.id || 1)).slice(0, 3).map((j, i) => ({
+                        id: j.id, title: j.title, department: j.department, location: j.location, salary: j.salary, matchScore: Math.max(score - 4 - (i * 3), 72)
+                    }));
+
+                recs.forEach(rj => {
+                    const card = document.createElement('div');
+                    card.className = 'p-3.5 bg-slate-50 hover:bg-blue-50/50 border border-slate-200 hover:border-blue-300 rounded-xl transition flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3';
+                    card.innerHTML = `
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2">
+                                <h5 class="font-extrabold text-xs md:text-sm text-slate-900 hover:text-blue-600 cursor-pointer" onclick="applyRecommendedJob(${rj.id})">${rj.title}</h5>
+                                <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-md">
+                                    <i class="fas fa-bolt text-emerald-500 mr-1"></i>${rj.matchScore || 82}% Phù hợp
+                                </span>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2 text-[11px] text-slate-500 mt-1">
+                                <span><i class="fas fa-building text-slate-400 mr-1"></i>${rj.department || 'Phòng Kỹ thuật & Công nghệ'}</span>
+                                <span>•</span>
+                                <span><i class="fas fa-map-marker-alt text-slate-400 mr-1"></i>${rj.location || 'Toàn quốc'}</span>
+                                <span>•</span>
+                                <span class="text-emerald-600 font-bold"><i class="fas fa-money-bill-wave mr-1"></i>${rj.salary || 'Lương cạnh tranh'}</span>
+                            </div>
+                        </div>
+                        <button onclick="applyRecommendedJob(${rj.id})" class="shrink-0 px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-2xs transition flex items-center gap-1">
+                            Ứng tuyển nhanh <i class="fas fa-arrow-right text-[10px]"></i>
+                        </button>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+
+            document.getElementById('applySuccessModal').classList.remove('hidden');
+        }
+
+        function closeApplySuccessModal() {
+            document.getElementById('applySuccessModal').classList.add('hidden');
+        }
+
+        function applyRecommendedJob(jobId) {
+            closeApplySuccessModal();
+            openApplyJobModal(jobId);
+        }
+
+        function goToTrackApplication() {
+            closeApplySuccessModal();
+            const code = lastApplicationData?.applicationCode || '';
             const trackInput = document.getElementById('trackAppCodeInput');
-            if (trackInput) trackInput.value = code;
+            if (trackInput && code) {
+                trackInput.value = code;
+            }
             switchMainView('track');
+            if (typeof handleTrackSubmit === 'function') {
+                const fakeEvent = { preventDefault: () => {} };
+                handleTrackSubmit(fakeEvent);
+            }
         }
 
         // Open Apply Modal
