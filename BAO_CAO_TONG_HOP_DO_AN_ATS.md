@@ -184,3 +184,51 @@ Hệ thống đã đạt được khối lượng công việc rất lớn và h
 3. **Tính sáng tạo nổi bật:** Trình tạo CV đa layout độc bản chuẩn TopCV cùng định hướng tích hợp AI Match Score và đồng bộ lịch thông minh.
 
 *Em kính mong Thầy xem xét và phê duyệt định hướng ý tưởng cùng kế hoạch triển khai trên để nhóm tiếp tục hoàn thiện giai đoạn tiếp theo của đồ án!*
+
+---
+
+## 5. TÍNH NĂNG MỚI NÂNG CẤP: AI MATCH SCORE, GỢI Ý CÔNG VIỆC & EMAIL XÁC NHẬN (CẬP NHẬT 18/11/2026)
+
+### 5.1. Mở rộng Hệ thống 18 Tin tuyển dụng Chuẩn mực & Không trùng lặp
+- Rà soát toàn bộ JD cũ, mở rộng lên **18 vị trí tuyển dụng chi tiết** phân bổ đều khắp 4 phòng ban trọng điểm:
+  1. **Senior Java Backend Engineer** (Phòng Kỹ thuật & Công nghệ - 28 đến 42M)
+  2. **Fullstack Developer (Java & ReactJS)** (Phòng Kỹ thuật & Công nghệ - 22 đến 35M)
+  3. **DevOps & Cloud Infrastructure Engineer (AWS/K8s)** (Phòng Kỹ thuật & Công nghệ - 25 đến 40M)
+  4. **AI & Machine Learning Engineer (Python/LLM)** (Phòng Kỹ thuật & Công nghệ - 30 đến 50M)
+  5. **Flutter Mobile Developer** (Phòng Kỹ thuật & Công nghệ - 20 đến 32M)
+  6. **Senior iOS Native Developer (Swift/SwiftUI)** (Phòng Kỹ thuật & Công nghệ - 25 đến 38M)
+  7. **Frontend React / Next.js Engineer** (Phòng Kỹ thuật & Công nghệ - 18 đến 28M)
+  8. **QA / Automation Test Engineer (Selenium/Playwright)** (Phòng Kỹ thuật & Công nghệ - 16 đến 25M)
+  9. **Data Engineer (Spark/Airflow/Kafka)** (Phòng Kỹ thuật & Công nghệ - 25 đến 42M)
+  10. **UI/UX Product Designer** (Phòng Sản phẩm & Thiết kế - 18 đến 28M)
+  11. **Senior Product Owner (FinTech & HR SaaS)** (Phòng Sản phẩm & Thiết kế - 30 đến 45M)
+  12. **Business Analyst (BA IT / Enterprise)** (Phòng Sản phẩm & Thiết kế - 18 đến 30M)
+  13. **Brand & Motion Graphic Designer** (Phòng Sản phẩm & Thiết kế - 15 đến 22M)
+  14. **Chuyên viên Tuyển dụng & Đào tạo (Senior IT Recruiter)** (Phòng Nhân sự - 15 đến 24M)
+  15. **HR Generalist & Chuyên viên C&B (Tiền lương & Phúc lợi)** (Phòng Nhân sự - 14 đến 20M)
+  16. **Digital Marketing Specialist (Growth & Performance)** (Phòng Marketing & Kinh doanh - 16 đến 26M)
+  17. **B2B Tech Enterprise Sales Specialist** (Phòng Marketing & Kinh doanh - 18 đến 35M + Hoa hồng)
+  18. **Thực tập sinh Lập trình Web & AI (Intern Web/AI)** (Phòng Kỹ thuật & Công nghệ - 5 đến 8M)
+
+### 5.2. Công cụ Đánh giá Độ phù hợp AI (AI Match Score Engine)
+- Thuật toán so khớp thông minh tại `CareersController.java`:
+  * Đối chiếu kỹ năng của ứng viên (`skills`) với các yêu cầu kỹ thuật (`requirements`) và mô tả công việc (`description`).
+  * Kiểm tra số năm kinh nghiệm (`experienceYears`) so với điều kiện tối thiểu (`minExperienceYears`).
+  * Tính toán chỉ số % phù hợp thực tế (78% - 96% cho ứng viên đủ điều kiện, hoặc 48% - 55% nếu chưa đạt năm kinh nghiệm).
+  * Tự động sinh nhận xét chi tiết (AI Feedback) nêu rõ điểm mạnh kỹ năng và lời khuyên chuẩn bị cho vòng phỏng vấn chuyên môn.
+
+### 5.3. Trải nghiệm Ứng tuyển & Modal Đánh giá AI (`#applySuccessModal`)
+- Sau khi nộp đơn ứng tuyển thành công:
+  * Xuất hiện Modal thông báo sang trọng với **Huy hiệu vòng tròn % AI Match Score** rực rỡ.
+  * Hiển thị dòng thông báo: *"Đánh giá độ phù hợp CV: **X%** so với tin tuyển dụng"* kèm nhận xét AI.
+  * Thẻ thông báo xác nhận: *"Hệ thống đã tự động gửi email xác nhận kèm Mã hồ sơ APP-2026-X tới email ứng viên"*.
+  * Khung **"Gợi ý việc làm phù hợp với hồ sơ của bạn"**: Đề xuất 2-3 vị trí tương tự kèm mức lương, địa điểm, tỷ lệ phù hợp và nút *Ứng tuyển nhanh* 1-click.
+
+### 5.4. Hệ thống Tự động Gửi Email Xác nhận Ứng tuyển (EmailNotificationService)
+- Tạo email HTML chuyên nghiệp theo chuẩn Responsive:
+  * Logo và màu nhận diện thương hiệu TalentFlow ATS.
+  * Lời chào cá nhân hóa, mã tra cứu hồ sơ và thời gian ghi nhận.
+  * Thẻ điểm AI Match Score và đánh giá điểm mạnh.
+  * Danh sách các công việc gợi ý tương tự kèm link.
+  * Lộ trình 3 bước tiếp theo trong quy trình phỏng vấn.
+  * Tích hợp `JavaMailSender` sẵn sàng gửi email qua SMTP và tự động log kiểm tra nội dung.
